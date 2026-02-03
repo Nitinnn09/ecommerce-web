@@ -1,0 +1,94 @@
+/* ===== BACKGROUND ===== */
+.container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #f8fafc, #e2e8f0);
+}
+
+/* ===== CARD ===== */
+.card {
+  width: 100%;
+  max-width: 380px;
+  padding: 35px;
+  border-radius: 18px;
+  background: #ffffff;
+  box-shadow: 0 20px 40px rgba(15, 23, 42, 0.15);
+  animation: fadeIn 0.6s ease;
+}
+
+.card h2 {
+  text-align: center;
+  color: #0f172a;
+  margin-bottom: 25px;
+  font-size: 26px;
+  font-weight: 700;
+}
+
+/* ===== INPUT ===== */
+.input {
+  width: 100%;
+  padding: 12px 14px;
+  margin-bottom: 15px;
+  border-radius: 10px;
+  border: 1px solid #cbd5e1;
+  background: #f8fafc;
+  color: #0f172a;
+  outline: none;
+  font-size: 15px;
+  transition: border 0.2s ease, box-shadow 0.2s ease;
+}
+
+.input::placeholder {
+  color: #64748b;
+}
+
+.input:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+  background: #ffffff;
+}
+
+/* ===== BUTTON ===== */
+.button {
+  width: 100%;
+  padding: 12px;
+  border-radius: 12px;
+  border: none;
+  background: linear-gradient(135deg, #2563eb, #3b82f6);
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 25px rgba(37, 99, 235, 0.35);
+}
+
+/* ===== ERROR ===== */
+.error {
+  background: #fee2e2;
+  color: #b91c1c;
+  padding: 10px;
+  border-radius: 10px;
+  font-size: 14px;
+  margin-bottom: 15px;
+  text-align: center;
+  border: 1px solid #fecaca;
+}
+
+/* ===== ANIMATION ===== */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

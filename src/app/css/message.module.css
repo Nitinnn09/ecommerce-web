@@ -1,0 +1,145 @@
+.container {
+  display: flex;
+  height: calc(100vh - 64px);
+  background: #f9fafb;
+}
+
+/* SIDEBAR */
+.sidebar {
+  width: 300px;
+  background: white;
+  border-right: 1px solid #e5e7eb;
+  padding: 16px;
+}
+
+.sidebar h3 {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+
+/* USER LIST */
+.user {
+  display: flex;
+  gap: 12px;
+  padding: 12px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.user:hover {
+  background: #eef2ff;
+}
+
+.avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: #2563eb;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+}
+
+.user h4 {
+  font-size: 14px;
+}
+
+.user p {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+/* CHAT */
+.chat {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* HEADER */
+.chatHeader {
+  padding: 14px 20px;
+  background: white;
+  border-bottom: 1px solid #e5e7eb;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.chatHeader span {
+  font-size: 12px;
+  color: #16a34a;
+}
+
+/* BODY */
+.chatBody {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* MESSAGES */
+.msgLeft {
+  align-self: flex-start;
+  background: white;
+  padding: 10px 14px;
+  border-radius: 14px;
+  max-width: 60%;
+  font-size: 14px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+}
+
+.msgRight {
+  align-self: flex-end;
+  background: #2563eb;
+  color: white;
+  padding: 10px 14px;
+  border-radius: 14px;
+  max-width: 60%;
+  font-size: 14px;
+}
+
+/* INPUT */
+.chatInput {
+  display: flex;
+  gap: 10px;
+  padding: 14px;
+  background: white;
+  border-top: 1px solid #e5e7eb;
+}
+
+.chatInput input {
+  flex: 1;
+  padding: 12px 14px;
+  border-radius: 999px;
+  border: 1px solid #e5e7eb;
+  outline: none;
+}
+
+.chatInput button {
+  padding: 12px 20px;
+  border-radius: 999px;
+  border: none;
+  background: linear-gradient(135deg, #2563eb, #1e40af);
+  color: white;
+  cursor: pointer;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .sidebar {
+    display: none;
+  }
+
+  .msgLeft,
+  .msgRight {
+    max-width: 80%;
+  }
+}

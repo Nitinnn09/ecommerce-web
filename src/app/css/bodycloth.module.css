@@ -1,0 +1,285 @@
+:root{
+  --nav-h: 64px;
+  --side-w: 290px;
+}
+
+/* ===== WRAPPERS (sidebar safe) ===== */
+.layout{
+  display: block;
+}
+
+/* Desktop: sidebar fixed hai, isliye content ko right shift */
+.content{
+  padding-left: var(--side-w);
+  min-width: 0;
+}
+
+/* Mobile/tablet drawer/strip: content full width */
+@media (max-width: 900px){
+  .content{
+    padding-left: 0;
+  }
+}
+
+/* ===== PAGE ===== */
+.page{
+  min-height: calc(100vh - var(--nav-h));
+  background: #ffffff;
+  padding: 22px 16px 40px;
+  color: #006064;
+  width: 100%;
+  display: block; /* ✅ IMPORTANT: flex हटाया */
+}
+
+/* ===== HEADER ===== */
+.header{
+  max-width: 1100px;
+  margin: 0 auto 18px;
+}
+
+.title{
+  font-size: 28px;
+  font-weight: 900;
+  color: #006064;
+  margin: 0 0 6px;
+}
+
+.subText{
+  font-size: 14px;
+  color: #334155;
+  margin: 0;
+}
+
+.loading{
+  max-width: 1100px;
+  margin: 25px auto;
+  font-weight: 800;
+}
+
+/* ===== GRID ===== */
+.grid{
+  max-width: 1100px;
+  width: 100%;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+}
+
+/* ===== CARD ===== */
+.card{
+  text-decoration: none;
+  color: inherit;
+  border: 1px solid #dedede;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #fff;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  position: relative;
+
+  display: flex;          /* ✅ image ऊपर + text नीचे */
+  flex-direction: column; /* ✅ */
+}
+
+.card:hover{
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px rgba(0,0,0,0.08);
+}
+
+/* ===== IMAGE ===== */
+.imgBox{
+  position: relative;
+  width: 100%;
+  height: 190px;
+  background: #f5f5f5;
+  overflow: hidden;
+}
+
+.img{
+  object-fit: cover;
+}
+
+/* ===== BADGE ===== */
+.badge{
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: #006064;
+  color: #fff;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 900;
+  z-index: 5;
+}
+
+/* ===== INFO ===== */
+.info{
+  padding: 12px;
+}
+
+.name{
+  font-size: 14px;
+  font-weight: 900;
+  margin: 0 0 6px;
+  color: #006064;
+}
+
+.price{
+  font-size: 14px;
+  font-weight: 900;
+  color: #242423;
+  margin: 0;
+}
+
+.price span{
+  margin-left: 8px;
+  color: #adb5bd;
+  text-decoration: line-through;
+  font-weight: 800;
+}
+
+.desc{
+  margin-top: 8px;
+  font-size: 13px;
+  color: black;
+  line-height: 1.4;
+}
+
+.empty{
+  max-width: 1100px;
+  margin: 20px auto;
+  font-weight: 800;
+  color: rgba(0, 100, 0, 0.7);
+}
+.tools{
+  display: flex;
+  gap: 12px;
+  margin-top: 14px;
+  align-items: center;
+}
+
+.search{
+  flex: 1;
+  border: 1px solid #dedede;
+  border-radius: 12px;
+  padding: 12px;
+  outline: none;
+  color: #006064;
+  font-weight: 700;
+}
+
+.select{
+  border: 1px solid #dedede;
+  border-radius: 12px;
+  padding: 12px;
+  outline: none;
+  font-weight: 800;
+  background: #fff;
+}
+
+/*all product styling */
+
+.cat{
+  margin-top: 6px;
+  font-size: 12px;
+  font-weight: 800;
+  color: rgba(0,100,0,0.65);
+  text-transform: uppercase;
+}
+
+
+@media (max-width: 520px){
+  .tools{
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+
+/*mobile page styling*/
+.tools{
+  display: flex;
+  gap: 12px;
+  margin-top: 14px;
+  align-items: center;
+}
+
+.search{
+  flex: 1;
+  border: 1px solid #dedede;
+  border-radius: 12px;
+  padding: 12px;
+  outline: none;
+  font-weight: 700;
+}
+
+.select{
+  border: 1px solid #dedede;
+  border-radius: 12px;
+  padding: 12px;
+  outline: none;
+  font-weight: 800;
+  background: #fff;
+}
+
+@media (max-width: 520px){
+  .tools{
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+
+
+/* ===== RESPONSIVE ===== */
+
+/* Large tablets */
+@media (max-width: 1100px){
+  .grid{
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Tablets & mobiles */
+@media (max-width: 768px){
+  .grid{
+    grid-template-columns: repeat(2, 1fr); /* ✅ 2 cards */
+    gap: 12px;
+  }
+
+  .imgBox{
+    height: 170px;
+  }
+}
+
+/* Small mobiles (still 2 cards) */
+@media (max-width: 480px){
+  .grid{
+    grid-template-columns: repeat(2, 1fr); /* ✅ force 2 cards */
+    gap: 10px;
+  }
+
+  .imgBox{
+    height: 150px;
+  }
+
+  .info{
+    padding: 10px;
+  }
+
+  .name{
+    font-size: 13px;
+  }
+
+  .price{
+    font-size: 13px;
+  }
+}
+
+/* Extra small phones */
+@media (max-width: 360px){
+  .imgBox{
+    height: 135px;
+  }
+}

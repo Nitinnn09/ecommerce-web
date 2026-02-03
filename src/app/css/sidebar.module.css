@@ -1,0 +1,116 @@
+/* ============ OVERLAY ============ */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(2px);
+  z-index: 998;
+  animation: fadeIn 0.3s ease;
+}
+
+/* ============ SIDEBAR ============ */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: -300px;
+  width: 280px;
+  height: 100vh;
+  background: #ffffff;
+  box-shadow: 8px 0 30px rgba(0,0,0,0.15);
+  transition: all 0.35s ease;
+  z-index: 9999; /* 🔥 navbar se upar */
+  display: flex;
+  flex-direction: column;
+  border-top-right-radius: 16px;
+  border-bottom-right-radius: 16px;
+}
+
+/* OPEN STATE */
+.open {
+  left: 0;
+  animation: slideDown 0.4s ease;
+}
+
+/* ============ HEADER ============ */
+.header {
+  padding: 16px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.header button {
+  background: #f3f4f6;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 6px 10px;
+  border-radius: 8px;
+  transition: 0.2s;
+}
+
+.header button:hover {
+  background: #e5e7eb;
+  transform: rotate(90deg);
+}
+
+/* ============ MENU ============ */
+.menu {
+  list-style: none;
+  padding: 10px 0;
+  flex: 1;
+}
+
+.menu li a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  text-decoration: none;
+  color: #374151;
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 12px;
+  margin: 4px 10px;
+  transition: all 0.25s ease;
+}
+
+.menu li a:hover {
+  background: #006064;
+  color: white;
+  transform: translateX(6px);
+  box-shadow: 0 8px 20px rgba(37,99,235,0.3);
+}
+
+.menu img {
+  width: 20px;
+  height: 20px;
+}
+
+/* ============ FOOTER ============ */
+.footer {
+  padding: 14px 18px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.footer a {
+  text-decoration: none;
+  font-weight: 600;
+  color: #ef4444;
+}
+
+/* ============ ANIMATIONS ============ */
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0 }
+  to { opacity: 1 }
+}

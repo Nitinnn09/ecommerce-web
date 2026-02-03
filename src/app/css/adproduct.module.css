@@ -1,0 +1,161 @@
+/* ===== PAGE (Full width clean white) ===== */
+.page {
+  min-height: 100vh;
+  width: 100%;
+  background: #ffffff;
+  color: #006400;
+  padding: 24px 16px;
+}
+
+/* ===== CONTAINER (Desktop layout) ===== */
+.card {
+  width: 100%;
+  max-width: 980px;          /* desktop me wide */
+  margin: 0 auto;            /* center */
+  padding: 24px;
+  border-radius: 0;          /* clean */
+  background: #ffffff;
+  border: none;              /* ✅ no border */
+  box-shadow: none;          /* ✅ no shadow */
+}
+
+/* ===== TITLE ===== */
+.title {
+  font-size: 28px;
+  font-weight: 900;
+  color: #006064;
+  margin-bottom: 18px;
+}
+
+/* ===== FORM GRID ===== */
+.form {
+  display: grid;
+  gap: 16px;
+}
+
+/* ===== FIELD ===== */
+.field {
+  display: grid;
+  gap: 8px;
+}
+
+.label {
+  font-size: 13px;
+  font-weight: 800;
+  color: #006064;
+}
+
+/* ===== INPUTS (white theme) ===== */
+.input,
+.textarea {
+  width: 100%;
+  padding: 14px 14px;
+  border-radius: 10px;
+  border: 1px solid #cfcfcf; /* ✅ light border */
+  outline: none;
+  font-size: 14px;
+  color: #006400;            /* ✅ same text color */
+  background: #f5f5f5;       /* ✅ light gray bg */
+  transition: 0.2s ease;
+}
+
+.input::placeholder,
+.textarea::placeholder {
+  color: rgba(0, 100, 0, 0.5);
+}
+
+.input:focus,
+.textarea:focus {
+  border-color: #006064;
+  box-shadow: none;          /* ✅ no glow */
+  background: #ffffff;
+}
+
+.textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+/* ===== TWO COLUMN ROW (Desktop) ===== */
+.row2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+/* ===== ACTIONS ===== */
+.actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 6px;
+}
+
+/* ✅ Primary button green */
+.primaryBtn {
+  flex: 1;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  font-weight: 900;
+  font-size: 14px;
+  background: #006064;
+  color: #ffffff;
+  transition: 0.2s ease;
+}
+
+.primaryBtn:hover {
+  opacity: 0.92;
+}
+
+/* ✅ Secondary button outline green */
+.secondaryBtn {
+  padding: 12px 14px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 900;
+  font-size: 14px;
+  color: #006064;
+  background: transparent;
+  border: 1px solid #006064;
+  transition: 0.2s ease;
+}
+
+.secondaryBtn:hover {
+  background: rgba(0, 100, 0, 0.08);
+}
+
+/* ===== LOADING ===== */
+.loading {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  background: #ffffff;
+  color: #006400;
+  font-size: 16px;
+}
+
+/* ===== MOBILE RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .card {
+    max-width: 100%;
+    padding: 18px;
+  }
+
+  .title {
+    font-size: 22px;
+  }
+
+  .row2 {
+    grid-template-columns: 1fr; /* ✅ stack on mobile */
+  }
+
+  .actions {
+    flex-direction: column;   /* ✅ buttons full width */
+  }
+
+  .secondaryBtn,
+  .primaryBtn {
+    width: 100%;
+  }
+}

@@ -1,0 +1,170 @@
+/* ===== PAGE ===== */
+.page {
+  min-height: calc(100vh - 70px); /* navbar ke hisab se */
+  width: 100%;
+  background: #ffffff;
+  color: #006400;
+  padding: 22px 16px 40px;
+}
+
+/* ===== CARD (clean admin layout) ===== */
+.card {
+  width: 100%;
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 22px;
+  background: #ffffff;
+  border: 1px solid #e6e6e6;
+  border-radius: 12px;
+}
+
+/* ===== TITLE ===== */
+.title {
+  font-size: 26px;
+  font-weight: 900;
+  color: #006400;
+  margin-bottom: 14px;
+}
+
+/* ===== FORM ===== */
+.form {
+  display: grid;
+  gap: 16px;
+}
+
+/* ===== FIELD ===== */
+.field {
+  display: grid;
+  gap: 8px;
+}
+
+.label {
+  font-size: 13px;
+  font-weight: 900;
+  color: #006400;
+  letter-spacing: 0.2px;
+}
+
+/* ===== INPUTS ===== */
+.input,
+.textarea {
+  width: 100%;
+  padding: 12px 12px;
+  border-radius: 10px;
+  border: 1px solid #d5d5d5;
+  outline: none;
+  font-size: 14px;
+  color: #006400;
+  background: #f7f7f7;
+  transition: 0.18s ease;
+}
+
+.input::placeholder,
+.textarea::placeholder {
+  color: rgba(0, 100, 0, 0.5);
+}
+
+.input:focus,
+.textarea:focus {
+  border-color: #006400;
+  background: #ffffff;
+}
+
+/* textarea */
+.textarea {
+  min-height: 120px;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+/* ===== GRID ROWS ===== */
+.row2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+/* ===== IMAGE INPUT look ===== */
+.fileHint {
+  font-size: 12px;
+  color: rgba(0, 100, 0, 0.7);
+}
+
+/* ===== ACTIONS ===== */
+.actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 6px;
+  padding-top: 10px;
+  border-top: 1px solid #eeeeee;
+}
+
+.primaryBtn {
+  flex: 1;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  font-weight: 900;
+  font-size: 14px;
+  background: #006400;
+  color: #ffffff;
+  transition: 0.2s ease;
+}
+
+.primaryBtn:hover {
+  opacity: 0.92;
+}
+
+.secondaryBtn {
+  padding: 12px 14px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 900;
+  font-size: 14px;
+  color: #006400;
+  background: transparent;
+  border: 1px solid #006400;
+  transition: 0.2s ease;
+}
+
+.secondaryBtn:hover {
+  background: rgba(0, 100, 0, 0.08);
+}
+
+/* ===== LOADING ===== */
+.loading {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  background: #ffffff;
+  color: #006400;
+  font-size: 16px;
+  font-weight: 800;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .card {
+    max-width: 100%;
+    padding: 16px;
+    border-radius: 10px;
+  }
+
+  .title {
+    font-size: 22px;
+  }
+
+  .row2 {
+    grid-template-columns: 1fr; /* stack */
+  }
+
+  .actions {
+    flex-direction: column;
+  }
+
+  .primaryBtn,
+  .secondaryBtn {
+    width: 100%;
+  }
+}

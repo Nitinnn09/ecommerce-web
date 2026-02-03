@@ -1,0 +1,162 @@
+/* PAGE WRAPPER */
+.container {
+  display: flex;
+  gap: 24px;
+  padding: 20px;
+  background: #f4f6f8;
+  min-height: calc(100vh - 120px);
+  box-sizing: border-box;
+}
+
+/* ================= SIDEBAR ================= */
+.sidebar {
+  width: 280px;
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 24px 16px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.avatar {
+  border-radius: 50%;
+  margin-bottom: 12px;
+  object-fit: cover;
+}
+
+.sidebar h3 {
+  margin: 8px 0 4px;
+  font-size: 18px;
+}
+
+.imageBox {
+  position: relative;
+    width: 120px;
+    height: 120px;
+    margin: 0 auto 12px;
+}
+
+.sidebar p {
+  font-size: 14px;
+  color: #666;
+  word-break: break-word;
+}
+
+.logout {
+  margin-top: 20px;
+  width: 100%;
+  background: #ff3b3b;
+  color: #fff;
+  border: none;
+  padding: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+}
+.uploadBtn {
+  display: inline-block;
+  margin-top: 1px;
+  font-size: 13px;
+  color: #0070f3;
+  cursor: pointer;
+}
+
+.logout:hover {
+  background: #e62e2e;
+}
+
+/* ================= CONTENT ================= */
+.content {
+  flex: 1;
+}
+
+.content h2 {
+  margin-bottom: 16px;
+    font-size: 22px;
+    color: #333;
+    font-weight: 600;
+}
+
+/* CARD */
+.card {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.card h4 {
+  margin-bottom: 16px;
+  font-size: 16px;
+}
+
+/* FORM */
+.card label {
+  display: block;
+  font-size: 13px;
+  color: #555;
+  margin-bottom: 6px;
+}
+
+.card input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 14px;
+  border-radius: 8px;
+  border: 1px solid #fff;
+  font-size: 14px;
+  outline: none;
+  transition: border 0.2s;
+}
+
+.card input:focus {
+  border-color: #ddd;
+  outline: none;
+}
+
+.card input:disabled {
+  background: #f0f0f0;
+  cursor: not-allowed;
+}
+
+/* BUTTONS */
+.editBtn {
+  width: 100%;
+  padding: 10px;
+  background: #0070f3;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.editBtn:hover {
+  background: #005fd1;
+}
+
+.saveBtn {
+  width: 100%;
+  padding: 10px;
+  background: #28a745;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.saveBtn:hover {
+  background: #218838;
+}
+
+/* ================= MOBILE ================= */
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+  }
+}

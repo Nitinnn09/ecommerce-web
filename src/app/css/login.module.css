@@ -1,0 +1,189 @@
+.container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(120deg, #e0e7ff, #eef2ff);
+}
+
+.card {
+  width: 900px;
+  height: 420px;
+  background: white;
+  border-radius: 28px;
+  display: flex;
+  overflow: hidden;
+  box-shadow: 0 30px 60px rgba(0,0,0,0.15);
+}
+
+/* LEFT */
+.left {
+  width: 45%;
+  background-color: #006064;
+ background-blend-mode: multiply;
+  color: white;
+  padding: 60px 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border-radius: 28px 50% 50% 28px;
+}
+
+.left h1 {
+  font-size: 34px;
+  margin-bottom: 10px;
+}
+
+.left p {
+  opacity: 0.9;
+  margin-bottom: 30px;
+}
+
+.left button {
+  width: 160px;
+  padding: 12px;
+  border-radius: 30px;
+  border: 2px solid #f59e0b;
+  background: transparent;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* RIGHT */
+.right {
+  width: 55%;
+  padding: 50px 60px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.right h2 {
+  font-size: 30px;
+  margin-bottom: 20px;
+  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+  color: #006064;
+}
+
+.right input {
+  padding: 14px 16px;
+  margin-bottom: 16px;
+  border-radius: 10px;
+  border: none;
+  background: #f3f4f6;
+
+}
+
+.right input:focus {
+  outline: 2px solid #f59e0b;
+}
+
+.forgot {
+  font-size: 13px;
+  text-align: right;
+  margin-bottom: 18px;
+  cursor: pointer;
+}
+
+.loginBtn {
+  background: #006064;
+  color: white;
+  border: 2px solid #f59e0b;
+  padding: 14px;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+}
+.loginBtn:hover{
+  background-color:#26A69A;
+}
+
+.other {
+  text-align: center;
+  margin-top: 18px;
+  font-size: 13px;
+  color: #555;
+}
+
+/* MOBILE */
+
+
+/* ================= MOBILE RESPONSIVE ================= */
+@media (max-width: 768px) {
+  .container {
+    padding: 16px;
+  }
+
+  .card {
+    flex-direction: column;
+    width: 100%;
+    max-width: 420px;
+    height: auto;
+    border-radius: 24px;
+  }
+
+  /* LEFT PANEL */
+  .left {
+    width: 100%;
+    padding: 40px 24px;
+    border-radius: 24px 24px 50% 50%;
+    text-align: center;
+    align-items: center;
+  }
+
+  .left h1 {
+    font-size: 26px;
+  }
+
+  .left p {
+    font-size: 14px;
+  }
+
+  .left button {
+    width: 140px;
+    padding: 10px;
+    font-size: 14px;
+  }
+
+  /* RIGHT PANEL */
+  .right {
+    width: 100%;
+    padding: 32px 24px;
+  }
+
+  .right h2 {
+    font-size: 24px;
+    text-align: center;
+  }
+
+  .right input {
+    font-size: 14px;
+    padding: 12px 14px;
+  }
+
+  .forgot {
+    font-size: 12px;
+  }
+
+  .loginBtn {
+    width: 100%;
+    padding: 14px;
+    font-size: 15px;
+  }
+
+  .other {
+    font-size: 12px;
+  }
+}
+
+/* EXTRA SMALL DEVICES */
+@media (max-width: 400px) {
+  .left h1 {
+    font-size: 22px;
+  }
+
+  .right h2 {
+    font-size: 22px;
+  }
+}

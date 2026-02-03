@@ -1,0 +1,140 @@
+.container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f9fafb, #eef2ff);
+  padding: 32px 16px;
+}
+
+/* HEADER */
+.header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.header h1 {
+  font-size: 30px;
+  font-weight: 800;
+  color: #111827;
+}
+
+.header p {
+  font-size: 14px;
+  color: #6b7280;
+  margin-top: 6px;
+}
+
+/* SEARCH */
+.searchBox {
+  max-width: 520px;
+  margin: 0 auto 36px;
+}
+
+.searchBox input {
+  width: 100%;
+  padding: 14px 18px;
+  border-radius: 14px;
+  border: 1px solid #e5e7eb;
+  font-size: 14px;
+  outline: none;
+}
+
+.searchBox input:focus {
+  border-color: #2563eb;
+}
+
+/* GRID */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 22px;
+  max-width: 1100px;
+  margin: auto;
+}
+
+/* CARD */
+.card {
+  background: white;
+  border-radius: 18px;
+  padding: 22px;
+  cursor: pointer;
+  transition: 0.35s ease;
+  border: 1px solid #e5e7eb;
+  text-decoration: none;
+  color: inherit;
+}
+
+.card h3 {
+  font-size: 17px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.card p {
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.card:hover {
+  transform: translateY(-8px);
+  border-color: #2563eb;
+  box-shadow: 0 18px 35px rgba(37,99,235,0.25);
+}
+
+/* FOOTER */
+.footer {
+  margin-top: 56px;
+  text-align: center;
+}
+
+.footer h2 {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 14px;
+}
+
+.footer button {
+  padding: 13px 28px;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  color: white;
+  background: linear-gradient(135deg, #2563eb, #1e40af);
+  transition: 0.3s;
+}
+
+.footer button:hover {
+  transform: scale(1.06);
+  box-shadow: 0 12px 30px rgba(37,99,235,0.5);
+}
+
+/* ---------- RESPONSIVE ---------- */
+
+@media (max-width: 1024px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .header h1 {
+    font-size: 24px;
+  }
+
+  .searchBox {
+    margin-bottom: 26px;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .card {
+    padding: 18px;
+  }
+
+  .footer h2 {
+    font-size: 18px;
+  }
+}

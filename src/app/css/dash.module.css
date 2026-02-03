@@ -1,0 +1,148 @@
+.container {
+  padding: 10px;
+  min-height: 100vh;
+  background-color: #f4f6f8;
+  margin: 10px 15px 10px 15px;
+  border-radius: 8px;
+box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+}
+
+.heading {
+  font-size: 28px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  color: #222;
+}
+
+/* Cards Grid */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+/* Card */
+.card {
+  background: #ffffff;
+  padding: 10px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+}
+
+.cardTitle {
+  font-size: 16px;
+  color: #555;
+}
+
+.cardValue {
+  font-size: 26px;
+  font-weight: bold;
+  margin-top: 10px;
+  color: #24782a;
+}
+
+/* Section */
+.section {
+  margin-top: 40px;
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+
+}
+
+.section h2 {
+  margin-bottom: 10px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.section ul {
+  padding-left: 20px;
+}
+
+.section li {
+  margin-bottom: 8px;
+  color: #444;
+  font-size: 14px;
+}
+
+/* Table Container */
+.tableContainer {
+  overflow-x: auto;
+  margin-top: 10px;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+}
+
+.table thead {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.table th {
+  padding: 12px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.table td {
+  padding: 12px;
+  border-bottom: 1px solid #e5e7eb;
+  font-size: 14px;
+  color: #374151;
+}
+
+.table tbody tr:hover {
+  background-color: #f9fafb;
+  transition: background-color 0.2s ease;
+}
+
+/* Revenue List */
+.revenueList {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+  margin-top: 15px;
+}
+
+.revenueItem {
+  background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+  padding: 15px;
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.revenueItem span {
+  font-size: 14px;
+  color: #374151;
+}
+
+.revenueItem strong {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .heading {
+    font-size: 22px;
+  }
+
+  .cardValue {
+    font-size: 22px;
+  }
+}
