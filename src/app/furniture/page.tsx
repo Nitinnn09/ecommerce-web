@@ -96,11 +96,11 @@ export default function FurniturePage() {
                   onChange={(e) => setQ(e.target.value)}
                 />
 
-                <select className={styles.select} value={sort} onChange={(e) => setSort(e.target.value as any)}>
+                {/* <select className={styles.select} value={sort} onChange={(e) => setSort(e.target.value as any)}>
                   <option value="new">Sort: Default</option>
                   <option value="low">Price: Low to High</option>
                   <option value="high">Price: High to Low</option>
-                </select>
+                </select> */}
               </div>
             </div>
 

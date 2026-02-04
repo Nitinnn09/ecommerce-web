@@ -6,27 +6,27 @@ import styles from "../css/banner.module.css";
 
 const banners = [
   {
-    image: "/chet1.jpg",
+    image: "/bannerc.jpg",
     title: "New Season Collection",
     desc: "Discover the latest trends with premium quality products.",
   },
   {
-    image: "/chet2.jpg",
+    image: "/bannerb.jpg",
     title: "Big Sale is Live",
     desc: "Up to 50% off on selected items. Hurry up!",
   },
   {
-    image: "/banner4.jpg",
+    image: "/bannerd.jpeg",
     title: "Premium Life",
     desc: "Upgrade your style with our exclusive collection.",
   },
   {
-    image: "/banner5.jpg",
-    title: "Smart & Stylish",
+    image: "/bannere.jpg",
+    title: "Smart & sales",
     desc: "Modern designs made for everyday comfort.",
   },
   {
-    image: "/chet3.jpg",
+    image: "/bannerh.jpg",
     title: "sale",
     desc: "Top quality products at unbeatable prices.",
   },

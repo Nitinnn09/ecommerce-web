@@ -101,12 +101,12 @@ export default function MobilePage() {
                   value={q}
                   onChange={(e) => setQ(e.target.value)}
                 />
-
+{/* 
                 <select className={styles.select} value={sort} onChange={(e) => setSort(e.target.value as any)}>
                   <option value="default">Sort: Default</option>
                   <option value="low">Price: Low to High</option>
                   <option value="high">Price: High to Low</option>
-                </select>
+                </select> */}
               </div>
             </div>
 
@@ -117,7 +117,8 @@ export default function MobilePage() {
             ) : (
               <div className={styles.grid}>
                 {filtered.map((p) => (
-                  <Link key={p._id} href={`/product/${p._id}`} className={styles.card}>
+                  <Link key={p._id} href={`/product/${p._id}`} className={styles.relCard}>
+
                     {p.discount ? <span className={styles.badge}>{p.discount}</span> : null}
 
                     <div className={styles.imgBox}>

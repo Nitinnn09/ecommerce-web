@@ -94,7 +94,7 @@ export default function BodycarePage() {
       ) : (
         <div className={styles.grid}>
           {items.map((p) => (
-            <Link key={p._id} href={`/product/${p._id}`} className={styles.card}>
+<Link key={p._id} href={`/product/${p._id}`} className={styles.relCard}>
               {p.discount ? <span className={styles.badge}>{p.discount}</span> : null}
 
               <div className={styles.imgBox}>

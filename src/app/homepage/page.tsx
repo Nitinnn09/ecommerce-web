@@ -4,9 +4,11 @@ import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import {useRouter} from "next/navigation";
 import styles from "../css/home.module.css";
 import Footer from "../component/footer";
 import MobileBrands from "../component/mobile";
+import { addToCart } from "@/lib/cart";
 
 const Navbar = dynamic(() => import("../component/navbar"));
 const Banner = dynamic(() => import("../component/banner"));
@@ -63,11 +65,25 @@ export default function HomePage() {
   const pageRef = useRef<HTMLDivElement | null>(null);
   const trackRef = useRef<HTMLDivElement | null>(null);
   const glowRef = useRef<HTMLDivElement | null>(null);
+  const router = useRouter();
 
   const [furniture, setFurniture] = useState<ProductType[]>([]);
   const [clothes, setClothes] = useState<ProductType[]>([]);
   const [bodycare, setBodycare] = useState<ProductType[]>([]);
   const [loading, setLoading] = useState(true);
+
+
+const handleAddAndCheckout = (p: any) => {
+  addToCart({
+    _id: p._id || p.title,          // featuredItems me _id nahi hai, isliye fallback
+    title: p.title,
+    price: Number(p.price),
+    image: p.image,
+  }, 1);
+
+  router.push("/checkout");         // ✅ direct checkout
+};
+
 
   // ✅ Strict image safe (blocks C:\fakepath...)
   const safeImg = (src?: string) => {
@@ -241,47 +257,54 @@ useEffect(() => {
 
       {/* ✅ FEATURED */}
      {/* ✅ FEATURED (Auto Change) */}
-<section className={styles.featureWrap} data-reveal>
-  <div className={styles.featureGrid}>
-    <div className={styles.featureImgBox}>
-      {featured?.discount && <span className={styles.badge}>{featured.discount}</span>}
+        {/* ✅ FEATURED CARDS (3 items) */}
+<section className={styles.featureCardsWrap} data-reveal>
+  <div className={styles.featureCardsHead}>
+    <h2 className={styles.featureCardsTitle}>FEATURES PICKS</h2>
+    <p className={styles.featureCardsSub}>Top deals handpicked for you</p>
+  </div>
 
-      {/* ✅ Smooth fade on image change */}
-      <div key={featured?.image} className={styles.featureImgInner}>
+  <div className={styles.featureCardsGrid}>
+    {featuredItems.map((item, idx) => (
+      <div key={idx} className={styles.featureCard}>
+        {/* full image background */}
         <Image
-          src={featured?.image || "/placeholder.png"}
-          alt={featured?.title || "featured"}
+          src={item.image}
+          alt={item.title}
           fill
-          className={styles.featureImg}
-          priority
-          sizes="(max-width: 768px) 100%, 50vw"
+          className={styles.featureCardImg}
+          sizes="(max-width: 768px) 100vw, 33vw"
+          priority={idx === 0}
         />
+
+        {/* overlay */}
+        <div className={styles.featureOverlay} />
+
+        {/* discount */}
+        {item.discount ? <span className={styles.featureChip}>{item.discount}</span> : null}
+
+        {/* content */}
+        <div className={styles.featureCardContent}>
+          <p className={styles.featureMini}>HOME • OFFICE</p>
+          <h3 className={styles.featureCardName}>{item.title}</h3>
+
+          <p className={styles.featureCardPrice}>
+            ₹{item.price} <span>₹{item.oldPrice}</span>
+          </p>
+
+          <p className={styles.featureCardDesc}>{item.desc}</p>
+
+          <div className={styles.featureCardBtns}>
+            
+            <button className={styles.featureBtnPrimary} onClick={() => handleAddAndCheckout(item)}>Add to Cart</button>
+            <button className={styles.featureBtnGhost}>View Details</button>
+          </div>
+        </div>
       </div>
-    </div>
-
-    <div className={styles.featureInfo}>
-      <p className={styles.breadcrumb}>HOME - OFFICE</p>
-      <h1 className={styles.featureTitle}>{featured?.title}</h1>
-
-      <p className={styles.featurePrice}>
-        ₹{featured?.price} <span>₹{featured?.oldPrice}</span>
-      </p>
-
-      <p className={styles.featureDesc}>{featured?.desc}</p>
-
-      <ul className={styles.featureList}>
-        {(featured?.bullets || []).map((b, idx) => (
-          <li key={idx}>{b}</li>
-        ))}
-      </ul>
-
-      <div className={styles.featureActions}>
-        <button className={styles.primaryBtn}>Add to Cart</button>
-        <button className={styles.outlineBtn}>View Details</button>
-      </div>
-    </div>
+    ))}
   </div>
 </section>
+
 
 
       {/* ✅ FURNITURE SLIDER */}

@@ -102,9 +102,9 @@ export default function AllProductsPage() {
                 />
 
                 <select className={styles.select} value={sort} onChange={(e) => setSort(e.target.value as any)}>
-                  <option value="default">Sort: Default</option>
-                  <option value="low">Price: Low to High</option>
-                  <option value="high">Price: High to Low</option>
+                  <option className={styles.select2} value="default"> Default</option>
+                  <option className={styles.select2}  value="low">Price: Low to High</option>
+                  <option  className={styles.select2} value="high">Price: High to Low</option>
                 </select>
               </div>
             </div>
@@ -116,7 +116,7 @@ export default function AllProductsPage() {
             ) : (
               <div className={styles.grid}>
                 {filtered.map((p) => (
-                  <Link key={p._id} href={`/product/${p._id}`} className={styles.card}>
+                <Link key={p._id} href={`/product/${p._id}`} className={styles.relCard}>
                     {p.discount ? <span className={styles.badge}>{p.discount}</span> : null}
 
                     <div className={styles.imgBox}>

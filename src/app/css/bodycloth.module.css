@@ -113,6 +113,42 @@
   z-index: 5;
 }
 
+
+.relCard {
+  position: relative; /* important */
+  display: block;
+  border: 1px solid #dedede;
+}
+
+/* image container */
+.imgBox {
+  position: relative; /* important for next/image fill */
+  overflow: hidden;
+}
+
+/* next/image fill image */
+.img {
+  object-fit: cover;
+  z-index: 1;
+}
+
+/* discount badge */
+.badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 50;          /* bring above image */
+  padding: 6px 10px;
+  font-size: 12px;
+  font-weight: 700;
+  border-radius: 999px;
+  background: #006064;
+  color: #fff;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+  pointer-events: none;
+}
+
+
 /* ===== INFO ===== */
 .info{
   padding: 12px;
