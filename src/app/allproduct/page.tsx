@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import styles from "../css/bodycloth.module.css";
+import styles from "../css/allprod.module.css";
 import Navbar from "../component/navbar";
 import CategorySidebar from "../component/category";
 
@@ -89,8 +89,8 @@ export default function AllProductsPage() {
         <main className={styles.content}>
           <div className={styles.page}>
             <div className={styles.header}>
-              <h1 className={styles.title}>All Products</h1>
-              <p className={styles.subText}>All categories mixed products</p>
+              {/* <h1 className={styles.title}>All Products</h1>
+              <p className={styles.subText}>All categories mixed products</p> */}
 
               {/* same furniture-style tools */}
               <div className={styles.tools}>
@@ -101,11 +101,11 @@ export default function AllProductsPage() {
                   onChange={(e) => setQ(e.target.value)}
                 />
 
-                <select className={styles.select} value={sort} onChange={(e) => setSort(e.target.value as any)}>
+                {/* <select className={styles.select} value={sort} onChange={(e) => setSort(e.target.value as any)}>
                   <option className={styles.select2} value="default"> Default</option>
                   <option className={styles.select2}  value="low">Price: Low to High</option>
                   <option  className={styles.select2} value="high">Price: High to Low</option>
-                </select>
+                </select> */}
               </div>
             </div>
 

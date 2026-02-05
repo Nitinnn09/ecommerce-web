@@ -16,11 +16,11 @@ const NextNav = dynamic(() => import("../component/nextnav"));
 
 const featuredItems = [
   {
-    title: "Best Quality Designing Sofa",
+    title: "Dining table Smart",
     price: "113.00",
     oldPrice: "180.00",
     discount: "-20%",
-    image: "/sofa.png",
+    image: "/dinigt.jpg",
     desc: "Premium walnut finish dining table with strong X-base support. Perfect for office & home.",
     bullets: ["Solid wood build", "Modern X-base design", "Easy to clean surface", "Fast delivery"],
   },
@@ -264,10 +264,10 @@ useEffect(() => {
     <p className={styles.featureCardsSub}>Top deals handpicked for you</p>
   </div>
 
+  {/* ✅ Desktop grid */}
   <div className={styles.featureCardsGrid}>
     {featuredItems.map((item, idx) => (
       <div key={idx} className={styles.featureCard}>
-        {/* full image background */}
         <Image
           src={item.image}
           alt={item.title}
@@ -276,14 +276,9 @@ useEffect(() => {
           sizes="(max-width: 768px) 100vw, 33vw"
           priority={idx === 0}
         />
-
-        {/* overlay */}
         <div className={styles.featureOverlay} />
-
-        {/* discount */}
         {item.discount ? <span className={styles.featureChip}>{item.discount}</span> : null}
 
-        {/* content */}
         <div className={styles.featureCardContent}>
           <p className={styles.featureMini}>HOME • OFFICE</p>
           <h3 className={styles.featureCardName}>{item.title}</h3>
@@ -295,22 +290,76 @@ useEffect(() => {
           <p className={styles.featureCardDesc}>{item.desc}</p>
 
           <div className={styles.featureCardBtns}>
-            
-            <button className={styles.featureBtnPrimary} onClick={() => handleAddAndCheckout(item)}>Add to Cart</button>
+            <button className={styles.featureBtnPrimary} onClick={() => handleAddAndCheckout(item)}>
+              Add to Cart
+            </button>
             <button className={styles.featureBtnGhost}>View Details</button>
           </div>
         </div>
       </div>
     ))}
   </div>
+
+  {/* ✅ Mobile slider (auto change) */}
+  <div className={styles.featureMobileOnly}>
+    <div className={styles.featureMobileTrack} style={{ transform: `translateX(-${featureIndex * 100}%)` }}>
+      {featuredItems.map((item, idx) => (
+        <div key={idx} className={styles.featureMobileSlide}>
+          <div className={styles.featureCard}>
+            <Image
+              src={item.image}
+              alt={item.title}
+              fill
+              className={styles.featureCardImg}
+              sizes="100vw"
+              priority={idx === 0}
+            />
+            <div className={styles.featureOverlay} />
+            {item.discount ? <span className={styles.featureChip}>{item.discount}</span> : null}
+
+            <div className={styles.featureCardContent}>
+              <p className={styles.featureMini}>HOME • OFFICE</p>
+              <h3 className={styles.featureCardName}>{item.title}</h3>
+
+              <p className={styles.featureCardPrice}>
+                ₹{item.price} <span>₹{item.oldPrice}</span>
+              </p>
+
+              <p className={styles.featureCardDesc}>{item.desc}</p>
+
+              <div className={styles.featureCardBtns}>
+                <button className={styles.featureBtnPrimary} onClick={() => handleAddAndCheckout(item)}>
+                  Add to Cart
+                </button>
+                <button className={styles.featureBtnGhost}>View Details</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+
+    {/* dots */}
+    <div className={styles.featureDots}>
+      {featuredItems.map((_, i) => (
+        <button
+          key={i}
+          className={`${styles.dot} ${i === featureIndex ? styles.dotActive : ""}`}
+          onClick={() => setFeatureIndex(i)}
+          aria-label={`Go to slide ${i + 1}`}
+        />
+      ))}
+    </div>
+  </div>
 </section>
+
 
 
 
       {/* ✅ FURNITURE SLIDER */}
       <section className={styles.sliderSection} data-reveal>
         <div className={styles.sliderHeader}>
-          <h2>Popular Furniture</h2>
+          <h2>POPULAR FURNITURE</h2>
           <p>{loading ? "Loading..." : "Auto scroll cards (hover to pause)"}</p>
         </div>
 
@@ -344,7 +393,7 @@ useEffect(() => {
 
       {/* ✅ CLOTHES */}
       <section className={styles.clothsWrap} data-reveal>
-        <p className={styles.collectionTag}>Clothe Collection</p>
+        <p className={styles.collectionTag}>CLOTHES COLLECTION</p>
         <p className={styles.subText}>Best fashion picks for you — premium quality & modern style</p>
 
         <div className={styles.clothsHead}>

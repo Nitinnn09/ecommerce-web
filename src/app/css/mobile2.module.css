@@ -3,7 +3,7 @@
   --side-w: 290px;
 }
 
-/* ===== LAYOUT (sidebar safe) ===== */
+/* ================= LAYOUT ================= */
 .layout{
   display: block;
   background: #f8fafc;
@@ -18,28 +18,24 @@
   .content{ padding-left: 0; }
 }
 
-/* ===== PAGE ===== */
+/* ================= PAGE ================= */
 .page{
   min-height: calc(100vh - var(--nav-h));
   padding: 22px 16px 44px;
 }
 
-/* ===== STATES ===== */
-.loading{
+.header{
   max-width: 1200px;
-  margin: 24px auto;
-  font-weight: 900;
-  color: #64748b;
+  margin: 0 auto 18px;
 }
 
-.empty{
-  max-width: 1200px;
-  margin: 24px auto;
-  font-weight: 900;
-  color: #94a3b8;
+.tools{
+  display: flex;
+  gap: 12px;
+  align-items: center;
 }
 
-/* ===== GRID ===== */
+/* ================= GRID ================= */
 .grid{
   max-width: 1200px;
   margin: 0 auto;
@@ -48,12 +44,12 @@
   gap: 16px;
 }
 
-/* 1100 -> 3 */
+/* desktop → 3 */
 @media (max-width: 1100px){
   .grid{ grid-template-columns: repeat(3, 1fr); }
 }
 
-/* ✅ 768 -> 3 (your requirement) */
+/* ✅ 768px → 3 cards per row */
 @media (max-width: 768px){
   .grid{
     grid-template-columns: repeat(3, 1fr);
@@ -61,7 +57,7 @@
   }
 }
 
-/* mobile -> 2 */
+/* mobile → 2 */
 @media (max-width: 520px){
   .grid{
     grid-template-columns: repeat(2, 1fr);
@@ -69,14 +65,14 @@
   }
 }
 
-/* small -> 1 */
-@media (max-width: 420px){
+/* very small */
+@media (max-width: 380px){
   .grid{
     grid-template-columns: 1fr;
   }
 }
 
-/* ===== CARD ===== */
+/* ================= CARD ================= */
 .relCard{
   text-decoration: none;
   color: inherit;
@@ -96,7 +92,7 @@
   box-shadow: 0 18px 45px rgba(0,0,0,0.12);
 }
 
-/* ===== BADGE ===== */
+/* ================= BADGE ================= */
 .badge{
   position: absolute;
   top: 12px;
@@ -112,49 +108,46 @@
   pointer-events: none;
 }
 
-/* ===== IMAGE BOX ===== */
+/* ================= IMAGE BOX ================= */
 .imgBox{
   position: relative;
   width: 100%;
-  height: 260px;             /* desktop */
+  height: 240px;              /* desktop */
   background: #f3f4f6;
-  border-bottom: 1px solid #eef2f7;
   overflow: hidden;
+  border-bottom: 1px solid #eef2f7;
 }
 
-/* ✅ height adjust with breakpoints */
+/* tablet */
 @media (max-width: 768px){
+  .imgBox{ height: 210px; }
+}
+
+/* mobile */
+@media (max-width: 520px){
   .imgBox{ height: 190px; }
 }
 
-@media (max-width: 520px){
-  .imgBox{ height: 170px; }
-}
-
-@media (max-width: 420px){
-  .imgBox{ height: 220px; }
-}
-
-/* ✅ Image full fill in box */
+/* ✅ IMAGE FULL COVER (NO GAP) */
 .img{
-  object-fit: cover;
+  object-fit: cover;          /* 🔥 FULL IMAGE BOX */
   object-position: center;
-  transform: scale(1);
+  padding: 0;                 /* ❌ NO WHITE SPACE */
   transition: transform .35s ease;
 }
 
 .relCard:hover .img{
-  transform: scale(1.06);
+  transform: scale(1.05);
 }
 
-/* ===== INFO ===== */
+/* ================= INFO ================= */
 .info{
   padding: 14px 14px 16px;
 }
 
 .name{
   margin: 0 0 8px;
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 900;
   color: #006064;
   line-height: 1.25;
@@ -163,7 +156,7 @@
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  min-height: 38px;
+  min-height: 36px;
 }
 
 .price{
@@ -190,4 +183,19 @@
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
+}
+
+/* ================= STATES ================= */
+.loading{
+  max-width: 1200px;
+  margin: 24px auto;
+  font-weight: 900;
+  color: #64748b;
+}
+
+.empty{
+  max-width: 1200px;
+  margin: 24px auto;
+  font-weight: 900;
+  color: #94a3b8;
 }

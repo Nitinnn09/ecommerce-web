@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import styles from "../css/bodycloth.module.css";
+import styles from "../css/mobile2.module.css";
 import Navbar from "../component/navbar";
 import CategorySidebar from "../component/category";
 
@@ -90,17 +90,17 @@ export default function MobilePage() {
         <main className={styles.content}>
           <div className={styles.page}>
             <div className={styles.header}>
-              <h1 className={styles.title}>Mobile</h1>
-              <p className={styles.subText}>All mobile products from MongoDB</p>
+              {/* <h1 className={styles.title}>Mobile</h1>
+              <p className={styles.subText}>All mobile products from MongoDB</p> */}
 
               {/* ✅ tools row like furniture */}
               <div className={styles.tools}>
-                <input
+                {/* <input
                   className={styles.search}
                   placeholder="Search mobile..."
                   value={q}
                   onChange={(e) => setQ(e.target.value)}
-                />
+                /> */}
 {/* 
                 <select className={styles.select} value={sort} onChange={(e) => setSort(e.target.value as any)}>
                   <option value="default">Sort: Default</option>

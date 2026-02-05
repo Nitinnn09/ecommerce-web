@@ -3,35 +3,31 @@ import { connectdb } from "@/lib/db";
 import Product from "@/lib/model/product";
 
 export async function GET(req: Request) {
-  await connectdb();
+  try {
+    await connectdb();
 
-  const { searchParams } = new URL(req.url);
+    const { searchParams } = new URL(req.url);
+    const categoryRaw = searchParams.get("category") || "";
+    const category = categoryRaw.trim();
 
-  // ✅ filters
-  const category = searchParams.get("category"); // furniture, clothes, bodycare etc
-  const limit = searchParams.get("limit");       // "8", "12"
-  const q = searchParams.get("q");               // optional search
+    const filter: any = {};
 
-  const filter: any = {};
+    // If category is passed, match it case-insensitively (Electrical/electrical both OK)
+    if (category) {
+      filter.category = { $regex: `^${category}$`, $options: "i" };
+    }
 
-  if (category && category !== "all") {
-    filter.category = category;
+    const products = await Product.find(filter).sort({ createdAt: -1 });
+
+    return NextResponse.json({ products });
+  } catch (err: any) {
+    return NextResponse.json(
+      { message: "Products API error", error: err?.message },
+      { status: 500 }
+    );
   }
-
-  // optional search by title
-  if (q) {
-    filter.title = { $regex: q, $options: "i" };
-  }
-
-  let query = Product.find(filter).sort({ createdAt: -1 });
-
-  if (limit) {
-    query = query.limit(Number(limit));
-  }
-
-  const products = await query;
-  return NextResponse.json(products);
 }
+
 
 export async function POST(req: Request) {
   await connectdb();

@@ -3,9 +3,10 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import styles from "../css/bodycloth.module.css";
+import styles from "../css/clothes.module.css";
 import Navbar from "../component/navbar";
 import CategorySidebar from "../component/category";
+import Footer from "../component/footer";
 
 type ProductType = {
   _id: string;
@@ -111,6 +112,8 @@ export default function ClothesPage() {
     </div>
     </main>
     </div>
+
+    <footer/>
     </>
   );
 }

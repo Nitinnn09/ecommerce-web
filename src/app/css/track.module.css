@@ -51,6 +51,14 @@
   cursor: pointer;
 }
 
+.msg{
+  margin-top: 10px;
+  font-weight: 700;
+  color: #ef4444;
+  text-align: center;
+}
+
+
 /* STATUS BOX */
 .statusBox {
   max-width: 900px;
