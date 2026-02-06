@@ -10,6 +10,15 @@
   top: 0;
   z-index: 999;
 }
+.userAvatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  cursor: pointer;
+  /* border: 1px solid #ddd; */
+}
+
 
 /* LOGO */
 .logo img {
@@ -28,6 +37,26 @@
   font-size: 24px;
   color: #ffffff;
 }
+.brand {
+  font-size: 26px;
+  font-weight: 900;
+  letter-spacing: 0.5px;
+
+  background: linear-gradient(
+    90deg,
+    #ff9933, /* Saffron */
+    #ffffff, /* White */
+    #138808  /* Green */
+  );
+
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.brand span {
+  font-weight: 900;
+}
+
 
 /* ================= SEARCH ================= */
 .searchContainer {
@@ -186,7 +215,7 @@
   border: none;
   font-size: 20px;
   color: white;
-  padding: 6px 12px;
+  padding: 4px 12px;
   border-radius: 8px;
   cursor: pointer;
   margin-right: 10px;

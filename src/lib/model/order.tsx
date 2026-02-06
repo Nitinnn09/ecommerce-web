@@ -1,43 +1,46 @@
-import mongoose from "mongoose";
+import mongoose, { Schema, models } from "mongoose";
 
-const orderSchema = new mongoose.Schema(
+const OrderSchema = new Schema(
   {
-    userName: {
-      type: String,
-      required: true
+    orderId: { type: String, required: true },
+
+    user: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
     },
 
-    userPhone: {
-      type: String,
-      required: true
-    },
-
-    address: {
-      type: String,
-      required: true
-    },
-
-    products: [
+    items: [
       {
-        productId: mongoose.Schema.Types.ObjectId,
-        title: String,
-        price: Number,
-        quantity: Number
-      }
+        product: { type: Schema.Types.ObjectId, ref: "Product", required: true },
+        qty: { type: Number, required: true },
+        price: { type: Number, required: true },
+      },
     ],
 
-    totalAmount: {
-      type: Number,
-      required: true
+    // ✅ SHIPPING OBJECT (IMPORTANT)
+    shipping: {
+      email: { type: String, required: true },
+      phone: { type: String, required: true },
+      firstName: { type: String, required: true },
+      lastName: { type: String, required: true },
+      city: { type: String, required: true },
+      district: { type: String, required: true },
+      address: { type: String, required: true },
+      pincode: { type: String, required: true },
     },
 
-    status: {
-      type: String,
-      default: "Confirmed" // Pending / Confirmed / Delivered
-    }
+    paymentMethod: { type: String, required: true },
+    shippingMethod: { type: String, required: true },
+
+    subtotal: { type: Number, required: true },
+    shippingFee: { type: Number, required: true },
+    discount: { type: Number, default: 0 },
+    totalAmount: { type: Number, required: true },
+
+    status: { type: String, default: "processing" },
   },
   { timestamps: true }
 );
 
-export default mongoose.models.Order ||
-  mongoose.model("Order", orderSchema);
+export default models.Order || mongoose.model("Order", OrderSchema);

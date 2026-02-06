@@ -1,0 +1,222 @@
+.sidebar {
+  width: 280px;
+  min-height: calc(100vh - 0px);
+  padding: 16px;
+  background: #ffffff;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 14px;
+}
+
+.brand {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 12px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, rgba(0, 96, 100, 0.12), rgba(0, 96, 100, 0.04));
+  border: 1px solid rgba(0, 96, 100, 0.18);
+  margin-bottom: 14px;
+}
+
+
+.logo {
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  background: #006064;
+  color: #fff;
+  font-size: 18px;
+}
+
+.title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 900;
+  color: #006064;
+  letter-spacing: 0.2px;
+}
+
+.sub {
+  margin: 2px 0 0;
+  font-size: 12px;
+  color: #607d8b;
+}
+
+.nav {
+  display: grid;
+  gap: 10px;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 12px;
+  border-radius: 14px;
+  text-decoration: none;
+  background: #f7fbfb;
+  border: 1px solid #e9f1f1;
+  transition: transform 0.12s ease, background 0.12s ease, border-color 0.12s ease;
+}
+
+.item:hover {
+  transform: translateY(-1px);
+  background: #eef8f8;
+  border-color: rgba(0, 96, 100, 0.25);
+}
+
+.icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  background: rgba(0, 96, 100, 0.1);
+  color: #006064;
+  font-size: 16px;
+}
+
+.text {
+  flex: 1;
+  font-size: 14px;
+  font-weight: 800;
+  color: #123;
+}
+
+.chev {
+  font-size: 18px;
+  opacity: 0.6;
+  color: #006064;
+}
+
+.active {
+  background: rgba(0, 96, 100, 0.12);
+  border-color: rgba(0, 96, 100, 0.35);
+}
+
+.active .text {
+  color: #006064;
+}
+
+.active .icon {
+  background: #006064;
+  color: #fff;
+}
+
+.footer {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid #eef1f1;
+}
+
+.tip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: #607d8b;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: #f7fbfb;
+  border: 1px dashed rgba(0, 96, 100, 0.25);
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 99px;
+  background: #006064;
+}
+
+/* Mobile */
+@media (max-width: 900px) {
+  .sidebar {
+    width: 100%;
+    position: relative;
+    top: 0;
+    border-radius: 16px;
+  }
+}
+/* ✅ Desktop only */
+.desktopOnly {
+  display: block;
+}
+@media (max-width: 900px) {
+  .desktopOnly {
+    display: none;
+  }
+}
+
+/* ✅ Mobile FAB button */
+.fab {
+  position: fixed;
+  left: 14px;
+  bottom: 14px;
+  width: 54px;
+  height: 54px;
+  border-radius: 999px;
+  border: none;
+  background: #006064;
+  color: #fff;
+  font-size: 22px;
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.25);
+  cursor: pointer;
+  z-index: 120;
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .fab {
+    display: grid;
+    place-items: center;
+  }
+}
+
+/* ✅ Drawer overlay */
+.backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 130;
+}
+
+/* ✅ Drawer panel */
+.drawer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 86%;
+  max-width: 320px;
+  height: 100vh;
+  background: #f4f6f8;
+  z-index: 140;
+  padding: 12px;
+  box-shadow: 20px 0 40px rgba(0, 0, 0, 0.25);
+}
+
+.drawerTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 6px 14px;
+}
+
+.drawerTitle {
+  margin: 0;
+  font-weight: 900;
+  color: #006064;
+}
+
+.closeBtn {
+  border: none;
+  background: #ffffff;
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  cursor: pointer;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.12);
+}
+

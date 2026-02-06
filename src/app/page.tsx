@@ -21,21 +21,44 @@ export default function LoginPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const res = await fetch("/api/userlogin", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        ...form,
-        type: isLogin ? "login" : "register",
-      }),
-    });
+    try {
+      const res = await fetch("/api/userlogin", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...form,
+          type: isLogin ? "login" : "register",
+        }),
+      });
 
-    const data = await res.json();
-    alert(data.message);
+      const data = await res.json();
+      alert(data.message);
 
-    if (data.user) {
-      localStorage.setItem("user", JSON.stringify(data.user));
-      router.push("/homepage");
+      /* ===============================
+         ✅ LOGIN SUCCESS → ONLY THEN REDIRECT
+      =============================== */
+      if (isLogin && data.user) {
+        localStorage.setItem("user", JSON.stringify(data.user));
+        window.dispatchEvent(new Event("user-updated"));
+
+        router.push("/homepage"); // ✅ success pe hi
+        return;
+      }
+
+      /* ===============================
+         ✅ REGISTER SUCCESS → SWITCH TO LOGIN
+      =============================== */
+      if (!isLogin && data.user) {
+        setIsLogin(true);
+        setForm({ name: "", email: "", password: "" });
+        alert("Registered successfully. Please login.");
+        return;
+      }
+
+      // ❌ LOGIN FAIL / REGISTER FAIL → NO REDIRECT
+    } catch (err) {
+      console.error(err);
+      alert("Something went wrong ❌");
     }
   };
 
@@ -45,11 +68,7 @@ export default function LoginPage() {
         {/* LEFT PANEL */}
         <div className={styles.left}>
           <h1>Hello, Welcome!</h1>
-          <p>
-            {isLogin
-              ? "Don’t have an account?"
-              : "Already have an account?"}
-          </p>
+          <p>{isLogin ? "Don’t have an account?" : "Already have an account?"}</p>
           <button onClick={() => setIsLogin(!isLogin)}>
             {isLogin ? "Register" : "Login"}
           </button>
@@ -91,7 +110,7 @@ export default function LoginPage() {
           <span className={styles.forgot}>forgot password</span>
 
           <button type="submit" className={styles.loginBtn}>
-            {isLogin ? "login" : "register"}
+            {isLogin ? "Login" : "Register"}
           </button>
 
           <p className={styles.other}>or login other platform</p>

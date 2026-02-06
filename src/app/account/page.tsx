@@ -1,56 +1,78 @@
 "use client";
+
 import { useEffect, useState } from "react";
-import Image from "next/image";
-import styles from "../css/account.module.css";
 import Navbar from "../component/navbar";
 import NextNav from "../component/nextnav";
-import { useRouter } from "next/navigation";
+import styles from "../css/account.module.css";
+
+type UserType = {
+  id?: string;
+  name: string;
+  email: string;
+  phone: string;
+  image: string;
+};
 
 export default function AccountPage() {
-  const router = useRouter();
   const [edit, setEdit] = useState(false);
+  const [user, setUser] = useState<UserType | null>(null);
 
-  const [user, setUser] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    image: "/birthday1.jpg",
-  });
-
-  // 👉 Load user
+  // ✅ Load user from localStorage
   useEffect(() => {
-    const storedUser = JSON.parse(localStorage.getItem("user")) || {
-      name: "Nitin Kumar",
-      email: "nitin@gmail.com",
-      phone: "9876543210",
-      image: "/birthday1.jpg",
-    };
-    setUser(storedUser);
+    const raw = localStorage.getItem("user");
+    if (raw) setUser(JSON.parse(raw));
   }, []);
 
-  // 👉 Image upload handler
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
+  // ✅ Image preview + navbar update
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !user) return;
 
     const reader = new FileReader();
     reader.onloadend = () => {
-      setUser({ ...user, image: reader.result });
+      const updated = { ...user, image: reader.result as string };
+      setUser(updated);
+      localStorage.setItem("user", JSON.stringify(updated));
+      window.dispatchEvent(new Event("user-updated"));
     };
     reader.readAsDataURL(file);
   };
 
-  // 👉 Save profile
-  const updateProfile = () => {
-    localStorage.setItem("user", JSON.stringify(user));
-    setEdit(false);
-    alert("Profile updated successfully ✅");
+  // ✅ Update DB + localStorage
+  const updateProfile = async () => {
+    if (!user) return;
+
+    try {
+      await fetch("/api/update-user", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(user),
+      });
+
+      localStorage.setItem("user", JSON.stringify(user));
+      window.dispatchEvent(new Event("user-updated"));
+      setEdit(false);
+      alert("Profile updated ✅");
+    } catch (e) {
+      console.log(e);
+      alert("Update failed ❌");
+    }
   };
 
-  const logout = () => {
-    localStorage.removeItem("user");
-    router.push("/login");
-  };
+  if (!user) {
+    return (
+      <>
+        <Navbar />
+        <NextNav />
+        <div className={styles.empty}>
+          <div className={styles.emptyCard}>
+            <h3>Please login first</h3>
+            <p>Login karoge tabhi profile dikh जाएगी.</p>
+          </div>
+        </div>
+      </>
+    );
+  }
 
   return (
     <>
@@ -58,87 +80,78 @@ export default function AccountPage() {
       <NextNav />
 
       <div className={styles.container}>
-        {/* SIDEBAR */}
+        {/* LEFT */}
         <div className={styles.sidebar}>
-          <div className={styles.imageBox}>
-            <Image
-              src={user.image}
-              alt="User"
-              width={120}
-              height={120}
-              className={styles.avatar}
-            />
+          <div className={styles.avatarWrap}>
+            <img src={user.image || "/user.png"} alt="User" className={styles.avatar} />
 
             {edit && (
               <label className={styles.uploadBtn}>
-                Edit Profile
-                <input
-                  type="file"
-                  accept="image/*"
-                  hidden
-                  onChange={handleImageChange}
-                />
+                Change Photo
+                <input type="file" hidden accept="image/*" onChange={handleImageChange} />
               </label>
             )}
+
+            <h3 className={styles.userName}>{user.name}</h3>
+            <p className={styles.userEmail}>{user.email}</p>
           </div>
 
-          <h3>{user.name}</h3>
-          <p>{user.email}</p>
-
-          <button className={styles.logout} onClick={logout}>
-            Logout
-          </button>
+          <div className={styles.sideInfo}>
+            <div className={styles.sideRow}>
+              <span className={styles.sideLabel}>Phone</span>
+              <span className={styles.sideValue}>{user.phone || "-"}</span>
+            </div>
+          </div>
         </div>
 
-        {/* CONTENT */}
+        {/* RIGHT */}
         <div className={styles.content}>
-          <h2>My Account</h2>
+          <h2 className={styles.heading}>My Account</h2>
 
           <div className={styles.card}>
-            <h4>Personal Information</h4>
+            <div className={styles.formGrid}>
+              <div className={styles.field}>
+                <span className={styles.label}>Name</span>
+                <input
+                  className={styles.input}
+                  disabled={!edit}
+                  value={user.name}
+                  onChange={(e) => setUser({ ...user, name: e.target.value })}
+                />
+              </div>
 
-            <label>Name</label>
-            <input
-              value={user.name}
-              disabled={!edit}
-              onChange={(e) =>
-                setUser({ ...user, name: e.target.value })
-              }
-            />
+              <div className={styles.field}>
+                <span className={styles.label}>Email</span>
+                <input className={styles.input} disabled value={user.email} />
+              </div>
 
-            <label>Email</label>
-            <input
-              value={user.email}
-              disabled={!edit}
-              onChange={(e) =>
-                setUser({ ...user, email: e.target.value })
-              }
-            />
+              <div className={styles.field}>
+                <span className={styles.label}>Phone</span>
+                <input
+                  className={styles.input}
+                  disabled={!edit}
+                  value={user.phone}
+                  onChange={(e) => setUser({ ...user, phone: e.target.value })}
+                />
+              </div>
+            </div>
 
-            <label>Phone</label>
-            <input
-              value={user.phone}
-              disabled={!edit}
-              onChange={(e) =>
-                setUser({ ...user, phone: e.target.value })
-              }
-            />
-
-            {!edit ? (
-              <button
-                className={styles.editBtn}
-                onClick={() => setEdit(true)}
-              >
-                Edit Profile
-              </button>
-            ) : (
-              <button
-                className={styles.saveBtn}
-                onClick={updateProfile}
-              >
-                Update Profile
-              </button>
-            )}
+            <div className={styles.actions}>
+              {!edit ? (
+                <button className={styles.btnGhost} onClick={() => setEdit(true)}>
+                  Edit Profile
+                </button>
+              ) : (
+                <>
+                  <button className={styles.btnPrimary} onClick={updateProfile}>
+                    Save Changes
+                  </button>
+                  <button className={styles.btnGhost} onClick={() => setEdit(false)}>
+                    Cancel
+                  </button>
+                </>
+              )}
+            </div>
           </div>
         </div>
       </div>
