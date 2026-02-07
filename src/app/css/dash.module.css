@@ -9,9 +9,10 @@ box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
 
 .heading {
   font-size: 28px;
-  font-weight: 600;
+  font-weight: 700;
   margin-bottom: 20px;
-  color: #222;
+  color: #006064;
+  text-align: center;
 }
 
 /* Cards Grid */

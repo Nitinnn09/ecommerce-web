@@ -83,7 +83,7 @@ export default function MobileBrands() {
     <section className={styles.wrap} ref={wrapRef} data-reveal>
       <div className={styles.head} data-reveal>
         <div>
-          <h2 className={styles.title}>Top Brands</h2>
+          <h2 className={styles.title}>TOP BRANDS</h2>
           <p className={styles.sub}>Trusted brands you love</p>
         </div>
       </div>

@@ -7,14 +7,24 @@ export async function GET(req: Request) {
     await connectdb();
 
     const { searchParams } = new URL(req.url);
+
     const categoryRaw = searchParams.get("category") || "";
     const category = categoryRaw.trim();
 
+    const offer = searchParams.get("offer"); // "true"
+
     const filter: any = {};
 
-    // If category is passed, match it case-insensitively (Electrical/electrical both OK)
+    // ✅ If category is passed, match it case-insensitively (Electrical/electrical both OK)
     if (category) {
       filter.category = { $regex: `^${category}$`, $options: "i" };
+    }
+
+    // ✅ Offer filter (sirf discount wale products)
+    // Condition: oldPrice exists AND oldPrice > price
+    if (offer === "true") {
+      filter.oldPrice = { $exists: true, $ne: null, $gt: 0 };
+      filter.$expr = { $gt: ["$oldPrice", "$price"] }; // oldPrice > price
     }
 
     const products = await Product.find(filter).sort({ createdAt: -1 });
@@ -27,7 +37,6 @@ export async function GET(req: Request) {
     );
   }
 }
-
 
 export async function POST(req: Request) {
   await connectdb();

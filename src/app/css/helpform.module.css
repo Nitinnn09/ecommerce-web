@@ -95,3 +95,215 @@
     font-size: 20px;
   }
 }
+
+
+/* ✅ Global safe fixes (mobile overflow) */
+.container {
+  width: 100%;
+  overflow-x: hidden;
+}
+
+.formBox {
+  overflow: hidden; /* dropdown corners clean */
+}
+
+/* ✅ Custom Select */
+.selectWrap {
+  width: 100%;
+  position: relative;
+  margin-bottom: 14px;
+}
+
+.selectBtn {
+  width: 100%;
+  padding: 14px;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  font-size: 14px;
+  outline: none;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+}
+
+.selectBtn:focus {
+  border-color: #2563eb;
+}
+
+.selectText {
+  color: #111827;
+}
+
+.chev {
+  color: #6b7280;
+  font-size: 16px;
+  line-height: 1;
+}
+
+.dropdown {
+  position: absolute;
+  left: 0;
+  right: 0;          /* ✅ same width as button */
+  top: calc(100% + 8px);
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  box-shadow: 0 18px 35px rgba(0, 0, 0, 0.12);
+  overflow: hidden;
+  z-index: 50;
+  max-height: 220px;
+  overflow-y: auto;  /* ✅ mobile scroll */
+}
+
+.option {
+  width: 100%;
+  text-align: left;
+  padding: 12px 14px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.option:hover {
+  background: #eef2ff;
+}
+
+.container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #eef2ff, #f9fafb);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+
+  /* ✅ prevent horizontal overflow on mobile */
+  width: 100%;
+  overflow-x: hidden;
+}
+
+.formBox {
+  width: 100%;
+  max-width: 520px;
+  background: white;
+  padding: 30px;
+  border-radius: 22px;
+  box-shadow: 0 20px 45px rgba(0,0,0,0.15);
+  animation: slideUp 0.45s ease;
+
+  /* ✅ dropdown cut na ho */
+  overflow: visible;
+
+  /* ✅ keep above */
+  position: relative;
+  z-index: 2;
+}
+
+.input,
+.select,
+.textarea {
+  width: 100%;
+  max-width: 100%;     /* ✅ */
+  box-sizing: border-box; /* ✅ */
+  padding: 14px;
+  margin-bottom: 14px;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  font-size: 14px;
+  outline: none;
+
+  /* ✅ important for select sizing */
+  display: block;
+}
+
+.select {
+  background: #fff;
+}
+
+@media (max-width: 640px) {
+  .formBox {
+    padding: 22px;
+    border-radius: 18px;
+  }
+
+  .title {
+    font-size: 20px;
+  }
+}
+
+.container {
+  width: 100%;
+  overflow-x: hidden;
+}
+
+.formBox {
+  overflow: visible;
+  position: relative;
+  z-index: 2;
+}
+
+/* custom select */
+.selectWrap {
+  width: 100%;
+  position: relative;
+  margin-bottom: 14px;
+}
+
+.selectBtn {
+  width: 100%;
+  padding: 14px;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  font-size: 14px;
+  outline: none;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+}
+
+.selectBtn:focus {
+  border-color: #2563eb;
+}
+
+.selectText {
+  color: #111827;
+}
+
+.chev {
+  color: #6b7280;
+  font-size: 16px;
+  line-height: 1;
+}
+
+.dropdown {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(100% + 8px);
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  box-shadow: 0 18px 35px rgba(0,0,0,0.12);
+  overflow: hidden;
+  z-index: 50;
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.option {
+  width: 100%;
+  text-align: left;
+  padding: 12px 14px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.option:hover {
+  background: #eef2ff;
+}

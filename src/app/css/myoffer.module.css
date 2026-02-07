@@ -1,0 +1,320 @@
+/* =========================
+   1) PAGE LAYOUT (FULL WIDTH)
+========================= */
+.page {
+  width: 100%;
+  min-height: 100vh;
+  padding: 18px;
+  background: #f4f7f7;
+}
+
+/* container full but clean max */
+.hero,
+.grid,
+.state {
+  width: 100%;
+  max-width: 1280px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* =========================
+   2) HERO / TOP BAR
+========================= */
+.hero {
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 18px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.h1 {
+  margin: 0;
+  font-size: 30px;
+  font-weight: 900;
+  color: #006064; /* ✅ heading color */
+}
+
+.p {
+  margin: 6px 0 0 0;
+  color: #006064; /* ✅ heading text same theme */
+  opacity: 0.85;
+}
+
+/* =========================
+   3) TOOLBAR
+========================= */
+.toolbar {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  width: 100%;
+  max-width: 720px;
+  justify-content: flex-end;
+}
+
+.search {
+  flex: 1;
+  min-width: 240px;
+  height: 44px;
+  padding: 0 12px;
+
+  border: 1px solid #dfe7e7;
+  border-radius: 10px;
+  outline: none;
+
+  background: #fff;
+  color: #0b2f2f;
+}
+
+.select {
+  height: 44px;
+  padding: 0 10px;
+
+  border: 1px solid #dfe7e7;
+  border-radius: 10px;
+  outline: none;
+
+  background: #fff;
+  color: #0b2f2f;
+}
+
+/* =========================
+   4) STATES
+========================= */
+.state {
+  margin-top: 18px;
+  background: #ffffff;
+  padding: 24px;
+  border-radius: 14px;
+  text-align: center;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+
+  color: #006064;
+  font-weight: 800;
+}
+
+/* =========================
+   5) GRID
+========================= */
+.grid {
+  margin-top: 16px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+}
+
+/* =========================
+   6) CARD
+========================= */
+.card {
+  background: #ffffff;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+  display: flex;
+  flex-direction: column;
+}
+
+/* =========================
+   7) IMAGE BOX (NO CUT)
+========================= */
+.bannerWrap {
+  position: relative;
+  width: 100%;
+  height: 190px;            /* ✅ fixed box */
+  background: #f3fbfb;      /* ✅ light theme bg */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;            /* ✅ space so image never touches edges */
+}
+
+.banner {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;      /* ✅ image CUT nahi hogi */
+  display: block;
+}
+
+.badge {
+  position: absolute;
+  left: 12px;
+  top: 12px;
+  padding: 7px 10px;
+  border-radius: 999px;
+
+  background: #006064;      /* ✅ theme */
+  color: #fff;
+  font-weight: 900;
+  font-size: 13px;
+}
+
+/* =========================
+   8) BODY
+========================= */
+.body {
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.titleRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+.title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 900;
+  color: #006064; /* ✅ theme */
+}
+
+.chip {
+  padding: 5px 10px;
+  font-size: 12px;
+
+  background: #e8f4f4;
+  border: 1px solid #cfe6e6;
+  color: #006064;
+
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.desc {
+  margin: 0;
+  font-size: 13px;
+  color: #2c4b4b;
+  line-height: 1.45;
+}
+
+/* =========================
+   9) PRICE
+========================= */
+.priceRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.price {
+  font-size: 18px;
+  font-weight: 900;
+  color: #0b2f2f;
+}
+
+.old {
+  font-size: 14px;
+  color: #6c7f7f;
+  text-decoration: line-through;
+}
+
+/* =========================
+   10) BUTTONS
+========================= */
+.actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.btn {
+  flex: 1;
+  height: 42px;
+
+  background: #006064;  /* ✅ theme */
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+
+  font-weight: 900;
+  cursor: pointer;
+  text-decoration: none;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btnGhost {
+  min-width: 120px;
+  height: 42px;
+
+  background: #ffffff;
+  border: 1px solid #cfe6e6;
+  border-radius: 10px;
+
+  font-weight: 900;
+  color: #006064;
+  cursor: pointer;
+  text-decoration: none;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* =========================
+   11) RESPONSIVE
+========================= */
+@media (max-width: 1200px) {
+  .grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 900px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .h1 {
+    font-size: 26px;
+  }
+}
+
+@media (max-width: 640px) {
+  .page {
+    padding: 12px;
+  }
+
+  .hero {
+    padding: 14px;
+  }
+
+  .toolbar {
+    max-width: 100%;
+    justify-content: flex-start;
+  }
+
+  .search {
+    min-width: 100%;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .bannerWrap {
+    height: 170px;
+  }
+
+  .actions {
+    flex-direction: column;
+  }
+
+  .btnGhost {
+    width: 100%;
+  }
+}

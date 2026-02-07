@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import styles from "../../css/productList.module.css";
-import Navbar from "../../component/navbar";
+import AdminNavbar from "@/app/component/adminnav";
 
 type Product = {
   _id: string;
@@ -61,7 +61,7 @@ export default function AdminProductsPage() {
 
   return (
     <>
-      <Navbar />
+      <AdminNavbar />
 
       <div className={styles.page}>
         <div className={styles.container}>

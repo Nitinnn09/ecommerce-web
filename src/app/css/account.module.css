@@ -1,147 +1,155 @@
-/* ===== EMPTY STATE ===== */
-.empty {
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 22px;
-}
-.emptyCard {
-  border-radius: 18px;
-  padding: 18px;
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  background: #ffffff;
-  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.08);
-}
-.emptyCard h3 {
-  margin: 0 0 6px;
-  font-size: 18px;
-  font-weight: 800;
-  color: #006064;
-}
-.emptyCard p {
-  margin: 0;
-  color: #555;
+/* ================= PAGE ================= */
+.page {
+  width: 100%;
+  min-height: calc(100vh - 64px);
+  background: linear-gradient(135deg, #eef2ff, #f9fafb);
 }
 
-/* ===== LAYOUT ===== */
+/* ================= LAYOUT ================= */
 .container {
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 20px;
+  width: 100%;
   display: grid;
-  grid-template-columns: 340px 1fr;
-  gap: 18px;
+  grid-template-columns: 380px 1fr;
+  gap: 24px;
+  padding: 18px 24px;
+  align-items: start;
 }
 
-/* ===== SIDEBAR ===== */
+/* ================= SIDEBAR ================= */
 .sidebar {
-  border-radius: 18px;
-  padding: 18px;
   background: #ffffff;
-  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.1);
+  padding: 18px;
+  border-right: 1px solid #e5e7eb;
 }
 
-/* Avatar */
 .avatarWrap {
-  display: grid;
-  place-items: center;
-  gap: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
   padding-bottom: 14px;
-  border-bottom: 1px solid #eee;
-  margin-bottom: 12px;
+  border-bottom: 1px solid #eef2f7;
 }
 
 .avatar {
-  width: 130px;
-  height: 130px;
-  border-radius: 50%;
+  width: 96px;
+  height: 96px;
+  border-radius: 999px;
   object-fit: cover;
-  border: 3px solid #006064;
-  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.2);
+  border: 3px solid #eef2ff;
 }
 
-/* ===== USER NAME & EMAIL ===== */
+.uploadBtn {
+  margin-top: 10px;
+  padding: 10px 14px;
+  border-radius: 999px;
+  border: 1px solid #e5e7eb;
+  background: #fff;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 13px;
+}
+
 .userName {
+  margin-top: 12px;
   font-size: 18px;
-  font-weight: 900;
-  margin: 6px 0 0;
-  color: #006064; /* ✅ requested */
-  letter-spacing: 0.4px;
+  font-weight: 800;
+  color: #111827;
 }
 
 .userEmail {
+  margin-top: 4px;
   font-size: 13px;
-  color: #607d8b;
-  margin: 0;
-  word-break: break-word;
+  color: #6b7280;
 }
 
-/* ===== UPLOAD BUTTON ===== */
-.uploadBtn {
-  margin-top: 6px;
-  padding: 10px 14px;
-  border-radius: 12px;
-  font-size: 13px;
-  font-weight: 800;
-  cursor: pointer;
-  color: #006064;
-  background: rgba(0, 96, 100, 0.1);
-  border: 1px solid rgba(0, 96, 100, 0.35);
-  transition: all 0.2s ease;
-}
-.uploadBtn:hover {
-  background: rgba(0, 96, 100, 0.18);
-  transform: translateY(-1px);
-}
-
-/* ===== SIDE INFO ===== */
+/* ================= SIDE INFO ================= */
 .sideInfo {
-  display: grid;
-  gap: 10px;
+  padding: 14px 4px;
 }
+
 .sideRow {
   display: flex;
   justify-content: space-between;
-  padding: 10px 12px;
-  border-radius: 12px;
-  background: #f5f7f8;
-}
-.sideLabel {
-  font-size: 12px;
-  font-weight: 800;
-  color: #006064;
-}
-.sideValue {
-  font-size: 13px;
-  font-weight: 700;
-  color: #333;
+  padding: 10px 0;
+  border-bottom: 1px dashed #eef2f7;
 }
 
-/* ===== CONTENT ===== */
+.sideLabel {
+  font-size: 13px;
+  color: #6b7280;
+  font-weight: 600;
+}
+
+.sideValue {
+  font-size: 13px;
+  color: #111827;
+  font-weight: 700;
+}
+
+/* ================= ADMIN CARD ================= */
+.adminCard {
+  margin-top: 18px;
+  padding: 14px;
+  border: 1px dashed #e5e7eb;
+  background: #f9fafb;
+}
+
+.adminTitle {
+  font-size: 14px;
+  font-weight: 800;
+  margin-bottom: 6px;
+}
+
+.adminText {
+  font-size: 13px;
+  color: #6b7280;
+  margin-bottom: 12px;
+}
+
+.adminActions {
+  display: grid;
+  gap: 10px;
+}
+
+/* ================= CONTENT ================= */
 .content {
-  border-radius: 18px;
   padding: 18px;
-  background: #ffffff;
-  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.1);
+}
+
+/* ================= TOP BAR ================= */
+.topBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 14px;
+  border-bottom: 1px solid #e5e7eb;
 }
 
 .heading {
   font-size: 22px;
   font-weight: 900;
-  margin-bottom: 14px;
   color: #006064;
 }
 
-/* Card */
-.card {
-  border-radius: 16px;
-  padding: 16px;
-  background: #f9fbfb;
+.muted {
+  font-size: 13px;
+  color: #6b7280;
+  margin-top: 4px;
 }
 
-/* ===== FORM ===== */
+/* ================= CARD ================= */
+.card {
+  margin-top: 18px;
+  padding: 18px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+}
+
+/* ================= FORM ================= */
 .formGrid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(2, 1fr);
   gap: 14px;
 }
 
@@ -153,76 +161,126 @@
 
 .label {
   font-size: 12px;
-  font-weight: 800;
-  color: #006064; /* ✅ same theme */
+  font-weight: 700;
+  color: #6b7280;
 }
 
-/* Input */
 .input {
-  height: 44px;
-  padding: 0 12px;
-  border-radius: 12px;
-  border: 1px solid #cfd8dc;
-  outline: none;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
   font-size: 14px;
 }
+
 .input:focus {
+  outline: none;
   border-color: #006064;
-  box-shadow: 0 0 0 3px rgba(0, 96, 100, 0.2);
 }
 
-/* ===== ACTION BUTTONS ===== */
-.actions {
-  margin-top: 14px;
+.input:disabled {
+  background: #f9fafb;
+  color: #6b7280;
+}
+
+/* ================= BUTTONS ================= */
+.rowBtns {
   display: flex;
   gap: 10px;
-  flex-wrap: wrap;
 }
 
 .btnPrimary {
-  height: 44px;
-  padding: 0 18px;
-  border-radius: 12px;
-  background: #006064; /* ✅ main color */
-  color: #ffffff;
+  width: 100%;
+  padding: 12px;
+  border-radius: 999px;
+  background: #006064;
+  color: #fff;
   font-weight: 800;
-  letter-spacing: 0.4px;
   border: none;
   cursor: pointer;
-  transition: all 0.2s ease;
-}
-.btnPrimary:hover {
-  background: #00838f;
-  transform: translateY(-1px);
 }
 
 .btnGhost {
-  height: 44px;
-  padding: 0 18px;
-  border-radius: 12px;
-  background: rgba(0, 96, 100, 0.12);
+  width: 100%;
+  padding: 12px;
+  border-radius: 999px;
+  background: #fff;
+  border: 1px solid #e5e7eb;
   color: #006064;
   font-weight: 800;
-  letter-spacing: 0.4px;
-  border: 1px solid rgba(0, 96, 100, 0.35);
   cursor: pointer;
-  transition: all 0.2s ease;
-}
-.btnGhost:hover {
-  background: rgba(0, 96, 100, 0.2);
-  transform: translateY(-1px);
 }
 
-/* ===== MOBILE ===== */
-@media (max-width: 900px) {
+.btnDanger {
+  margin-top: 12px;
+  width: 100%;
+  padding: 12px;
+  border-radius: 999px;
+  border: 1px solid #fecaca;
+  background: #fff;
+  font-weight: 800;
+  color: #b91c1c;
+  cursor: pointer;
+}
+
+/* ================= NOTE ================= */
+.note {
+  margin-top: 14px;
+  padding: 12px;
+  background: #eef2ff;
+  color: #1e40af;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+/* ================= EMPTY ================= */
+.empty {
+  min-height: calc(100vh - 64px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.emptyCard {
+  background: #fff;
+  padding: 22px;
+  border: 1px solid #e5e7eb;
+  text-align: center;
+}
+
+.linkBtn {
+  margin-top: 12px;
+  display: inline-block;
+  padding: 12px 16px;
+  background: #006064;
+  color: #fff;
+  border-radius: 999px;
+  text-decoration: none;
+  font-weight: 800;
+}
+
+/* ================= MOBILE ================= */
+@media (max-width: 980px) {
   .container {
     grid-template-columns: 1fr;
+    padding: 16px;
   }
+
+  .sidebar {
+    border-right: none;
+    border: 1px solid #e5e7eb;
+  }
+
+  .content {
+    padding: 0;
+  }
+
   .formGrid {
     grid-template-columns: 1fr;
   }
-  .avatar {
-    width: 120px;
-    height: 120px;
+
+  .topBar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
   }
 }

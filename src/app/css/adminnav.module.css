@@ -1,0 +1,188 @@
+/* ===== HEADER ===== */
+.header {
+  position: sticky;        /* ✅ fix nahi, scroll ke sath rahe */
+  top: 0;
+  z-index: 1;
+  background: #006064;
+
+  /* ✅ sirf bottom shadow */
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.08);
+}
+
+/* ===== INNER (compact height) ===== */
+.inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 16px;
+  height: 60px;            /* main nav se chhoti */
+  width: 100%;
+}
+
+/* ===== BRAND ===== */
+.brand {
+  color: #ffffff;
+  font-weight: 900;
+  font-size: 17px;
+  text-decoration: none;
+}
+
+/* ===== DESKTOP NAV ===== */
+.navDesktop {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.link {
+  text-decoration: none;
+  color: #ffffff;
+  padding: 7px 10px;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 15px;
+  transition: 0.2s;
+}
+.brand {
+  font-size: 26px;
+  font-weight: 900;
+  letter-spacing: 0.5px;
+
+  background: linear-gradient(
+    90deg,
+    #ff9933, /* Saffron */
+    #ffffff, /* White */
+    #138808  /* Green */
+  );
+
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.brand span {
+  font-weight: 900;
+}
+
+
+.link:hover {
+  background: rgba(118, 224, 227, 0.08);
+}
+
+.active {
+  background: rgba(141, 211, 213, 0.16);
+  color: aqua;
+}
+
+/* ===== HAMBURGER ===== */
+.hamburger {
+  display: none;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  padding: 6px;
+}
+
+.hamburger span {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: #ffffff;
+  margin: 4px 0;
+  border-radius: 2px;
+}
+
+/* ===== OVERLAY ===== */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  opacity: 0;
+  pointer-events: none;
+  transition: 0.25s;
+  z-index: 998;
+}
+
+.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* ===== DRAWER ===== */
+.drawer {
+  position: fixed;
+  top: 0;
+  right: -310px;
+  height: 100vh;
+  width: 310px;
+  background: #ffffff;
+  border-left: 1px solid #e6e6e6;
+  transition: 0.25s;
+  padding: 12px;
+  z-index: 1000;
+}
+
+.drawerOpen {
+  right: 0;
+}
+
+.drawerTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #e6e6e6;
+}
+
+.drawerTitle {
+  font-size: 16px;
+  font-weight: 900;
+  color: #006064;
+}
+
+.closeBtn {
+  border: none;
+  background: rgba(0, 96, 100, 0.12);
+  color: #006064;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+/* ===== DRAWER LINKS ===== */
+.drawerNav {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.drawerLink {
+  text-decoration: none;
+  color: #006064;
+  padding: 12px;
+  border-radius: 12px;
+  font-weight: 800;
+}
+
+.drawerLink:hover {
+  background: rgba(0, 96, 100, 0.1);
+}
+
+.activeDrawer {
+  background: rgba(0, 96, 100, 0.18);
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .navDesktop {
+    display: none;
+  }
+  .hamburger {
+    display: block;
+  }
+  .header {
+    z-index: 999;
+  }
+}

@@ -1016,7 +1016,7 @@
   }
 
   .clothImgBox {
-    height: 240px;
+    height: 300px;
   }
 }
 
@@ -1036,6 +1036,9 @@
   .glowPrice {
     font-size: 16px;
   }
+  .clothImgBox {
+    height: 220;
+  }
 }
 
 @media (max-width: 480px) {
@@ -1046,6 +1049,11 @@
     margin-left: 310px;
     padding: 4px 8px;
     font-size: small;
+  }
+  .subText {
+    font-size: medium;
+    justify-content: center;
+    text-align: center;
   }
 
   .sliderCard {
@@ -1077,7 +1085,7 @@
   }
 
   .clothImgBox {
-    height: 260px;
+    height: 200px;
   }
 
   .ratingBadge {

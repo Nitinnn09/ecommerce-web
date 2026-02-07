@@ -156,6 +156,19 @@ useEffect(() => {
   return () => window.clearInterval(id);
 }, []);
 
+
+// ✅ rating helpers (always show)
+const starText = (rating?: number) => {
+  const r = Math.max(0, Math.min(5, Number(rating ?? 4.5)));
+  const full = Math.round(r);
+  return "★★★".slice(0, full) + "☆☆☆".slice(0, 5 - full);
+};
+
+const getRating = (item: ProductType) => Number(item.rating ?? 4.5);
+const getReviews = (item: ProductType) => Number(item.reviews ?? 0);
+
+
+
   // ✅ Auto scroll furniture slider (continuous)
   useEffect(() => {
     const track = trackRef.current;
@@ -392,59 +405,78 @@ useEffect(() => {
       </section>
 
       {/* ✅ CLOTHES */}
-      <section className={styles.clothsWrap} data-reveal>
-        <p className={styles.collectionTag}>CLOTHES COLLECTION</p>
-        <p className={styles.subText}>Best fashion picks for you — premium quality & modern style</p>
+     {/* ✅ CLOTHES */}
+<section className={styles.clothsWrap} data-reveal>
+  <p className={styles.collectionTag}>CLOTHES COLLECTION</p>
+  <p className={styles.subText}>Best fashion picks for you — premium quality & modern style</p>
 
-        <div className={styles.clothsHead}>
-          <div className={styles.clothTitleLeft}></div>
+  <div className={styles.clothsHead}>
+    <div className={styles.clothTitleLeft}></div>
 
-          <Link href="/clothes" className={styles.clothsViewAll}>
-            View All
-          </Link>
+    <Link href="/clothes" className={styles.clothsViewAll}>
+      View All
+    </Link>
+  </div>
+
+  <div className={styles.clothsGrid}>
+    {clothes.slice(0,12).map((item) => (
+      <Link
+        href={`/clothes`}
+        className={styles.clothCard}
+        key={item._id}
+        data-reveal
+        style={{ textDecoration: "none", color: "inherit" }}
+      >
+        <div className={styles.clothImgBox}>
+          {item.discount ? <span className={styles.clothDiscount}>{item.discount}</span> : null}
+          {item.tag ? <span className={styles.clothTag}>{item.tag}</span> : null}
+
+          {/* ✅ ALWAYS SHOW rating/reviews */}
+          <div className={styles.ratingBadge}>
+            <span className={styles.stars}>{starText(getRating(item))}</span>
+            <span className={styles.ratingText}>
+              {getRating(item).toFixed(1)} ({getReviews(item)})
+            </span>
+          </div>
+
+          <Image src={safeImg(item.image)} alt={item.title || "product"} fill className={styles.clothImg} />
+
+          <span
+            className={styles.imgCartBtn}
+            role="button"
+            aria-label="Add to cart"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              addToCart(
+                {
+                  _id: item._id,
+                  title: item.title,
+                  price: Number(item.price),
+                  image: item.image,
+                },
+                1
+              );
+              alert("Added to cart ✅");
+            }}
+          >
+            Add to Cart
+          </span>
         </div>
 
-        <div className={styles.clothsGrid}>
-          {clothes.map((item) => (
-            <Link
-              href={`/clothes`}
-              className={styles.clothCard}
-              key={item._id}
-              data-reveal
-              style={{ textDecoration: "none", color: "inherit" }}
-            >
-              <div className={styles.clothImgBox}>
-                {item.discount ? <span className={styles.clothDiscount}>{item.discount}</span> : null}
-                {item.tag ? <span className={styles.clothTag}>{item.tag}</span> : null}
-
-                {(item.rating || item.reviews) ? (
-                  <div className={styles.ratingBadge}>
-                    <span className={styles.stars}>★★★★★</span>
-                    <span className={styles.ratingText}>
-                      {item.rating ?? 4.5} ({item.reviews ?? 0})
-                    </span>
-                  </div>
-                ) : null}
-
-                <Image src={safeImg(item.image)} alt={item.title || "product"} fill className={styles.clothImg} />
-
-                <span className={styles.imgCartBtn} role="button" aria-label="Add to cart">
-                  Add to Cart
-                </span>
-              </div>
-
-              <div className={styles.clothInfo}>
-                <h3>{item.title}</h3>
-                <p className={styles.clothPrice}>
-                  ₹{item.price} {item.oldPrice ? <span>₹{item.oldPrice}</span> : null}
-                </p>
-              </div>
-            </Link>
-          ))}
-
-          {!loading && clothes.length === 0 ? <p style={{ padding: 10 }}>No clothes products found.</p> : null}
+        <div className={styles.clothInfo}>
+          <h3>{item.title}</h3>
+          <p className={styles.clothPrice}>
+            ₹{item.price} {item.oldPrice ? <span>₹{item.oldPrice}</span> : null}
+          </p>
         </div>
-      </section>
+      </Link>
+    ))}
+
+    {!loading && clothes.length === 0 ? <p style={{ padding: 10 }}>No clothes products found.</p> : null}
+  </div>
+</section>
+
 
       {/* ✅ BODYCARE */}
       <section className={styles.glowWrap} data-reveal>

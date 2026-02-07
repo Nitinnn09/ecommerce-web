@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Styles from "../../../css/editproduct.module.css";
-import Navbar from "../../../component/navbar";
+import AdminNavbar from "@/app/component/adminnav";
 
 export default function EditProductPage() {
   const params = useParams();
@@ -91,7 +91,7 @@ export default function EditProductPage() {
 
   return (
     <>
-      <Navbar />
+      <AdminNavbar />
       <div className={Styles.page}>
         <div className={Styles.card}>
           <h2 className={Styles.title}>Edit Product</h2>

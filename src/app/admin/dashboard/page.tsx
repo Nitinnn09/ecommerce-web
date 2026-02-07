@@ -2,8 +2,8 @@
 
 import React, { useEffect, useMemo, useState } from "react";
 import styles from "../../css/dash.module.css";
-import Navbar from "../../component/navbar";
-import NextNav from "../../component/nextnav";
+import AdminNavbar from "@/app/component/adminnav";
+import { color } from "framer-motion";
 
 type UserType = {
   _id?: string;
@@ -17,6 +17,8 @@ type OrderItemType = {
   product?: { title?: string; name?: string };
   title?: string;
   name?: string;
+  qty?: number; // ✅ optional (if you have qty)
+  quantity?: number; // ✅ optional
 };
 
 type OrderType = {
@@ -51,25 +53,61 @@ const parseINR = (val?: string) => {
   return Number.isFinite(n) ? n : 0;
 };
 
+// ✅ date -> YYYY-MM-DD (local)
+const toYMD = (d?: string) => {
+  if (!d) return "";
+  const dt = new Date(d);
+  if (Number.isNaN(dt.getTime())) return "";
+  const y = dt.getFullYear();
+  const m = String(dt.getMonth() + 1).padStart(2, "0");
+  const day = String(dt.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+};
+
+// ✅ units sold (items qty -> fallback 1 per item)
+const getOrderUnits = (o: OrderType) => {
+  if (!Array.isArray(o.items) || o.items.length === 0) return 0;
+  return o.items.reduce((sum, it) => {
+    const q = Number(it?.qty ?? it?.quantity ?? 1);
+    return sum + (Number.isFinite(q) && q > 0 ? q : 1);
+  }, 0);
+};
+
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState<string>("Total Users");
 
   const [Users, setUsers] = useState<UserType[]>([]);
   const [orders, setOrders] = useState<OrderType[]>([]);
   const [products, setProducts] = useState<ProductType[]>([]);
+
   const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState<string>("");
+
+  // ✅ Date report state
+  const [selectedDate, setSelectedDate] = useState<string>(toYMD(new Date().toISOString()));
 
   const safeJson = async (res: Response) => {
     try {
       return await res.json();
     } catch {
-      return [];
+      return null;
     }
+  };
+
+  // ✅ handle APIs returning array OR {orders:[]} OR {data:[]}
+  const pickArray = (data: any) => {
+    if (Array.isArray(data)) return data;
+    if (data && Array.isArray(data.orders)) return data.orders;
+    if (data && Array.isArray(data.products)) return data.products;
+    if (data && Array.isArray(data.users)) return data.users;
+    if (data && Array.isArray(data.data)) return data.data;
+    return [];
   };
 
   const fetchAll = async () => {
     try {
       setLoading(true);
+      setErrorMsg("");
 
       const [uRes, oRes, pRes] = await Promise.allSettled([
         fetch("/api/users", { cache: "no-store" }),
@@ -77,13 +115,25 @@ export default function AdminDashboard() {
         fetch("/api/products", { cache: "no-store" }),
       ]);
 
-      const uData = uRes.status === "fulfilled" ? await safeJson(uRes.value) : [];
-      const oData = oRes.status === "fulfilled" ? await safeJson(oRes.value) : [];
-      const pData = pRes.status === "fulfilled" ? await safeJson(pRes.value) : [];
+      if (uRes.status === "fulfilled") {
+        const uJson = await safeJson(uRes.value);
+        setUsers(pickArray(uJson));
+      } else setUsers([]);
 
-      setUsers(Array.isArray(uData) ? uData : []);
-      setOrders(Array.isArray(oData) ? oData : []);
-      setProducts(Array.isArray(pData) ? pData : []);
+      if (oRes.status === "fulfilled") {
+        const oJson = await safeJson(oRes.value);
+        setOrders(pickArray(oJson));
+      } else setOrders([]);
+
+      if (pRes.status === "fulfilled") {
+        const pJson = await safeJson(pRes.value);
+        setProducts(pickArray(pJson));
+      } else setProducts([]);
+    } catch (e: any) {
+      setErrorMsg(e?.message || "Something went wrong");
+      setUsers([]);
+      setOrders([]);
+      setProducts([]);
     } finally {
       setLoading(false);
     }
@@ -124,12 +174,46 @@ export default function AdminDashboard() {
     }, 0);
   }, [orders]);
 
+  // ✅ Date-wise aggregation
+  const dailyData = useMemo(() => {
+    const map = new Map<string, { date: string; ordersCount: number; unitsSold: number; revenue: number }>();
+
+    for (const o of orders) {
+      const date = toYMD(o.createdAt);
+      if (!date) continue;
+
+      const prev = map.get(date) || { date, ordersCount: 0, unitsSold: 0, revenue: 0 };
+      prev.ordersCount += 1;
+      prev.unitsSold += getOrderUnits(o);
+
+      if (typeof o.totalAmount === "number") prev.revenue += o.totalAmount;
+      else if (typeof o.totalAmount === "string" && o.totalAmount.trim() !== "") prev.revenue += Number(o.totalAmount || 0);
+      else if (o.amount) prev.revenue += parseINR(o.amount);
+
+      map.set(date, prev);
+    }
+
+    return Array.from(map.values()).sort((a, b) => (a.date < b.date ? 1 : -1));
+  }, [orders]);
+
+  const selectedDay = useMemo(() => {
+    return (
+      dailyData.find((d) => d.date === selectedDate) || {
+        date: selectedDate,
+        ordersCount: 0,
+        unitsSold: 0,
+        revenue: 0,
+      }
+    );
+  }, [dailyData, selectedDate]);
+
   const stats = useMemo(
     () => [
-      { title: "Total Users", value: Users.length, bgColor: "#fff", color: "#406af3" },
-      { title: "Total Orders", value: orders.length, bgColor: "#fff", color: "#ff9900" },
-      { title: "Products", value: products.length, bgColor: "#fff", color: "#8f00b3" },
-      { title: "Revenue", value: formatINR(totalRevenue), bgColor: "#fff", color: "#24782a" },
+      { title: "Total Users", value: Users.length, bgColor: "#4FC3F7", color: "#ffffff" },
+      { title: "Total Orders", value: orders.length, bgColor: "#FFCA28", color: "#24782a" },
+      { title: "Products", value: products.length, bgColor: "#7E57C2", color: "#ffffff" },
+      { title: "Revenue", value: formatINR(totalRevenue), bgColor: "#FF7043", color: "#24782a" },
+      { title: "Date Report", value: "View", bgColor: "#90A4AE", color: "#006064" },
     ],
     [Users.length, orders.length, products.length, totalRevenue]
   );
@@ -165,11 +249,10 @@ export default function AdminDashboard() {
 
   return (
     <>
-      <Navbar />
-      <NextNav />
+      <AdminNavbar/>
 
       <div className={styles.container}>
-        <h1 className={styles.heading}>Admin Dashboard</h1>
+        <h1 className={styles.heading}> ADMIN DASHBOARD PANEL</h1>
 
         {/* Stats Cards */}
         <div className={styles.grid}>
@@ -194,6 +277,7 @@ export default function AdminDashboard() {
         </div>
 
         {loading ? <p style={{ padding: 10, color: "#6b7280" }}>Loading...</p> : null}
+        {errorMsg ? <p style={{ padding: 10, color: "#b91c1c" }}>{errorMsg}</p> : null}
 
         {/* ✅ Users List */}
         {activeTab === "Total Users" && (
@@ -239,7 +323,7 @@ export default function AdminDashboard() {
           </div>
         )}
 
-        {/* ✅ Orders List (Same like Users) */}
+        {/* ✅ Orders List */}
         {activeTab === "Total Orders" && (
           <div className={styles.section}>
             <h2 style={{ color: "#ff9900", marginBottom: "15px" }}>Orders List</h2>
@@ -251,6 +335,7 @@ export default function AdminDashboard() {
                     <th>Order ID</th>
                     <th>Customer</th>
                     <th>Product Name</th>
+                    <th>Units</th>
                     <th>Amount</th>
                     <th>Status</th>
                   </tr>
@@ -262,6 +347,7 @@ export default function AdminDashboard() {
                       <td>{getOrderId(order) || "-"}</td>
                       <td>{getCustomer(order)}</td>
                       <td>{getProductsText(order)}</td>
+                      <td>{getOrderUnits(order)}</td>
                       <td>{getOrderAmountText(order)}</td>
                       <td>
                         <span style={badgeStyle(order.status)}>{order.status || "pending"}</span>
@@ -276,7 +362,42 @@ export default function AdminDashboard() {
           </div>
         )}
 
-        {/* ✅ Revenue tab (show Total Revenue properly) */}
+        {/* ✅ Products List */}
+        {activeTab === "Products" && (
+          <div className={styles.section}>
+            <h2 style={{ color: "#8f00b3", marginBottom: "15px" }}>Products List</h2>
+
+            <div className={styles.tableContainer}>
+              <table className={styles.table}>
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Title / Name</th>
+                    <th>Price</th>
+                    <th>Stock</th>
+                    <th>Category</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {products.map((p) => (
+                    <tr key={(p._id || p.id || p.title || p.name || Math.random()) as any}>
+                      <td>{p._id || p.id || "-"}</td>
+                      <td>{p.title || p.name || "-"}</td>
+                      <td>{typeof p.price === "number" ? formatINR(p.price) : p.price || "-"}</td>
+                      <td>{p.stock ?? "-"}</td>
+                      <td>{p.category || "-"}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+
+              {products.length === 0 && <p style={{ padding: 12, color: "#6b7280" }}>No products found.</p>}
+            </div>
+          </div>
+        )}
+
+        {/* ✅ Revenue tab */}
         {activeTab === "Revenue" && (
           <div className={styles.section}>
             <h2 style={{ color: "#24782a", marginBottom: "15px" }}>Revenue Summary</h2>
@@ -317,6 +438,107 @@ export default function AdminDashboard() {
                 Refresh
               </button>
             </div>
+          </div>
+        )}
+
+        {/* ✅ Date Report tab */}
+        {activeTab === "Date Report" && (
+          <div className={styles.section}>
+            <h2 style={{ color: "#006064", marginBottom: "15px" }}>Date Wise Orders Report</h2>
+
+            <div style={{ display: "flex", gap: 12, alignItems: "center", marginBottom: 12, flexWrap: "wrap" }}>
+              <label style={{ fontWeight: 600 }}>Select Date:</label>
+              <input
+                type="date"
+                value={selectedDate}
+                onChange={(e) => setSelectedDate(e.target.value)}
+                style={{
+                  padding: "10px 12px",
+                  borderRadius: 10,
+                  border: "1px solid #006460",
+                  background: "#ddd",
+                  cursor: "pointer",
+                }}
+              />
+
+              <button
+                onClick={fetchAll}
+                style={{
+                  padding: "10px 14px",
+                  borderRadius: 10,
+                  border: "1px solid #e5e7eb",
+                  background: "#006064",
+                  cursor: "pointer",
+                  fontWeight: 600,
+                  color: "#ffffff"
+                }}
+              >
+                Refresh
+              </button>
+            </div>
+
+            {/* Selected day summary cards */}
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 12 }}>
+              <div className={styles.card} style={{ background: "#7E57C2" }}>
+                <h3 className={styles.cardTitle}>Orders (Selected Day)</h3>
+                <p className={styles.cardValue} style={{color: "#ffff"}}>{selectedDay.ordersCount}</p>
+              </div>
+
+              <div className={styles.card} style={{ background: "#FFCA28" }}>
+                <h3 className={styles.cardTitle}>Products Sold (Units)</h3>
+                <p className={styles.cardValue}>{selectedDay.unitsSold}</p>
+              </div>
+
+              <div className={styles.card} style={{ background: "#FFA726" }}>
+                <h3 className={styles.cardTitle}>Revenue</h3>
+                <p className={styles.cardValue}>{formatINR(selectedDay.revenue)}</p>
+              </div>
+            </div>
+
+            {/* All dates table */}
+            <div className={styles.tableContainer} style={{ marginTop: 14 }}>
+              <table className={styles.table}>
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Total Orders</th>
+                    <th>Products Sold (Units)</th>
+                    <th>Revenue</th>
+                  </tr>
+                </thead>
+
+               <tbody>
+  {dailyData.map((d) => {
+    const isActive = selectedDate === d.date;
+
+    return (
+      <tr
+        key={d.date}
+        onClick={() => setSelectedDate(d.date)}
+        style={{
+          cursor: "pointer",
+          backgroundColor: isActive ? "#e8f5e9" : "transparent", // light green
+          color: isActive ? "#1b5e20" : "#000",
+          transition: "0.2s ease",
+        }}
+      >
+        <td>{d.date}</td>
+        <td>{d.ordersCount}</td>
+        <td>{d.unitsSold}</td>
+        <td>{formatINR(d.revenue)}</td>
+      </tr>
+    );
+  })}
+</tbody>
+
+              </table>
+
+              {dailyData.length === 0 && <p style={{ padding: 12, color: "#6b7280" }}>No orders found.</p>}
+            </div>
+
+            <p style={{ marginTop: 10, color: "#6b7280" }}>
+              Tip: kisi bhi date row pe click karoge to upar selected date change ho jayegi.
+            </p>
           </div>
         )}
       </div>

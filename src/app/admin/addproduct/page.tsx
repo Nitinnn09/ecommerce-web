@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Styles from "../../css/adproduct.module.css";
 import { useRouter } from "next/navigation";
-import Navbar from "@/app/component/navbar";
+import AdminNavbar from "@/app/component/adminnav";
 
 export default function AddProductPage() {
   const router = useRouter();
@@ -97,7 +97,7 @@ export default function AddProductPage() {
 
   return (
     <>
-      <Navbar />
+      <AdminNavbar />
       <div className={Styles.page}>
         <div className={Styles.card}>
           <h2 className={Styles.title}>Add Product</h2>
