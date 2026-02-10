@@ -307,8 +307,8 @@
 
 /* ===== SLIDER SECTION (FURNITURE) ===== */
 .sliderSection {
-  padding: 70px 18px;
-  background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+  padding: 10px 18px;
+  background: #ffffff;
   overflow: hidden;
 }
 
@@ -321,34 +321,57 @@
 }
 
 .sliderHeader h2 {
-  font-size: 38px;
-  font-weight: 900;
-  margin-bottom: 8px;
+   font-size: 35px;
+  font-weight: 800;
   color: #006064;
+  /* margin-bottom: 8px; */
   letter-spacing: -0.5px;
 }
 
 .sliderHeader p {
   color: #64748b;
-  font-size: 16px;
+  font-size: 12px;
   margin: 0;
 }
 
 /* ✅ FURNITURE SLIDER TRACK */
 .sliderTrack {
   max-width: 100%;
-  margin: 0 auto;
+  margin: 0px 30px;
   overflow: hidden;
   position: relative;
+  height: 400px;
+  border-radius: 10px;
+ 
 }
 
 .sliderRow {
   display: flex;
-  gap: 24px;
+  gap: 18px;
   padding: 12px 18px;
   width: max-content;
   animation: autoScroll 50s linear infinite;
 }
+@media (max-width: 768px) {
+  .cardImg {
+    height: 300px;       /* ⬅️ bigger image box */
+    padding: 10px;       /* ⬅️ breathing space */
+    background: #f8f9fb; /* light background */
+  }
+}
+@media (max-width: 520px) {
+  .cardImg {
+    height: 280px;       /* ⬅️ still big */
+    padding: 12px;
+  }
+}
+@media (max-width: 420px) {
+  .cardImg {
+    height: 260px;
+    padding: 14px;
+  }
+}
+
 
 /* ✅ Auto-scroll animation (smooth continuous) */
 @keyframes autoScroll {
@@ -519,8 +542,14 @@
   .featureImg {
     padding: 12px;
   }
+  .sliderTrack {
+    height: auto;
+    margin: 0%;
+  }
 }
-
+.clothsWrap {
+  padding: 0%;
+}
 .featureImgInner {
   position: absolute;
   inset: 0;
@@ -646,173 +675,219 @@
   font-weight: 600;
 }
 
-/* ================= GLOW & PROTECT SECTION ================= */
+/* ✅ GLOW SECTION - 3 CARDS */
+
 .glowWrap {
   width: 100%;
-  background: #fafafa;
-  padding: 55px 18px;
+  padding: 40px 20px;
+  background: linear-gradient(135deg, #f5f5f5 0%, #fafafa 100%);
+  margin: 40px 0;
 }
 
 .glowHead {
-  max-width: 1400px;
-  margin: 0 auto 26px;
   text-align: center;
-  position: relative;
+  margin-bottom: 40px;
 }
 
 .glowHead h2 {
-  font-size: 38px;
+  font-size: 32px;
   font-weight: 700;
-  letter-spacing: 1px;
   color: #006064;
-  margin-bottom: 8px;
+  margin-bottom: 12px;
 }
 
 .glowHead p {
-   font-size: 12px;
-  color: #8a8a8a;
-  max-width: 680px;
-  margin: 0 auto;
-  line-height: 1.6;
+  font-size: 16px;
+  color: #666;
+  margin: 0;
 }
 
-.glowArrows {
-  position: absolute;
-  right: 0;
-  top: 10px;
-  display: flex;
-  gap: 10px;
-}
-
-.arrowBtn {
-  width: 44px;
-  height: 44px;
-  border-radius: 999px;
-  border: 1px solid #006064;
-  background: rgba(255, 255, 255, 0.9);
-  cursor: pointer;
-  font-size: 18px;
-  display: grid;
-  place-items: center;
-  transition: 0.2s ease;
-  color: #006064;
-}
-
-.arrowBtn:hover {
-  background: #fff;
-  transform: translateY(-1px);
-}
-
+/* ✅ TRACK - HORIZONTAL SCROLL (SCROLLBAR HIDDEN) */
 .glowTrack {
-  max-width: 1400px;
-  margin: 0 auto;
   display: flex;
-  gap: 24px;
+  gap: 20px;
   overflow-x: auto;
   scroll-behavior: smooth;
-  padding: 0 6px 10px;
-  -webkit-overflow-scrolling: touch;
+  scroll-snap-type: x mandatory;
+  padding: 20px 0;
+  -ms-overflow-style: none;  /* IE और Edge */
+  scrollbar-width: none;      /* Firefox */
 }
 
+/* Chrome, Safari - Hide scrollbar */
 .glowTrack::-webkit-scrollbar {
-  height: 0px;
+  display: none;
 }
 
+/* ✅ GLOW CARD */
 .glowCard {
-  min-width: 360px;
-  background: transparent;
-  padding-bottom: 10px;
+  flex: 0 0 calc(33.333% - 13px);
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  scroll-snap-align: start;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  position: relative;
+  height: 300px;
 }
 
+.glowCard:hover {
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+  transform: translateY(-5px);
+}
+
+/* ✅ GLOW IMAGE - FULL CARD */
 .glowImg {
-  position: relative;
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
-  height: 320px;
-  border-radius: 14px;
+  height: 100%;
+  background: #f9f9f9;
   overflow: hidden;
-  background: #f7f7f7;
-  border: 1px solid #e5e7eb;
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
 }
 
 .glowFit {
   object-fit: cover;
   object-position: center;
-  transform: scale(1);
-  transition: transform 0.35s ease;
+  width: 100%;
+  height: 100%;
 }
 
-.glowCard:hover .glowImg {
-  transform: translateY(-3px);
-  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.12);
-}
-
-.glowCard:hover .glowFit {
-  transform: scale(1.06);
-}
-
+/* ✅ GLOW INFO - OVERLAY ON IMAGE */
 .glowInfo {
-  margin-top: 16px;
-}
-
-.glowTop {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 16px;
+  background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 60%, transparent 100%);
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
+  flex-direction: column;
+  justify-content: flex-end;
+  z-index: 10;
 }
 
-.glowTop h3 {
-  font-size: 20px;
-  font-weight: 700;
-  color: #006064;
-  margin: 0;
+.glowInfo h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: white;
+  margin: 0 0 8px 0;
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .glowPrice {
-  font-size: 18px;
+  font-size: 14px;
   font-weight: 700;
-  color: #111;
+  color: #ffc107;
+  display: block;
 }
 
-.glowDesc {
-  margin-top: 10px;
-  color: #555;
-  line-height: 1.7;
-  font-size: 14px;
-  max-width: 340px;
+/* ✅ MOBILE - 2 CARDS PER ROW WITH SCROLL */
+@media (max-width: 768px) {
+  .glowWrap {
+    padding: 30px 15px;
+    margin: 30px 0;
+  }
+
+  .glowHead h2 {
+    font-size: 24px;
+    margin-bottom: 8px;
+  }
+
+  .glowHead p {
+    font-size: 14px;
+    margin-bottom: 25px;
+  }
+
+  .glowTrack {
+    gap: 15px;
+    padding: 15px 0;
+  }
+
+  .glowCard {
+    flex: 0 0 calc(50% - 7.5px);
+    height: 280px;
+  }
+
+  .glowInfo {
+    padding: 14px;
+  }
+
+  .glowInfo h3 {
+    font-size: 14px;
+    margin-bottom: 6px;
+  }
+
+  .glowPrice {
+    font-size: 13px;
+  }
 }
 
-.glowFooter {
-  display: flex;
-  justify-content: center;
-  margin-top: 26px;
+/* ✅ SMALL MOBILE - 1 CARD PER VIEW WITH SCROLL */
+@media (max-width: 480px) {
+  .glowWrap {
+    padding: 25px 12px;
+    margin: 25px 0;
+  }
+
+  .glowHead h2 {
+    font-size: 20px;
+  }
+
+  .glowHead p {
+    font-size: 13px;
+  }
+
+  .glowTrack {
+    gap: 12px;
+    padding: 12px 0;
+  }
+
+  .glowCard {
+    flex: 0 0 calc(85vw);
+    max-width: 280px;
+    height: 260px;
+  }
+
+  .glowInfo {
+    padding: 12px;
+  }
+
+  .glowInfo h3 {
+    font-size: 13px;
+  }
+
+  .glowPrice {
+    font-size: 12px;
+  }
 }
 
-.glowViewAll {
-  padding: 10px 25px;
-  border-radius: 8px;
-  background: #ffffff;
-  color: #006064;
-  cursor: pointer;
-  border: 2px solid #006064;
-  font-weight: 600;
-  transition: 0.2s ease;
-  font-size: 14px;
-}
-
-.glowViewAll:hover {
-  transform: translateY(-1px);
-  background: #ddd;
-  color: #ffffff;
-  border: 2px solid #fff;
+/* ✅ DESKTOP - 3 CARDS FIXED */
+@media (min-width: 769px) {
+  .glowCard {
+    flex: 0 0 calc(33.333% - 13px);
+    height: 300px;
+  }
 }
 
 /* ================= CLOTHS SECTION ================= */
 .clothsWrap {
   width: 100%;
-  background: #fafafa;
+  background: #ffffff;
   padding: 40px 18px;
 }
 
@@ -992,10 +1067,10 @@
 }
 
 .collectionTag {
-  font-size: 24px;
+  font-size: 35px;
   font-weight: 800;
-  letter-spacing: 1px;
   color: #006064;
+  letter-spacing: 1px;
   justify-content: center;
   display: flex;
 }
@@ -1098,6 +1173,7 @@
   .cardImg {
     height: 220px;
   }
+
 }
 
 @media (max-width: 520px) {
@@ -1118,7 +1194,7 @@
   }
 
   .clothImgBox {
-    height: 220px;
+    height: 200px;
   }
 
   .sliderSection {
@@ -1199,6 +1275,9 @@
     font-size: 10px;
     align-items: center;
     justify-content: center;
+  }
+  .collectionTag {
+    font-size: 30px;
   }
   
 }
@@ -1282,4 +1361,276 @@
 
 
 /*new section*/
+/* ================= ABOUT SECTION (Screenshot style) ================= */
+.aboutWrap {
+  width: 100%;
+  background: #ffffff;
+  padding: 55px 18px 40px;
+}
+
+.aboutInner {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.aboutGrid {
+  display: grid;
+  grid-template-columns: 1.05fr 1fr;
+  gap: 28px;
+  align-items: center;
+}
+
+.aboutImgBox {
+  position: relative;
+  width: 100%;
+  height: 360px;
+  border-radius: 18px;
+  overflow: hidden;
+  background: #f5f5f5;
+  border: 1px solid #eef2f7;
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.08);
+}
+
+.aboutImg {
+  object-fit: cover;
+  object-position: center;
+  transform: scale(1.02);
+  transition: transform 0.7s ease;
+}
+
+.aboutWrap:hover .aboutImg {
+  transform: scale(1.05);
+}
+
+/* badges on image */
+.badgeStack {
+  position: absolute;
+  left: 14px;
+  bottom: 14px;
+  display: grid;
+  gap: 10px;
+  z-index: 3;
+}
+
+.badgeCard {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid #e5e7eb;
+  border-radius: 999px;
+  padding: 10px 12px;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.12);
+  width: fit-content;
+}
+
+.badgeNum {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  height: 28px;
+  border-radius: 999px;
+  background: #006064;
+  color: #fff;
+  font-weight: 900;
+  font-size: 12px;
+  padding: 0 10px;
+}
+
+.badgeText {
+  font-size: 11px;
+  font-weight: 900;
+  color: #111;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+}
+
+/* right content */
+.aboutKicker {
+  margin: 0 0 8px;
+  font-size: 12px;
+  letter-spacing: 1px;
+  font-weight: 900;
+  color: #64748b;
+  text-transform: uppercase;
+}
+
+.aboutTitle {
+  margin: 0 0 10px;
+  font-size: 30px;
+  font-weight: 900;
+  color: #006064;
+  line-height: 1.15;
+}
+
+.aboutPara {
+  margin: 0 0 16px;
+  font-size: 13px;
+  line-height: 1.7;
+  color: #006064;
+  max-width: 520px;
+}
+
+.aboutBtn {
+  border: none;
+  background: #006064;
+  color: #ffffff;
+  font-weight: 900;
+  padding: 10px 16px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.aboutBtn:hover {
+  transform: translateY(-1px);
+  background: #00838f;
+}
+
+/* stats row */
+.statsRow {
+  margin-top: 26px;
+  padding-top: 22px;
+  border-top: 1px solid #eef2f7;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  text-align: center;
+}
+
+.statItem h3 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 900;
+  color: #006064;
+}
+
+.statItem p {
+  margin: 6px 0 0;
+  font-size: 12px;
+  color: #64748b;
+  font-weight: 700;
+}
+
+/* small delay helpers (works with your existing data-reveal transition) */
+.delay1 { transition-delay: 80ms; }
+.delay2 { transition-delay: 160ms; }
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 900px) {
+  .aboutGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .aboutImgBox {
+    height: 320px;
+  }
+
+  .aboutTitle {
+    font-size: 26px;
+    text-align: center;
+  }
+
+  .aboutKicker,
+  .aboutPara {
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .aboutBtn {
+    display: block;
+    margin: 0 auto;
+  }
+
+  .statsRow {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+}
+
+@media (max-width: 420px) {
+  .aboutImgBox {
+    height: 260px;
+  }
+
+  .badgeCard {
+    padding: 8px 10px;
+  }
+
+  .badgeText {
+    font-size: 10px;
+  }
+
+  .aboutTitle {
+    font-size: 22px;
+  }
+
+  .statsRow {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+/*category section styling */
+.categoryScrollWrap {
+  padding: 40px 18px 10px;
+  background: #ffffff;
+  justify-content: center;
+  text-align: center;
+}
+
+.categoryTitle {
+  text-align: center;
+  font-size: 26px;
+  font-weight: 800;
+  color: #006064;
+  margin-bottom: 24px;
+}
+
+.categoryScrollTrack {
+  display: flex;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  gap: 22px;
+  padding-bottom: 14px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.categoryScrollTrack::-webkit-scrollbar {
+  display: none;
+}
+
+.categoryItem {
+  flex: 0 0 auto;
+  text-align: center;
+  color: #111;
+  text-decoration: none;
+}
+
+.categoryImgBox {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid #eee;
+  margin-bottom: 8px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.06);
+}
+
+.categoryImgBox img {
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+}
+
+.categoryName {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+
+/* new section new arrival */
 

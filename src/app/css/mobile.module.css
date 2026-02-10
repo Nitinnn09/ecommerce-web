@@ -41,7 +41,7 @@
 .card {
   min-width: 150px;
   width: 150px;
-  border: 1px solid #006064;
+  border: 1px solid #ddd;
   border-radius: 18px;
   padding: 14px;
   box-shadow: 0 10px 22px rgba(0, 0, 0, 0.06);

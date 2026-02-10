@@ -6,68 +6,106 @@ import styles from "../css/banner.module.css";
 
 const banners = [
   {
-    image: "/bannerc.jpg",
+    image: "/gemini2.png",
     title: "New Season Collection",
     desc: "Discover the latest trends with premium quality products.",
   },
   {
-    image: "/bannerb.jpg",
+    image: "/banner1.png",
     title: "Big Sale is Live",
     desc: "Up to 50% off on selected items. Hurry up!",
   },
   {
-    image: "/bannerd.jpeg",
+    image: "/banner2.png",
     title: "Premium Life",
     desc: "Upgrade your style with our exclusive collection.",
   },
   {
     image: "/bannere.jpg",
-    title: "Smart & sales",
+    title: "Smart & Sales",
     desc: "Modern designs made for everyday comfort.",
   },
   {
     image: "/bannerh.jpg",
-    title: "sale",
+    title: "Unbeatable Sale",
     desc: "Top quality products at unbeatable prices.",
   },
 ];
 
 export default function BannerSlider() {
   const [index, setIndex] = useState(0);
+  const [isAutoPlay, setIsAutoPlay] = useState(true);
   const touchStartX = useRef<number | null>(null);
+  const autoPlayRef = useRef<NodeJS.Timeout | null>(null);
 
-  const next = () => setIndex((prev) => (prev + 1) % banners.length);
-  const prev = () => setIndex((prev) => (prev - 1 + banners.length) % banners.length);
+  const next = () => {
+    setIndex((prev) => (prev + 1) % banners.length);
+    resetAutoPlay();
+  };
 
-  // ✅ auto scroll (pause when user changes slide manually feel)
+  const prev = () => {
+    setIndex((prev) => (prev - 1 + banners.length) % banners.length);
+    resetAutoPlay();
+  };
+
+  const goToSlide = (slideIndex: number) => {
+    setIndex(slideIndex);
+    resetAutoPlay();
+  };
+
+  const resetAutoPlay = () => {
+    if (autoPlayRef.current) {
+      clearInterval(autoPlayRef.current);
+    }
+    setIsAutoPlay(true);
+  };
+
+  // ✅ Auto scroll
   useEffect(() => {
-    const interval = setInterval(next, 3500);
-    return () => clearInterval(interval);
-  }, []);
+    if (!isAutoPlay) return;
 
-  // ✅ swipe
+    autoPlayRef.current = setInterval(() => {
+      setIndex((prev) => (prev + 1) % banners.length);
+    }, 4000);
+
+    return () => {
+      if (autoPlayRef.current) clearInterval(autoPlayRef.current);
+    };
+  }, [isAutoPlay]);
+
+  // ✅ Swipe gestures
   const onTouchStart = (e: React.TouchEvent) => {
     touchStartX.current = e.touches[0].clientX;
+    setIsAutoPlay(false);
   };
 
   const onTouchEnd = (e: React.TouchEvent) => {
     if (touchStartX.current === null) return;
     const diff = touchStartX.current - e.changedTouches[0].clientX;
 
-    if (diff > 50) next();      // swipe left
-    if (diff < -50) prev();     // swipe right
+    if (diff > 50) next(); // swipe left
+    if (diff < -50) prev(); // swipe right
     touchStartX.current = null;
   };
 
   return (
-    <div className={styles.slider} onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
+    <div
+      className={styles.slider}
+      onTouchStart={onTouchStart}
+      onTouchEnd={onTouchEnd}
+      onMouseEnter={() => setIsAutoPlay(false)}
+      onMouseLeave={() => setIsAutoPlay(true)}
+    >
       {banners.map((item, i) => (
-        <div key={i} className={`${styles.slide} ${i === index ? styles.active : ""}`}>
+        <div
+          key={i}
+          className={`${styles.slide} ${i === index ? styles.active : ""}`}
+        >
           <Image
             src={item.image}
             alt={item.title}
             fill
-            sizes="100%"
+            sizes="100vw"
             priority={i === 0}
             className={styles.image}
           />
@@ -77,26 +115,48 @@ export default function BannerSlider() {
           <div className={styles.content}>
             <h1>{item.title}</h1>
             <p>{item.desc}</p>
-            <button>Shop Now</button>
+            <button onClick={() => console.log("Shop Now clicked")}>
+              Shop Now
+            </button>
           </div>
         </div>
       ))}
 
-      <button className={styles.prev} onClick={prev} aria-label="Previous">
+      {/* Navigation Arrows */}
+      <button
+        className={styles.prev}
+        onClick={prev}
+        aria-label="Previous slide"
+        title="Previous"
+      >
         ❮
       </button>
 
-      <button className={styles.next} onClick={next} aria-label="Next">
+      <button
+        className={styles.next}
+        onClick={next}
+        aria-label="Next slide"
+        title="Next"
+      >
         ❯
       </button>
 
-      {/* ✅ dots */}
+      {/* Dots Indicator */}
       <div className={styles.dots}>
         {banners.map((_, i) => (
           <span
             key={i}
             className={`${styles.dot} ${i === index ? styles.dotActive : ""}`}
-            onClick={() => setIndex(i)}
+            onClick={() => goToSlide(i)}
+            role="button"
+            tabIndex={0}
+            aria-label={`Go to slide ${i + 1}`}
+            title={`Slide ${i + 1}`}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                goToSlide(i);
+              }
+            }}
           />
         ))}
       </div>

@@ -8,6 +8,7 @@ import {useRouter} from "next/navigation";
 import styles from "../css/home.module.css";
 import Footer from "../component/footer";
 import MobileBrands from "../component/mobile";
+import InspirationCollection from "../component/inspiration";
 import { addToCart } from "@/lib/cart";
 
 const Navbar = dynamic(() => import("../component/navbar"));
@@ -29,7 +30,7 @@ const featuredItems = [
     price: "190.00",
     oldPrice: "230.00",
     discount: "-15%",
-    image: "/facewash.jpg",
+    image: "/double.jpg",
     desc: "Ergonomic chair with premium comfort and strong support.",
     bullets: ["Ergonomic design", "Breathable fabric", "Strong build", "Smooth wheels"],
   },
@@ -200,6 +201,43 @@ const getReviews = (item: ProductType) => Number(item.reviews ?? 0);
 
   const featured = featuredItems[featureIndex];
 
+
+
+  const [allProducts, setAllProducts] = useState<ProductType[]>([]);
+// const [loading, setLoading] = useState(true);
+
+useEffect(() => {
+  const controller = new AbortController();
+
+  const load = async () => {
+    try {
+      setLoading(true);
+      const res = await fetch("/api/products", {
+        cache: "no-store",
+        signal: controller.signal,
+      });
+
+      const data = await res.json();
+      const all = Array.isArray(data) ? data : data?.products || [];
+
+      // ✅ Només els últims 12
+      const recent = [...all].reverse().slice(0, 12);
+      setAllProducts(recent);
+    } catch (e) {
+      console.error("Error loading products:", e);
+      setAllProducts([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  load();
+  return () => controller.abort();
+}, []);
+
+
+
+
   // ✅ Glow auto scroll (every 2s)
   useEffect(() => {
     const el = glowRef.current;
@@ -265,16 +303,15 @@ const getReviews = (item: ProductType) => Number(item.reviews ?? 0);
   return (
     <div ref={pageRef}>
       <Navbar />
-      <NextNav />
+      {/* <NextNav /> */}
       <Banner />
 
-      {/* ✅ FEATURED */}
-     {/* ✅ FEATURED (Auto Change) */}
+      <InspirationCollection/>
         {/* ✅ FEATURED CARDS (3 items) */}
 <section className={styles.featureCardsWrap} data-reveal>
   <div className={styles.featureCardsHead}>
-    <h2 className={styles.featureCardsTitle}>FEATURES PICKS</h2>
-    <p className={styles.featureCardsSub}>Top deals handpicked for you</p>
+    {/* <h2 className={styles.featureCardsTitle}>FEATURES PICKS</h2>
+    <p className={styles.featureCardsSub}>Top deals handpicked for you</p> */}
   </div>
 
   {/* ✅ Desktop grid */}
@@ -369,46 +406,14 @@ const getReviews = (item: ProductType) => Number(item.reviews ?? 0);
 
 
 
-      {/* ✅ FURNITURE SLIDER */}
-      <section className={styles.sliderSection} data-reveal>
-        <div className={styles.sliderHeader}>
-          <h2>POPULAR FURNITURE</h2>
-          <p>{loading ? "Loading..." : "Auto scroll cards (hover to pause)"}</p>
-        </div>
 
-        <div className={styles.sliderTrack} ref={trackRef}>
-          <div className={styles.sliderRow}>
-            {sliderItems.map((item, i) => (
-              <Link
-                href={`/furniture`}
-                className={styles.sliderCard}
-                key={`${item._id}-${i}`}
-                data-reveal
-                style={{ textDecoration: "none", color: "inherit" }}
-              >
-                {item.discount && <span className={styles.cardBadge}>{item.discount}</span>}
 
-                <div className={styles.cardImg}>
-                  <Image src={safeImg(item.image)} alt={item.title || "product"} fill className={styles.imgFit} />
-                </div>
-
-                <h3>{item.title}</h3>
-                <p className={styles.cardPrice}>
-                  ₹{item.price} {item.oldPrice ? <span>₹{item.oldPrice}</span> : null}
-                </p>
-              </Link>
-            ))}
-
-            {!loading && furniture.length === 0 ? <p style={{ padding: 10 }}>No furniture products found.</p> : null}
-          </div>
-        </div>
-      </section>
-
+    
       {/* ✅ CLOTHES */}
      {/* ✅ CLOTHES */}
 <section className={styles.clothsWrap} data-reveal>
-  <p className={styles.collectionTag}>CLOTHES COLLECTION</p>
-  <p className={styles.subText}>Best fashion picks for you — premium quality & modern style</p>
+  <p className={styles.collectionTag}>Clothes Collection</p>
+  {/* <p className={styles.subText}>Best fashion picks for you — premium quality & modern style</p> */}
 
   <div className={styles.clothsHead}>
     <div className={styles.clothTitleLeft}></div>
@@ -419,7 +424,7 @@ const getReviews = (item: ProductType) => Number(item.reviews ?? 0);
   </div>
 
   <div className={styles.clothsGrid}>
-    {clothes.slice(0,12).map((item) => (
+    {clothes.slice(0,8).map((item) => (
       <Link
         href={`/clothes`}
         className={styles.clothCard}
@@ -478,55 +483,266 @@ const getReviews = (item: ProductType) => Number(item.reviews ?? 0);
 </section>
 
 
-      {/* ✅ BODYCARE */}
-      <section className={styles.glowWrap} data-reveal>
-        <div className={styles.glowHead}>
-          <h2>GLOW & PROTECT</h2>
-          <p>Body care products that nourish, protect, and enhance your skin—effortlessly.</p>
+{/* ✅ CATEGORY SCROLL SECTION */}
+<section className={styles.categoryScrollWrap} data-reveal>
+  <h2 className={styles.categoryTitle}>Shop By Category</h2>
 
-          <div className={styles.glowArrows}>
-            <button className={styles.arrowBtn} onClick={() => glowRef.current?.scrollBy({ left: -420, behavior: "smooth" })}>
-              ←
-            </button>
-            <button className={styles.arrowBtn} onClick={() => glowRef.current?.scrollBy({ left: 420, behavior: "smooth" })}>
-              →
-            </button>
+  <div className={styles.categoryScrollTrack}>
+    {[
+      { name: "Clothes", image: "/tshirt.jpg", link: "/clothes" },
+      { name: "Watch", image: "/watch.jpg", link: "/electronics" },
+      { name: "kichen kid", image: "/mixy.jpg", link: "/electronics" },
+      { name: "Sports", image: "/shoes1.jpg", link: "/shoes" },
+      { name: "Bags", image: "/bags.jpg", link: "/allproduct" },
+      { name: "Sliper", image: "/sliper.jpg", link: "/shoes" },
+      { name: "Room Light", image: "/luxery3.jpg", link: "/electronics" },
+      { name: "Furniture", image: "/furniture.jpg", link: "/furniture" },
+      { name: "Clothes", image: "/tshirt.jpg", link: "/clothes" },
+      { name: "Watch", image: "/watch.jpg", link: "/electronics" },
+      { name: "kichen kid", image: "/mixy.jpg", link: "/electronics" },
+      { name: "Sports", image: "/shoes1.jpg", link: "/shoes" },
+      { name: "Bags", image: "/bags.jpg", link: "/allproduct" },
+      { name: "Sliper", image: "/sliper.jpg", link: "/shoes" },
+      { name: "Room Light", image: "/luxery3.jpg", link: "/electronics" },
+      { name: "Furniture", image: "/furniture.jpg", link: "/furniture" },
+    ].map((cat, i) => (
+      <Link key={i} href={cat.link} className={styles.categoryItem}>
+        <div className={styles.categoryImgBox}>
+          <Image src={cat.image} alt={cat.name} width={100} height={100} />
+        </div>
+        <p className={styles.categoryName}>{cat.name}</p>
+      </Link>
+    ))}
+  </div>
+</section>
+
+
+  {/* ✅ FURNITURE SLIDER */}
+      <section className={styles.sliderSection} data-reveal>
+        <div className={styles.sliderHeader}>
+          <h2>Populer Furniture</h2>
+          <p>{loading ? "Loading..." : ""}</p>
+        </div>
+
+        <div className={styles.sliderTrack} ref={trackRef}>
+          <div className={styles.sliderRow}>
+            {sliderItems.map((item, i) => (
+              <Link
+                href={`/furniture`}
+                className={styles.sliderCard}
+                key={`${item._id}-${i}`}
+                data-reveal
+                style={{ textDecoration: "none", color: "inherit" }}
+              >
+                {item.discount && <span className={styles.cardBadge}>{item.discount}</span>}
+
+                <div className={styles.cardImg}>
+                  <Image src={safeImg(item.image)} alt={item.title || "product"} fill className={styles.imgFit} />
+                </div>
+
+                <h3>{item.title}</h3>
+                <p className={styles.cardPrice}>
+                  ₹{item.price} {item.oldPrice ? <span>₹{item.oldPrice}</span> : null}
+                </p>
+              </Link>
+            ))}
+
+            {!loading && furniture.length === 0 ? <p style={{ padding: 10 }}>No furniture products found.</p> : null}
           </div>
         </div>
-
-        <div className={styles.glowTrack} ref={glowRef} id="glowTrack">
-          {bodycare.map((item) => (
-            <Link
-              href={`/bodycare`}
-              className={styles.glowCard}
-              key={item._id}
-              data-reveal
-              data-glow-card
-              style={{ textDecoration: "none", color: "inherit" }}
-            >
-              <div className={styles.glowImg}>
-                <Image src={safeImg(item.image)} alt={item.title || "product"} fill className={styles.glowFit} />
-              </div>
-
-              <div className={styles.glowInfo}>
-                <div className={styles.glowTop}>
-                  <h3>{item.title}</h3>
-                  <span className={styles.glowPrice}>₹{item.price}</span>
-                </div>
-                <p className={styles.glowDesc}>{item.desc ?? ""}</p>
-              </div>
-            </Link>
-          ))}
-
-          {!loading && bodycare.length === 0 ? <p style={{ padding: 10 }}>No bodycare products found.</p> : null}
-        </div>
-
-        <div className={styles.glowFooter}>
-          <Link href="/bodycare" className={styles.glowViewAll}>
-            View all
-          </Link>
-        </div>
       </section>
+
+      {/* ✅ NEW ARRIVALS SECTION */}
+
+
+
+<section className={styles.clothsWrap} data-reveal>
+  <p className={styles.collectionTag}>New arrival</p>
+  {/* <p className={styles.subText}>Best fashion picks for you — premium quality & modern style</p> */}
+
+  <div className={styles.clothsHead}>
+    <div className={styles.clothTitleLeft}></div>
+
+    <Link href="/allproduct" className={styles.clothsViewAll}>
+      View All
+    </Link>
+  </div>
+
+  <div className={styles.clothsGrid}>
+    {allProducts.slice(0,8).map((item) => (
+      <Link
+        href={`/allproduct`}
+        className={styles.clothCard}
+        key={item._id}
+        data-reveal
+        style={{ textDecoration: "none", color: "inherit" }}
+      >
+        <div className={styles.clothImgBox}>
+          {item.discount ? <span className={styles.clothDiscount}>{item.discount}</span> : null}
+          {item.tag ? <span className={styles.clothTag}>{item.tag}</span> : null}
+
+          {/* ✅ ALWAYS SHOW rating/reviews */}
+          <div className={styles.ratingBadge}>
+            <span className={styles.stars}>{starText(getRating(item))}</span>
+            <span className={styles.ratingText}>
+              {getRating(item).toFixed(1)} ({getReviews(item)})
+            </span>
+          </div>
+
+          <Image src={safeImg(item.image)} alt={item.title || "product"} fill className={styles.clothImg} />
+
+          <span
+            className={styles.imgCartBtn}
+            role="button"
+            aria-label="Add to cart"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              addToCart(
+                {
+                  _id: item._id,
+                  title: item.title,
+                  price: Number(item.price),
+                  image: item.image,
+                },
+                1
+              );
+              alert("Added to cart ✅");
+            }}
+          >
+            Add to Cart
+          </span>
+        </div>
+
+        <div className={styles.clothInfo}>
+          <h3>{item.title}</h3>
+          <p className={styles.clothPrice}>
+            ₹{item.price} {item.oldPrice ? <span>₹{item.oldPrice}</span> : null}
+          </p>
+        </div>
+      </Link>
+    ))}
+
+    {!loading && clothes.length === 0 ? <p style={{ padding: 10 }}>No clothes products found.</p> : null}
+  </div>
+</section>
+
+
+
+
+
+  {/* ✅ BODYCARE */}
+
+{/* ✅ BODYCARE - 3 CARDS ONLY */}
+
+<section className={styles.glowWrap} data-reveal>
+  <div className={styles.glowHead}>
+    <h2>GLOW & PROTECT</h2>
+    <p>Body care products that nourish, protect, and enhance your skin—effortlessly.</p>
+  </div>
+
+  <div className={styles.glowTrack} ref={glowRef} id="glowTrack">
+    {bodycare.slice(0, 3).map((item) => (
+      <Link
+        href={`/bodycare`}
+        className={styles.glowCard}
+        key={item._id}
+        data-reveal
+        data-glow-card
+        style={{ textDecoration: "none", color: "inherit" }}
+      >
+        <div className={styles.glowImg}>
+          <Image src={safeImg(item.image)} alt={item.title || "product"} fill className={styles.glowFit} />
+        </div>
+
+        <div className={styles.glowInfo}>
+          <h3>{item.title}</h3>
+          <span className={styles.glowPrice}>₹{item.price}</span>
+        </div>
+      </Link>
+    ))}
+
+    {!loading && bodycare.length === 0 ? <p style={{ padding: 10 }}>No bodycare products found.</p> : null}
+  </div>
+</section>
+
+{/* ✅ ABOUT / WHO WE ARE SECTION */}
+<section className={styles.aboutWrap} data-reveal>
+  <div className={styles.aboutInner}>
+    <div className={styles.aboutGrid}>
+      {/* LEFT IMAGE */}
+      <div className={styles.aboutLeft} data-reveal>
+        <div className={styles.aboutImgBox}>
+          <Image
+            src="/trusted1.jpg"     // ✅ apni image ka path do
+            alt="About"
+            fill
+            className={styles.aboutImg}
+            sizes="(max-width: 900px) 92vw, 520px"
+            priority={false}
+          />
+
+          {/* badges */}
+          <div className={styles.badgeStack}>
+            <div className={`${styles.badgeCard} ${styles.delay1}`} data-reveal>
+              <span className={styles.badgeNum}>85%</span>
+              <span className={styles.badgeText}>HAPPY CUSTOMERS</span>
+            </div>
+
+            <div className={`${styles.badgeCard} ${styles.delay2}`} data-reveal>
+              <span className={styles.badgeNum}>12</span>
+              <span className={styles.badgeText}>YEARS OF EXPERIENCE</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* RIGHT CONTENT */}
+      <div className={styles.aboutRight} data-reveal>
+        <p className={styles.aboutKicker}>WHO WE ARE</p>
+
+        <h2 className={styles.aboutTitle}>
+          We build products that add style, comfort & quality to your everyday life.
+        </h2>
+
+        <p className={styles.aboutPara}>
+          From premium furniture to modern essentials, we focus on durability, design and value.
+          Our goal is simple: deliver better quality products with a smooth shopping experience.
+        </p>
+        <Link href="/allproduct">
+        <button className={styles.aboutBtn} type="button">
+          SHOP NOW
+        </button>
+        </Link>
+      </div>
+    </div>
+
+    {/* STATS */}
+    <div className={styles.statsRow} data-reveal>
+      <div className={styles.statItem}>
+        <h3>1.5K</h3>
+        <p>Retail Outlets</p>
+      </div>
+      <div className={styles.statItem}>
+        <h3>5.0K</h3>
+        <p>Products</p>
+      </div>
+      <div className={styles.statItem}>
+        <h3>1.3M</h3>
+        <p>Customers</p>
+      </div>
+      <div className={styles.statItem}>
+        <h3>2.5K</h3>
+        <p>Pharmacists</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+    
+      
 
       <MobileBrands />
       <Footer />

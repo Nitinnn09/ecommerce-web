@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useEffect, useRef } from "react";
 import styles from "../css/mobile.module.css";
+import Link from "next/link";
 
 const brands = [
   { name: "Apple", logo: "/apple.jpg" },
@@ -83,7 +84,7 @@ export default function MobileBrands() {
     <section className={styles.wrap} ref={wrapRef} data-reveal>
       <div className={styles.head} data-reveal>
         <div>
-          <h2 className={styles.title}>TOP BRANDS</h2>
+          <h2 className={styles.title}>Top Brands</h2>
           <p className={styles.sub}>Trusted brands you love</p>
         </div>
       </div>
@@ -93,7 +94,9 @@ export default function MobileBrands() {
         <div className={styles.row}>
           {loopBrands.map((b, i) => (
             <div key={b.name + i} className={styles.card} data-reveal>
+              <Link href= "/mobile">
               <div className={styles.logoBox}>
+                
                 <Image
                   src={b.logo}
                   alt={b.name}
@@ -101,7 +104,9 @@ export default function MobileBrands() {
                   className={styles.logo}
                   quality={100}
                 />
+              
               </div>
+                </Link>
               <p className={styles.name}>{b.name}</p>
             </div>
           ))}

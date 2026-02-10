@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Navbar from "../component/navbar";
-import NextNav from "../component/nextnav";
+
 import styles from "../css/account.module.css";
 
 type UserType = {
@@ -77,7 +77,7 @@ export default function AccountPage() {
     return (
       <>
         <Navbar />
-        <NextNav />
+    
         <div className={styles.empty}>
           <div className={styles.emptyCard}>
             <h3>Please login first</h3>
@@ -94,7 +94,7 @@ export default function AccountPage() {
   return (
     <>
       <Navbar />
-      <NextNav />
+      
 
       <div className={styles.page}>
         <div className={styles.container}>
@@ -141,7 +141,7 @@ export default function AccountPage() {
                   Create Admin Account
                 </Link>
 
-                <Link href="/admin/login" className={styles.btnGhost}>
+                <Link href="/admin/register" className={styles.btnGhost}>
                   Admin Login
                 </Link>
               </div>
