@@ -321,7 +321,7 @@
 }
 
 .sliderHeader h2 {
-   font-size: 35px;
+   font-size: 24px;
   font-weight: 800;
   color: #006064;
   /* margin-bottom: 8px; */
@@ -888,7 +888,7 @@
 .clothsWrap {
   width: 100%;
   background: #ffffff;
-  padding: 40px 18px;
+  padding: 0px 18px;
 }
 
 .clothsHead {
@@ -1067,7 +1067,7 @@
 }
 
 .collectionTag {
-  font-size: 35px;
+  font-size: 24px;
   font-weight: 800;
   color: #006064;
   letter-spacing: 1px;
@@ -1277,7 +1277,12 @@
     justify-content: center;
   }
   .collectionTag {
-    font-size: 30px;
+    font-size: 20px;
+  }
+  .sliderHeader h2 {
+    font-size: 20px;
+    margin-top: 0px;
+    padding-top: 0%;
   }
   
 }
@@ -1342,6 +1347,10 @@
     font-size: 10px;
     align-items: center;
     justify-content: center;
+  }
+  .collectionTag {
+    font-size: 12px;
+    
   }
 }
 
@@ -1584,7 +1593,7 @@
 
 .categoryTitle {
   text-align: center;
-  font-size: 26px;
+  font-size: 20px;
   font-weight: 800;
   color: #006064;
   margin-bottom: 24px;
