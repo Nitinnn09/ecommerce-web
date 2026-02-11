@@ -88,7 +88,7 @@ export default function ElectronicsPage() {
         <div className={styles.page}>
           <div className={styles.header}>
             <h1 className={styles.title}>Electronics</h1>
-            <p className={styles.subText}>Latest electronics products from MongoDB</p>
+            <p className={styles.subText}>Latest electronics products </p>
           </div>
 
           {loading ? (

@@ -153,7 +153,7 @@ export default function OfferPage() {
 
             <select className={styles.select} value={cat} onChange={(e) => setCat(e.target.value)}>
               {categories.map((c) => (
-                <option key={c} value={c}>
+                <option className={styles.selectt} key={c} value={c}>
                   {c === "all" ? "All Categories" : c}
                 </option>
               ))}

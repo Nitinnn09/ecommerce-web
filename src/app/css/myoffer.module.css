@@ -317,4 +317,15 @@
   .btnGhost {
     width: 100%;
   }
+  .selectt {
+    width: 40%;
+  }
+  .select option {
+    width: 10px;
+  }
+  .btn {
+    padding: 10px;
+  }
 }
+
+

@@ -104,7 +104,8 @@
   }
 
   .title{
-    font-size: 28px;
+   display: none;
+
   }
 }
 
@@ -113,11 +114,13 @@
   .grid{
     grid-template-columns: repeat(2, 1fr);
     gap: 10px;
+    height: 80%;
   }
 
   .imgBox{
-    height: 170px;
+    height: 150px;
   }
+
 }
 
 /* 420 -> 1 */
