@@ -29,9 +29,6 @@ export default function AccountPage() {
     // ✅ clear user
     localStorage.removeItem("user");
 
-    // ✅ optional: admin bhi clear (agar same browser me admin login hota ho)
-    localStorage.removeItem("admin");
-
     // ✅ navbar update
     window.dispatchEvent(new Event("user-updated"));
 
@@ -131,21 +128,6 @@ export default function AccountPage() {
               Logout
             </button>
 
-            {/* ✅ Admin option */}
-            <div className={styles.adminCard}>
-              <h4 className={styles.adminTitle}>Admin Access</h4>
-              <p className={styles.adminText}>Agar tum Admin account banana chahte ho to yahan se jao.</p>
-
-              <div className={styles.adminActions}>
-                <Link href="/admin/register" className={styles.btnPrimary}>
-                  Create Admin Account
-                </Link>
-
-                <Link href="/admin/register" className={styles.btnGhost}>
-                  Admin Login
-                </Link>
-              </div>
-            </div>
           </aside>
 
           {/* RIGHT */}

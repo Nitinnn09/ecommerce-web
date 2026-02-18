@@ -59,6 +59,12 @@
   justify-content: center;
 }
 
+.rightForm {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
 .right h2 {
   font-size: 30px;
   margin-bottom: 20px;
@@ -106,6 +112,34 @@
   margin-top: 18px;
   font-size: 13px;
   color: #555;
+}
+
+.adminEntry {
+  margin-top: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.adminText {
+  font-size: 13px;
+  color: #555;
+}
+
+.adminBtn {
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid #e5e7eb;
+  background: #fff;
+  color: #006064;
+  font-weight: 800;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.adminBtn:hover {
+  background: #f3f4f6;
 }
 
 /* MOBILE */
@@ -176,6 +210,15 @@
 
   .other {
     font-size: 12px;
+  }
+
+  .adminEntry {
+    margin-top: 12px;
+  }
+
+  .adminBtn {
+    width: 100%;
+    text-align: center;
   }
 }
 

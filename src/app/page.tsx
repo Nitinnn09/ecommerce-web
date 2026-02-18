@@ -76,50 +76,59 @@ export default function LoginPage() {
         </div>
 
         {/* RIGHT PANEL */}
-        <form className={styles.right} onSubmit={handleSubmit}>
-          <h2>{isLogin ? "Login" : "Register"}</h2>
+        <div className={styles.right}>
+          <form className={styles.rightForm} onSubmit={handleSubmit}>
+            <h2>{isLogin ? "Login" : "Register"}</h2>
 
-          {!isLogin && (
+            {!isLogin && (
+              <input
+                type="text"
+                name="name"
+                placeholder="username"
+                value={form.name}
+                onChange={handleChange}
+                required
+              />
+            )}
+
             <input
-              type="text"
-              name="name"
-              placeholder="username"
-              value={form.name}
+              type="email"
+              name="email"
+              placeholder="email"
+              value={form.email}
               onChange={handleChange}
               required
             />
-          )}
 
-          <input
-            type="email"
-            name="email"
-            placeholder="email"
-            value={form.email}
-            onChange={handleChange}
-            required
-          />
+            <input
+              type="password"
+              name="password"
+              placeholder="password"
+              value={form.password}
+              onChange={handleChange}
+              required
+            />
 
-          <input
-            type="password"
-            name="password"
-            placeholder="password"
-            value={form.password}
-            onChange={handleChange}
-            required
-          />
+            {isLogin && (
+              <Link className={styles.forgot} href="/forgot-password">
+                Forgot Password
+              </Link>
+            )}
 
-          {isLogin && (
-            <Link className={styles.forgot} href="/forgot-password">
-              Forgot Password
+            <button type="submit" className={styles.loginBtn}>
+              {isLogin ? "Login" : "Register"}
+            </button>
+
+            <p className={styles.other}>or login other platform</p>
+          </form>
+
+          <div className={styles.adminEntry}>
+            <span className={styles.adminText}>Admin?</span>
+            <Link className={styles.adminBtn} href="/admin/register">
+              Admin Login
             </Link>
-          )}
-
-          <button type="submit" className={styles.loginBtn}>
-            {isLogin ? "Login" : "Register"}
-          </button>
-
-          <p className={styles.other}>or login other platform</p>
-        </form>
+          </div>
+        </div>
       </div>
     </div>
   );

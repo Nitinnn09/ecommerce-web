@@ -90,31 +90,6 @@
   font-weight: 700;
 }
 
-/* ================= ADMIN CARD ================= */
-.adminCard {
-  margin-top: 18px;
-  padding: 14px;
-  border: 1px dashed #e5e7eb;
-  background: #f9fafb;
-}
-
-.adminTitle {
-  font-size: 14px;
-  font-weight: 800;
-  margin-bottom: 6px;
-}
-
-.adminText {
-  font-size: 13px;
-  color: #6b7280;
-  margin-bottom: 12px;
-}
-
-.adminActions {
-  display: grid;
-  gap: 10px;
-}
-
 /* ================= CONTENT ================= */
 .content1 {
   padding: 18px;
