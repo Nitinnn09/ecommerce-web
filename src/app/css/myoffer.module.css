@@ -317,4 +317,7 @@
   .btnGhost {
     width: 100%;
   }
+  .btn {
+    padding: 10px;
+  }
 }

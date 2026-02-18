@@ -307,7 +307,11 @@
 
 /* ===== SLIDER SECTION (FURNITURE) ===== */
 .sliderSection {
+<<<<<<< HEAD
   padding: 10px 18px;
+=======
+  padding: 0px 18px;
+>>>>>>> 9e258cc (push by nitin)
   background: #ffffff;
   overflow: hidden;
 }
@@ -321,7 +325,11 @@
 }
 
 .sliderHeader h2 {
+<<<<<<< HEAD
    font-size: 35px;
+=======
+   font-size: 24px;
+>>>>>>> 9e258cc (push by nitin)
   font-weight: 800;
   color: #006064;
   /* margin-bottom: 8px; */
@@ -888,7 +896,11 @@
 .clothsWrap {
   width: 100%;
   background: #ffffff;
+<<<<<<< HEAD
   padding: 40px 18px;
+=======
+  padding: 20px 18px;
+>>>>>>> 9e258cc (push by nitin)
 }
 
 .clothsHead {
@@ -1162,7 +1174,7 @@
   }
 
   .sliderHeader h2 {
-    font-size: 28px;
+    font-size: 16px;
   }
 
   .sliderCard {
@@ -1234,9 +1246,7 @@
   }
 
   .clothsViewAll {
-    margin-left: 310px;
-    padding: 4px 8px;
-    font-size: small;
+    display: none;
   }
 
   .subText {
@@ -1277,7 +1287,15 @@
     justify-content: center;
   }
   .collectionTag {
+<<<<<<< HEAD
     font-size: 30px;
+=======
+    font-size: 16px;
+  }
+  .categoryTitle {
+    font-size: 12px;
+
+>>>>>>> 9e258cc (push by nitin)
   }
   
 }
@@ -1571,12 +1589,23 @@
   .statsRow {
     grid-template-columns: 1fr;
   }
+<<<<<<< HEAD
+=======
+  .categoryTitle {
+    font-size: 12px;
+
+  }
+>>>>>>> 9e258cc (push by nitin)
 }
 
 
 /*category section styling */
 .categoryScrollWrap {
+<<<<<<< HEAD
   padding: 40px 18px 10px;
+=======
+  padding: 20px 18px 10px;
+>>>>>>> 9e258cc (push by nitin)
   background: #ffffff;
   justify-content: center;
   text-align: center;
@@ -1584,7 +1613,11 @@
 
 .categoryTitle {
   text-align: center;
+<<<<<<< HEAD
   font-size: 26px;
+=======
+  font-size: 24px;
+>>>>>>> 9e258cc (push by nitin)
   font-weight: 800;
   color: #006064;
   margin-bottom: 24px;

@@ -149,7 +149,7 @@ export default function AccountPage() {
           </aside>
 
           {/* RIGHT */}
-          <main className={styles.content}>
+          <main className={styles.content1}>
             <div className={styles.topBar}>
               <div>
                 <h2 className={styles.heading}>My Account</h2>

@@ -3,8 +3,8 @@
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
-import {useRouter} from "next/navigation";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import styles from "../css/home.module.css";
 import Footer from "../component/footer";
 import MobileBrands from "../component/mobile";
@@ -45,7 +45,6 @@ const featuredItems = [
   },
 ];
 
-
 type ProductType = {
   _id: string;
   title: string;
@@ -71,26 +70,29 @@ export default function HomePage() {
   const [furniture, setFurniture] = useState<ProductType[]>([]);
   const [clothes, setClothes] = useState<ProductType[]>([]);
   const [bodycare, setBodycare] = useState<ProductType[]>([]);
+  const [newArrivals, setNewArrivals] = useState<ProductType[]>([]); // ✅ NEW ARRIVAL (latest)
   const [loading, setLoading] = useState(true);
 
+  const handleAddAndCheckout = (p: any) => {
+    addToCart(
+      {
+        _id: p._id || p.title, // featuredItems me _id nahi hai, isliye fallback
+        title: p.title,
+        price: Number(p.price),
+        image: p.image,
+      },
+      1
+    );
 
-const handleAddAndCheckout = (p: any) => {
-  addToCart({
-    _id: p._id || p.title,          // featuredItems me _id nahi hai, isliye fallback
-    title: p.title,
-    price: Number(p.price),
-    image: p.image,
-  }, 1);
+    router.push("/checkout");
+  };
 
-  router.push("/checkout");         // ✅ direct checkout
-};
-
-
-  // ✅ Strict image safe (blocks C:\fakepath...)
+  // ✅ FIXED safeImg (supports "/img", "img.jpg", "uploads/a.jpg", "https://...")
   const safeImg = (src?: string) => {
     if (!src) return "/placeholder.png";
-    if (src.startsWith("/")) return src; // /uploads/... or /sofa.png
-    return "/placeholder.png";
+    if (src.startsWith("/")) return src;
+    if (src.startsWith("http://") || src.startsWith("https://")) return src;
+    return `/${src.replace(/^\.?\//, "")}`;
   };
 
   // ✅ Normalize response (array OR {products: []})
@@ -100,75 +102,76 @@ const handleAddAndCheckout = (p: any) => {
     return [];
   };
 
-  // ✅ Fetch from MongoDB via API
+  // ✅ rating helpers (always show)
+  const starText = (rating?: number) => {
+    const r = Math.max(0, Math.min(5, Number(rating ?? 4.5)));
+    const full = Math.round(r);
+    return "★★★★★".slice(0, full) + "☆☆☆☆☆".slice(0, 5 - full);
+  };
+
+  const getRating = (item: ProductType) => Number(item.rating ?? 4.5);
+  const getReviews = (item: ProductType) => Number(item.reviews ?? 0);
+
+  // ✅ Fetch: furniture + clothes + bodycare + NEW ARRIVAL (latest)
   useEffect(() => {
+    const controller = new AbortController();
+
     const load = async () => {
       try {
         setLoading(true);
 
-        const [fRes, cRes, gRes] = await Promise.all([
-          fetch("/api/products?category=furniture"),
-          fetch("/api/products?category=clothes&limit=8"),
-          fetch("/api/products?category=bodycare"),
+        const [fRes, cRes, bRes, nRes] = await Promise.all([
+          fetch("/api/products?category=furniture", { signal: controller.signal }),
+          fetch("/api/products?category=clothes&limit=8", { signal: controller.signal }),
+          fetch("/api/products?category=bodycare", { signal: controller.signal }),
+          // ✅ backend already handles latest
+         fetch("/api/products?sort=latest", { cache: "no-store", signal: controller.signal })
+
         ]);
 
-        // ✅ status debug
-        console.log("API status:", fRes.status, cRes.status, gRes.status);
-
-        if (!fRes.ok || !cRes.ok || !gRes.ok) {
+        if (!fRes.ok || !cRes.ok || !bRes.ok || !nRes.ok) {
           const t1 = await fRes.text().catch(() => "");
           const t2 = await cRes.text().catch(() => "");
-          const t3 = await gRes.text().catch(() => "");
-          throw new Error(`API failed: ${t1} | ${t2} | ${t3}`);
+          const t3 = await bRes.text().catch(() => "");
+          const t4 = await nRes.text().catch(() => "");
+          throw new Error(`API failed: ${t1} | ${t2} | ${t3} | ${t4}`);
         }
 
-        const [fData, cData, gData] = await Promise.all([fRes.json(), cRes.json(), gRes.json()]);
-
-        // ✅ raw debug (very important)
-        console.log("RAW furniture:", fData);
-        console.log("RAW clothes:", cData);
-        console.log("RAW bodycare:", gData);
+        const [fData, cData, bData, nData] = await Promise.all([
+          fRes.json(),
+          cRes.json(),
+          bRes.json(),
+          nRes.json(),
+        ]);
 
         setFurniture(normalize(fData));
         setClothes(normalize(cData));
-        setBodycare(normalize(gData));
+        setBodycare(normalize(bData));
+        setNewArrivals(normalize(nData)); // ✅ latest products only
       } catch (e) {
         console.error("Fetch error:", e);
         setFurniture([]);
         setClothes([]);
         setBodycare([]);
+        setNewArrivals([]);
       } finally {
         setLoading(false);
       }
     };
 
     load();
+    return () => controller.abort();
   }, []);
 
+  // ✅ featured auto slide
   const [featureIndex, setFeatureIndex] = useState(0);
-
-useEffect(() => {
-  if (!featuredItems.length) return;
-
-  const id = window.setInterval(() => {
-    setFeatureIndex((prev) => (prev + 1) % featuredItems.length);
-  }, 2000);
-
-  return () => window.clearInterval(id);
-}, []);
-
-
-// ✅ rating helpers (always show)
-const starText = (rating?: number) => {
-  const r = Math.max(0, Math.min(5, Number(rating ?? 4.5)));
-  const full = Math.round(r);
-  return "★★★".slice(0, full) + "☆☆☆".slice(0, 5 - full);
-};
-
-const getRating = (item: ProductType) => Number(item.rating ?? 4.5);
-const getReviews = (item: ProductType) => Number(item.reviews ?? 0);
-
-
+  useEffect(() => {
+    if (!featuredItems.length) return;
+    const id = window.setInterval(() => {
+      setFeatureIndex((prev) => (prev + 1) % featuredItems.length);
+    }, 2000);
+    return () => window.clearInterval(id);
+  }, []);
 
   // ✅ Auto scroll furniture slider (continuous)
   useEffect(() => {
@@ -199,6 +202,7 @@ const getReviews = (item: ProductType) => Number(item.reviews ?? 0);
     };
   }, [furniture.length]);
 
+<<<<<<< HEAD
   const featured = featuredItems[featureIndex];
 
 
@@ -238,6 +242,8 @@ useEffect(() => {
 
 
 
+=======
+>>>>>>> 9e258cc (push by nitin)
   // ✅ Glow auto scroll (every 2s)
   useEffect(() => {
     const el = glowRef.current;
@@ -296,9 +302,9 @@ useEffect(() => {
       items.forEach((el) => io.unobserve(el));
       io.disconnect();
     };
-  }, [furniture.length, clothes.length, bodycare.length]);
+  }, [furniture.length, clothes.length, bodycare.length, newArrivals.length]);
 
-  const sliderItems = furniture.length ? [...furniture, ...furniture] : [];
+  const sliderItems = useMemo(() => (furniture.length ? [...furniture, ...furniture] : []), [furniture]);
 
   return (
     <div ref={pageRef}>
@@ -306,6 +312,7 @@ useEffect(() => {
       {/* <NextNav /> */}
       <Banner />
 
+<<<<<<< HEAD
       <InspirationCollection/>
         {/* ✅ FEATURED CARDS (3 items) */}
 <section className={styles.featureCardsWrap} data-reveal>
@@ -313,111 +320,220 @@ useEffect(() => {
     {/* <h2 className={styles.featureCardsTitle}>FEATURES PICKS</h2>
     <p className={styles.featureCardsSub}>Top deals handpicked for you</p> */}
   </div>
+=======
+      <InspirationCollection />
+>>>>>>> 9e258cc (push by nitin)
 
-  {/* ✅ Desktop grid */}
-  <div className={styles.featureCardsGrid}>
-    {featuredItems.map((item, idx) => (
-      <div key={idx} className={styles.featureCard}>
-        <Image
-          src={item.image}
-          alt={item.title}
-          fill
-          className={styles.featureCardImg}
-          sizes="(max-width: 768px) 100vw, 33vw"
-          priority={idx === 0}
-        />
-        <div className={styles.featureOverlay} />
-        {item.discount ? <span className={styles.featureChip}>{item.discount}</span> : null}
+      {/* ✅ FEATURED CARDS (3 items) */}
+      <section className={styles.featureCardsWrap} data-reveal>
+        <div className={styles.featureCardsHead}></div>
 
-        <div className={styles.featureCardContent}>
-          <p className={styles.featureMini}>HOME • OFFICE</p>
-          <h3 className={styles.featureCardName}>{item.title}</h3>
+        <div className={styles.featureCardsGrid}>
+          {featuredItems.map((item, idx) => (
+            <div key={idx} className={styles.featureCard}>
+              <Image
+                src={item.image}
+                alt={item.title}
+                fill
+                className={styles.featureCardImg}
+                sizes="(max-width: 768px) 100vw, 33vw"
+                priority={idx === 0}
+              />
+              <div className={styles.featureOverlay} />
+              {item.discount ? <span className={styles.featureChip}>{item.discount}</span> : null}
 
-          <p className={styles.featureCardPrice}>
-            ₹{item.price} <span>₹{item.oldPrice}</span>
-          </p>
+              <div className={styles.featureCardContent}>
+                <p className={styles.featureMini}>HOME • OFFICE</p>
+                <h3 className={styles.featureCardName}>{item.title}</h3>
 
-          <p className={styles.featureCardDesc}>{item.desc}</p>
+                <p className={styles.featureCardPrice}>
+                  ₹{item.price} <span>₹{item.oldPrice}</span>
+                </p>
 
-          <div className={styles.featureCardBtns}>
-            <button className={styles.featureBtnPrimary} onClick={() => handleAddAndCheckout(item)}>
-              Add to Cart
-            </button>
-            <button className={styles.featureBtnGhost}>View Details</button>
-          </div>
-        </div>
-      </div>
-    ))}
-  </div>
+                <p className={styles.featureCardDesc}>{item.desc}</p>
 
-  {/* ✅ Mobile slider (auto change) */}
-  <div className={styles.featureMobileOnly}>
-    <div className={styles.featureMobileTrack} style={{ transform: `translateX(-${featureIndex * 100}%)` }}>
-      {featuredItems.map((item, idx) => (
-        <div key={idx} className={styles.featureMobileSlide}>
-          <div className={styles.featureCard}>
-            <Image
-              src={item.image}
-              alt={item.title}
-              fill
-              className={styles.featureCardImg}
-              sizes="100vw"
-              priority={idx === 0}
-            />
-            <div className={styles.featureOverlay} />
-            {item.discount ? <span className={styles.featureChip}>{item.discount}</span> : null}
-
-            <div className={styles.featureCardContent}>
-              <p className={styles.featureMini}>HOME • OFFICE</p>
-              <h3 className={styles.featureCardName}>{item.title}</h3>
-
-              <p className={styles.featureCardPrice}>
-                ₹{item.price} <span>₹{item.oldPrice}</span>
-              </p>
-
-              <p className={styles.featureCardDesc}>{item.desc}</p>
-
-              <div className={styles.featureCardBtns}>
-                <button className={styles.featureBtnPrimary} onClick={() => handleAddAndCheckout(item)}>
-                  Add to Cart
-                </button>
-                <button className={styles.featureBtnGhost}>View Details</button>
+                <div className={styles.featureCardBtns}>
+                  <button className={styles.featureBtnPrimary} onClick={() => handleAddAndCheckout(item)}>
+                    Add to Cart
+                  </button>
+                  <button className={styles.featureBtnGhost}>View Details</button>
+                </div>
               </div>
             </div>
+          ))}
+        </div>
+
+        {/* ✅ Mobile slider */}
+        <div className={styles.featureMobileOnly}>
+          <div className={styles.featureMobileTrack} style={{ transform: `translateX(-${featureIndex * 100}%)` }}>
+            {featuredItems.map((item, idx) => (
+              <div key={idx} className={styles.featureMobileSlide}>
+                <div className={styles.featureCard}>
+                  <Image src={item.image} alt={item.title} fill className={styles.featureCardImg} sizes="100vw" priority={idx === 0} />
+                  <div className={styles.featureOverlay} />
+                  {item.discount ? <span className={styles.featureChip}>{item.discount}</span> : null}
+
+                  <div className={styles.featureCardContent}>
+                    <p className={styles.featureMini}>HOME • OFFICE</p>
+                    <h3 className={styles.featureCardName}>{item.title}</h3>
+
+                    <p className={styles.featureCardPrice}>
+                      ₹{item.price} <span>₹{item.oldPrice}</span>
+                    </p>
+
+                    <p className={styles.featureCardDesc}>{item.desc}</p>
+
+                    <div className={styles.featureCardBtns}>
+                      <button className={styles.featureBtnPrimary} onClick={() => handleAddAndCheckout(item)}>
+                        Add to Cart
+                      </button>
+                      <button className={styles.featureBtnGhost}>View Details</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className={styles.featureDots}>
+            {featuredItems.map((_, i) => (
+              <button
+                key={i}
+                className={`${styles.dot} ${i === featureIndex ? styles.dotActive : ""}`}
+                onClick={() => setFeatureIndex(i)}
+                aria-label={`Go to slide ${i + 1}`}
+              />
+            ))}
           </div>
         </div>
-      ))}
-    </div>
+      </section>
 
-    {/* dots */}
-    <div className={styles.featureDots}>
-      {featuredItems.map((_, i) => (
-        <button
-          key={i}
-          className={`${styles.dot} ${i === featureIndex ? styles.dotActive : ""}`}
-          onClick={() => setFeatureIndex(i)}
-          aria-label={`Go to slide ${i + 1}`}
-        />
-      ))}
-    </div>
-  </div>
-</section>
+      {/* ✅ CLOTHES */}
+      <section className={styles.clothsWrap} data-reveal>
+        <p className={styles.collectionTag}>Clothes Collection</p>
+
+        <div className={styles.clothsHead}>
+          <div className={styles.clothTitleLeft}></div>
+
+          <Link href="/clothes" className={styles.clothsViewAll}>
+            View All
+          </Link>
+        </div>
+
+        <div className={styles.clothsGrid}>
+          {clothes.slice(0, 8).map((item) => (
+            <Link
+              href={`/clothes`}
+              className={styles.clothCard}
+              key={item._id}
+              data-reveal
+              style={{ textDecoration: "none", color: "inherit" }}
+            >
+              <div className={styles.clothImgBox}>
+                {item.discount ? <span className={styles.clothDiscount}>{item.discount}</span> : null}
+                {item.tag ? <span className={styles.clothTag}>{item.tag}</span> : null}
+
+                <div className={styles.ratingBadge}>
+                  <span className={styles.stars}>{starText(getRating(item))}</span>
+                  <span className={styles.ratingText}>
+                    {getRating(item).toFixed(1)} ({getReviews(item)})
+                  </span>
+                </div>
+
+                <Image src={safeImg(item.image)} alt={item.title || "product"} fill className={styles.clothImg} />
+
+                <span
+                  className={styles.imgCartBtn}
+                  role="button"
+                  aria-label="Add to cart"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    addToCart(
+                      { _id: item._id, title: item.title, price: Number(item.price), image: item.image },
+                      1
+                    );
+                    alert("Added to cart ✅");
+                  }}
+                >
+                  Add to Cart
+                </span>
+              </div>
+
+              <div className={styles.clothInfo}>
+                <h3>{item.title}</h3>
+                <p className={styles.clothPrice}>
+                  ₹{item.price} {item.oldPrice ? <span>₹{item.oldPrice}</span> : null}
+                </p>
+              </div>
+            </Link>
+          ))}
+
+          {!loading && clothes.length === 0 ? <p style={{ padding: 10 }}>No clothes products found.</p> : null}
+        </div>
+      </section>
+
+      {/* ✅ CATEGORY SCROLL */}
+      <section className={styles.categoryScrollWrap} data-reveal>
+        <h2 className={styles.categoryTitle}>Shop By Category</h2>
+
+        <div className={styles.categoryScrollTrack}>
+          {[
+            { name: "Clothes", image: "/tshirt.jpg", link: "/clothes" },
+            { name: "Watch", image: "/watch.jpg", link: "/electronics" },
+            { name: "kichen kid", image: "/mixy.jpg", link: "/electronics" },
+            { name: "Sports", image: "/shoes1.jpg", link: "/shoes" },
+            { name: "Bags", image: "/bags.jpg", link: "/allproduct" },
+            { name: "Sliper", image: "/sliper.jpg", link: "/shoes" },
+            { name: "Room Light", image: "/luxery3.jpg", link: "/electronics" },
+            { name: "Furniture", image: "/furniture.jpg", link: "/furniture" },
+            { name: "Clothes", image: "/tshirt.jpg", link: "/clothes" },
+            { name: "Watch", image: "/watch.jpg", link: "/electronics" },
+            { name: "kichen kid", image: "/mixy.jpg", link: "/electronics" },
+            { name: "Sports", image: "/shoes1.jpg", link: "/shoes" },
+            { name: "Bags", image: "/bags.jpg", link: "/allproduct" },
+            { name: "Sliper", image: "/sliper.jpg", link: "/shoes" },
+            { name: "Room Light", image: "/luxery3.jpg", link: "/electronics" },
+            { name: "Furniture", image: "/furniture.jpg", link: "/furniture" },
+          ].map((cat, i) => (
+            <Link key={i} href={cat.link} className={styles.categoryItem}>
+              <div className={styles.categoryImgBox}>
+                <Image src={cat.image} alt={cat.name} width={100} height={100} />
+              </div>
+              <p className={styles.categoryName}>{cat.name}</p>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+<<<<<<< HEAD
+=======
+      {/* ✅ FURNITURE SLIDER */}
+      <section className={styles.sliderSection} data-reveal>
+        <div className={styles.sliderHeader}>
+          <h2>Populer Furniture</h2>
+          <p>{loading ? "Loading..." : ""}</p>
+        </div>
+>>>>>>> 9e258cc (push by nitin)
 
 
-
-
-
-
+<<<<<<< HEAD
     
       {/* ✅ CLOTHES */}
      {/* ✅ CLOTHES */}
 <section className={styles.clothsWrap} data-reveal>
   <p className={styles.collectionTag}>Clothes Collection</p>
   {/* <p className={styles.subText}>Best fashion picks for you — premium quality & modern style</p> */}
+=======
+      {/* ✅ NEW ARRIVAL (latest from backend) */}
+      <section className={styles.clothsWrap} data-reveal>
+        <p className={styles.collectionTag}>New arrival</p>
+>>>>>>> 9e258cc (push by nitin)
 
-  <div className={styles.clothsHead}>
-    <div className={styles.clothTitleLeft}></div>
+        <div className={styles.clothsHead}>
+          <div className={styles.clothTitleLeft}></div>
 
+<<<<<<< HEAD
     <Link href="/clothes" className={styles.clothsViewAll}>
       View All
     </Link>
@@ -467,22 +583,68 @@ useEffect(() => {
           >
             Add to Cart
           </span>
+=======
+          <Link href="/allproduct" className={styles.clothsViewAll}>
+            View All
+          </Link>
+>>>>>>> 9e258cc (push by nitin)
         </div>
 
-        <div className={styles.clothInfo}>
-          <h3>{item.title}</h3>
-          <p className={styles.clothPrice}>
-            ₹{item.price} {item.oldPrice ? <span>₹{item.oldPrice}</span> : null}
-          </p>
+        <div className={styles.clothsGrid}>
+         {newArrivals.slice(0, 8).map((item) => (
+
+            <Link
+              href={`/allproduct`}
+              className={styles.clothCard}
+              key={item._id}
+              data-reveal
+              style={{ textDecoration: "none", color: "inherit" }}
+            >
+              <div className={styles.clothImgBox}>
+                {item.discount ? <span className={styles.clothDiscount}>{item.discount}</span> : null}
+                {item.tag ? <span className={styles.clothTag}>{item.tag}</span> : null}
+
+                <div className={styles.ratingBadge}>
+                  <span className={styles.stars}>{starText(getRating(item))}</span>
+                  <span className={styles.ratingText}>
+                    {getRating(item).toFixed(1)} ({getReviews(item)})
+                  </span>
+                </div>
+
+                <Image src={safeImg(item.image)} alt={item.title || "product"} fill className={styles.clothImg} />
+
+                <span
+                  className={styles.imgCartBtn}
+                  role="button"
+                  aria-label="Add to cart"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    addToCart(
+                      { _id: item._id, title: item.title, price: Number(item.price), image: item.image },
+                      1
+                    );
+                    alert("Added to cart ✅");
+                  }}
+                >
+                  Add to Cart
+                </span>
+              </div>
+
+              <div className={styles.clothInfo}>
+                <h3>{item.title}</h3>
+                <p className={styles.clothPrice}>
+                  ₹{item.price} {item.oldPrice ? <span>₹{item.oldPrice}</span> : null}
+                </p>
+              </div>
+            </Link>
+          ))}
+
+          {!loading && newArrivals.length === 0 ? <p style={{ padding: 10 }}>No new arrival products found.</p> : null}
         </div>
-      </Link>
-    ))}
+      </section>
 
-    {!loading && clothes.length === 0 ? <p style={{ padding: 10 }}>No clothes products found.</p> : null}
-  </div>
-</section>
-
-
+<<<<<<< HEAD
 {/* ✅ CATEGORY SCROLL SECTION */}
 <section className={styles.categoryScrollWrap} data-reveal>
   <h2 className={styles.categoryTitle}>Shop By Category</h2>
@@ -550,6 +712,108 @@ useEffect(() => {
             {!loading && furniture.length === 0 ? <p style={{ padding: 10 }}>No furniture products found.</p> : null}
           </div>
         </div>
+=======
+      {/* ✅ BODYCARE */}
+      <section className={styles.glowWrap} data-reveal>
+        <div className={styles.glowHead}>
+          <h2>GLOW & PROTECT</h2>
+          <p>Body care products that nourish, protect, and enhance your skin—effortlessly.</p>
+        </div>
+
+        <div className={styles.glowTrack} ref={glowRef} id="glowTrack">
+          {bodycare.slice(0, 3).map((item) => (
+            <Link
+              href={`/bodycare`}
+              className={styles.glowCard}
+              key={item._id}
+              data-reveal
+              data-glow-card
+              style={{ textDecoration: "none", color: "inherit" }}
+            >
+              <div className={styles.glowImg}>
+                <Image src={safeImg(item.image)} alt={item.title || "product"} fill className={styles.glowFit} />
+              </div>
+
+              <div className={styles.glowInfo}>
+                <h3>{item.title}</h3>
+                <span className={styles.glowPrice}>₹{item.price}</span>
+              </div>
+            </Link>
+          ))}
+
+          {!loading && bodycare.length === 0 ? <p style={{ padding: 10 }}>No bodycare products found.</p> : null}
+        </div>
+      </section>
+
+      {/* ✅ ABOUT */}
+      <section className={styles.aboutWrap} data-reveal>
+        <div className={styles.aboutInner}>
+          <div className={styles.aboutGrid}>
+            <div className={styles.aboutLeft} data-reveal>
+              <div className={styles.aboutImgBox}>
+                <Image
+                  src="/trusted1.jpg"
+                  alt="About"
+                  fill
+                  className={styles.aboutImg}
+                  sizes="(max-width: 900px) 92vw, 520px"
+                  priority={false}
+                />
+
+                <div className={styles.badgeStack}>
+                  <div className={`${styles.badgeCard} ${styles.delay1}`} data-reveal>
+                    <span className={styles.badgeNum}>85%</span>
+                    <span className={styles.badgeText}>HAPPY CUSTOMERS</span>
+                  </div>
+
+                  <div className={`${styles.badgeCard} ${styles.delay2}`} data-reveal>
+                    <span className={styles.badgeNum}>12</span>
+                    <span className={styles.badgeText}>YEARS OF EXPERIENCE</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className={styles.aboutRight} data-reveal>
+              <p className={styles.aboutKicker}>WHO WE ARE</p>
+
+              <h2 className={styles.aboutTitle}>
+                We build products that add style, comfort & quality to your everyday life.
+              </h2>
+
+              <p className={styles.aboutPara}>
+                From premium furniture to modern essentials, we focus on durability, design and value.
+                Our goal is simple: deliver better quality products with a smooth shopping experience.
+              </p>
+
+              <Link href="/allproduct">
+                <button className={styles.aboutBtn} type="button">
+                  SHOP NOW
+                </button>
+              </Link>
+            </div>
+          </div>
+
+          <div className={styles.statsRow} data-reveal>
+            <div className={styles.statItem}>
+              <h3>1.5K</h3>
+              <p>Retail Outlets</p>
+            </div>
+            <div className={styles.statItem}>
+              <h3>5.0K</h3>
+              <p>Products</p>
+            </div>
+            <div className={styles.statItem}>
+              <h3>1.3M</h3>
+              <p>Customers</p>
+            </div>
+            <div className={styles.statItem}>
+              <h3>2.5K</h3>
+              <p>Pharmacists</p>
+            </div>
+          </div>
+        </div>
+>>>>>>> 9e258cc (push by nitin)
       </section>
 
       {/* ✅ NEW ARRIVALS SECTION */}
