@@ -2,8 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import styles from "../../css/productList.module.css";
-import AdminNavbar from "@/app/component/adminnav";
+import styles from "../../../css/productList.module.css";
 
 type Product = {
   _id: string;
@@ -27,7 +26,7 @@ export default function AdminProductsPage() {
     try {
       setLoading(true);
 
-      const res = await fetch("/api/products", { cache: "no-store" });
+      const res = await fetch("/api/products?mine=true", { cache: "no-store" });
       const data = await res.json();
 
       setProducts(normalize(data));
@@ -61,8 +60,6 @@ export default function AdminProductsPage() {
 
   return (
     <>
-      <AdminNavbar />
-
       <div className={styles.page}>
         <div className={styles.container}>
           <div className={styles.header}>

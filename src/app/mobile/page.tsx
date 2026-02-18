@@ -3,9 +3,10 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import styles from "../css/mobile2.module.css";
+import styles from "../css/categorypage.module.css";
 import Navbar from "../component/navbar";
 import CategorySidebar from "../component/category";
+import { useSearchParams } from "next/navigation";
 
 type ProductType = {
   _id: string;
@@ -19,6 +20,8 @@ type ProductType = {
 };
 
 export default function MobilePage() {
+  const searchParams = useSearchParams();
+  const urlQ = (searchParams.get("q") || "").trim();
   const [items, setItems] = useState<ProductType[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -63,6 +66,10 @@ export default function MobilePage() {
     return () => controller.abort();
   }, []);
 
+  useEffect(() => {
+    if (urlQ) setQ(urlQ);
+  }, [urlQ]);
+
   const filtered = useMemo(() => {
     const text = q.trim().toLowerCase();
 
@@ -90,6 +97,10 @@ export default function MobilePage() {
         <main className={styles.content}>
           <div className={styles.page}>
             <div className={styles.header}>
+              <div className={styles.heading}>
+                <h1 className={styles.title}>Mobile</h1>
+                <p className={styles.subText}>{q ? `Results for "${q}"` : "Browse mobile products"}</p>
+              </div>
               {/* <h1 className={styles.title}>Mobile</h1>
               <p className={styles.subText}>All mobile products from MongoDB</p> */}
 
@@ -112,12 +123,14 @@ export default function MobilePage() {
 
             {loading ? (
               <div className={styles.loading}>Loading...</div>
-            ) : filtered.length === 0 ? (
+            ) : items.length === 0 ? (
               <p className={styles.empty}>No mobile products found.</p>
+            ) : filtered.length === 0 ? (
+              <p className={styles.empty}>No matching products found.</p>
             ) : (
               <div className={styles.grid}>
                 {filtered.map((p) => (
-                  <Link key={p._id} href={`/product/${p._id}`} className={styles.relCard}>
+                  <Link key={p._id} href={`/product/${p._id}`} className={styles.card}>
 
                     {p.discount ? <span className={styles.badge}>{p.discount}</span> : null}
 

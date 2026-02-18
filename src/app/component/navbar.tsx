@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import styles from "../css/nav.module.css";
 import Sidebar from "../component/sidebar";
+import { useRouter } from "next/navigation";
 
 type LoggedUser = {
   id?: string;
@@ -14,10 +15,12 @@ type LoggedUser = {
 };
 
 export default function Navbar() {
+  const router = useRouter();
   const [open, setOpen] = useState(false);
   const [user, setUser] = useState<LoggedUser | null>(null);
   const [cartCount, setCartCount] = useState(0);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [q, setQ] = useState("");
 
   useEffect(() => {
     const loadUser = () => {
@@ -60,6 +63,32 @@ export default function Navbar() {
 
   const avatarSrc = user?.image?.trim() ? user.image : "/user.png";
 
+  const routeForQuery = (query: string) => {
+    const text = query.trim().toLowerCase();
+
+    const hasAny = (words: string[]) => words.some((w) => text.includes(w));
+
+    if (hasAny(["cloth", "tshirt", "shirt", "jean", "pant", "dress"])) return "/clothes";
+    if (hasAny(["furniture", "sofa", "chair", "table", "bed", "lamp"])) return "/furniture";
+    if (hasAny(["bodycare", "body care", "skin", "serum", "cream", "facewash"])) return "/bodycare";
+    if (hasAny(["mobile", "phone", "iphone", "samsung"])) return "/mobile";
+    if (hasAny(["electronic", "electronics", "watch", "tv", "laptop", "headphone"])) return "/electronics";
+    if (hasAny(["shoe", "shoes", "sneaker"])) return "/shoes";
+    if (hasAny(["slipper", "sleeper", "sandals"])) return "/sleeper";
+    if (hasAny(["ladies", "women", "suit", "saree"])) return "/ladies";
+
+    return "/allproduct";
+  };
+
+  const onSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const query = q.trim();
+    if (!query) return;
+
+    const base = routeForQuery(query);
+    router.push(`${base}?q=${encodeURIComponent(query)}`);
+  };
+
   return (
     <nav className={`${styles.navbar} ${isScrolled ? styles.scrolled : ""}`}>
       <button
@@ -73,19 +102,23 @@ export default function Navbar() {
       <div className={styles.logo}>
         <Link href="/homepage" className={styles.logoLink}>
           <h1 className={styles.brand}>
-            Bharat<span>Buy</span>
+            InUp<span>Shoping</span>
           </h1>
         </Link>
       </div>
 
-      {/* <div className={styles.searchContainer}>
-        <input
-          type="text"
-          placeholder="Search products, brands, and more..."
-          className={styles.searchBox}
-          aria-label="Search"
-        />
-      </div> */}
+      <div className={styles.searchContainer}>
+        <form onSubmit={onSearchSubmit} style={{ width: "100%" }}>
+          <input
+            type="text"
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            placeholder="Search products, brands, and more..."
+            className={styles.searchBox}
+            aria-label="Search"
+          />
+        </form>
+      </div>
 
       <Sidebar isOpen={open} onClose={() => setOpen(false)} />
 

@@ -11,11 +11,13 @@
   "dependencies": {
     "aos": "^2.3.4",
     "bcryptjs": "^3.0.3",
+    "dotenv": "^17.3.1",
     "framer-motion": "^12.29.0",
     "jsonwebtoken": "^9.0.3",
     "mongodb": "^6.21.0",
     "mongoose": "^8.21.1",
     "next": "15.5.2",
+    "nodemailer": "^6.10.1",
     "react": "19.1.0",
     "react-dom": "19.1.0"
   },
@@ -23,6 +25,7 @@
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
+    "@types/nodemailer": "^6.4.17",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",

@@ -1,8 +1,7 @@
 "use client";
 
 import React, { useEffect, useMemo, useState } from "react";
-import styles from "../../css/dash.module.css";
-import AdminNavbar from "@/app/component/adminnav";
+import styles from "../../../css/dash.module.css";
 import { color } from "framer-motion";
 
 type UserType = {
@@ -19,6 +18,7 @@ type OrderItemType = {
   name?: string;
   qty?: number; // ✅ optional (if you have qty)
   quantity?: number; // ✅ optional
+  price?: number | string;
 };
 
 type OrderType = {
@@ -29,6 +29,7 @@ type OrderType = {
   user?: { name?: string; email?: string };
   products?: string;
   items?: OrderItemType[];
+  shipping?: any;
   totalAmount?: number | string;
   amount?: string;
   status?: string;
@@ -74,9 +75,8 @@ const getOrderUnits = (o: OrderType) => {
 };
 
 export default function AdminDashboard() {
-  const [activeTab, setActiveTab] = useState<string>("Total Users");
+  const [activeTab, setActiveTab] = useState<string>("Total Orders");
 
-  const [Users, setUsers] = useState<UserType[]>([]);
   const [orders, setOrders] = useState<OrderType[]>([]);
   const [products, setProducts] = useState<ProductType[]>([]);
 
@@ -109,16 +109,10 @@ export default function AdminDashboard() {
       setLoading(true);
       setErrorMsg("");
 
-      const [uRes, oRes, pRes] = await Promise.allSettled([
-        fetch("/api/users", { cache: "no-store" }),
+      const [oRes, pRes] = await Promise.allSettled([
         fetch("/api/orders", { cache: "no-store" }),
-        fetch("/api/products", { cache: "no-store" }),
+        fetch("/api/products?mine=true", { cache: "no-store" }),
       ]);
-
-      if (uRes.status === "fulfilled") {
-        const uJson = await safeJson(uRes.value);
-        setUsers(pickArray(uJson));
-      } else setUsers([]);
 
       if (oRes.status === "fulfilled") {
         const oJson = await safeJson(oRes.value);
@@ -131,7 +125,6 @@ export default function AdminDashboard() {
       } else setProducts([]);
     } catch (e: any) {
       setErrorMsg(e?.message || "Something went wrong");
-      setUsers([]);
       setOrders([]);
       setProducts([]);
     } finally {
@@ -167,10 +160,13 @@ export default function AdminDashboard() {
   // ✅ Total Revenue
   const totalRevenue = useMemo(() => {
     return orders.reduce((sum, o) => {
-      if (typeof o.totalAmount === "number") return sum + o.totalAmount;
-      if (typeof o.totalAmount === "string" && o.totalAmount.trim() !== "") return sum + Number(o.totalAmount || 0);
-      if (o.amount) return sum + parseINR(o.amount);
-      return sum;
+      if (!Array.isArray(o.items)) return sum;
+      const line = o.items.reduce((s2, it: any) => {
+        const q = Number(it?.qty ?? it?.quantity ?? 1);
+        const p = Number(it?.price ?? 0);
+        return s2 + (Number.isFinite(q) ? q : 1) * (Number.isFinite(p) ? p : 0);
+      }, 0);
+      return sum + line;
     }, 0);
   }, [orders]);
 
@@ -184,11 +180,11 @@ export default function AdminDashboard() {
 
       const prev = map.get(date) || { date, ordersCount: 0, unitsSold: 0, revenue: 0 };
       prev.ordersCount += 1;
-      prev.unitsSold += getOrderUnits(o);
 
-      if (typeof o.totalAmount === "number") prev.revenue += o.totalAmount;
-      else if (typeof o.totalAmount === "string" && o.totalAmount.trim() !== "") prev.revenue += Number(o.totalAmount || 0);
-      else if (o.amount) prev.revenue += parseINR(o.amount);
+      if (Array.isArray(o.items)) {
+        prev.unitsSold += o.items.reduce((s, it: any) => s + Number(it?.qty ?? it?.quantity ?? 1), 0);
+        prev.revenue += o.items.reduce((s, it: any) => s + Number(it?.qty ?? it?.quantity ?? 1) * Number(it?.price ?? 0), 0);
+      }
 
       map.set(date, prev);
     }
@@ -209,17 +205,27 @@ export default function AdminDashboard() {
 
   const stats = useMemo(
     () => [
-      { title: "Total Users", value: Users.length, bgColor: "#4FC3F7", color: "#ffffff" },
       { title: "Total Orders", value: orders.length, bgColor: "#FFCA28", color: "#24782a" },
       { title: "Products", value: products.length, bgColor: "#7E57C2", color: "#ffffff" },
       { title: "Revenue", value: formatINR(totalRevenue), bgColor: "#FF7043", color: "#24782a" },
       { title: "Date Report", value: "View", bgColor: "#90A4AE", color: "#006064" },
     ],
-    [Users.length, orders.length, products.length, totalRevenue]
+    [orders.length, products.length, totalRevenue]
   );
 
   const getOrderId = (o: OrderType) => String(o.orderId || o.id || o._id || "");
-  const getCustomer = (o: OrderType) => o.customer || o.user?.name || o.user?.email || "Unknown";
+  const getCustomer = (o: OrderType) => {
+    const s = o.shipping || {};
+    const nm = `${s?.firstName || ""} ${s?.lastName || ""}`.trim();
+    return o.customer || nm || o.user?.name || o.user?.email || s?.email || "Unknown";
+  };
+
+  const getShippingText = (o: OrderType) => {
+    const s = o.shipping || {};
+    const phone = s?.phone ? `📞 ${s.phone}` : "";
+    const addr = s?.address ? `${s.address}, ${s.city || ""} - ${s.pincode || ""}`.trim() : "";
+    return [phone, addr].filter(Boolean).join("\n");
+  };
 
   const getProductsText = (o: OrderType) => {
     if (o.products) return o.products;
@@ -229,28 +235,59 @@ export default function AdminDashboard() {
   };
 
   const getOrderAmountText = (o: OrderType) => {
-    if (typeof o.totalAmount === "number") return formatINR(o.totalAmount);
-    if (typeof o.totalAmount === "string" && o.totalAmount.trim() !== "") return formatINR(Number(o.totalAmount || 0));
-    if (o.amount) return o.amount;
-    return formatINR(0);
+    if (!Array.isArray(o.items)) return formatINR(0);
+    const n = o.items.reduce((s, it: any) => s + Number(it?.qty ?? it?.quantity ?? 1) * Number(it?.price ?? 0), 0);
+    return formatINR(n);
   };
 
   const badgeStyle = (status?: string) => {
     const st = String(status || "").toLowerCase();
     const delivered = st === "delivered";
+    const shipped = st === "shipped";
+    const cancelled = st === "cancelled";
     const processing = st === "processing";
     return {
       padding: "5px 10px",
       borderRadius: "5px",
-      backgroundColor: delivered ? "#d1fae5" : processing ? "#fed7aa" : "#fef3c7",
-      color: delivered ? "#065f46" : processing ? "#9a3412" : "#854d0e",
+      backgroundColor: cancelled
+        ? "#fee2e2"
+        : delivered
+        ? "#d1fae5"
+        : shipped
+        ? "#dbeafe"
+        : processing
+        ? "#fed7aa"
+        : "#fef3c7",
+      color: cancelled
+        ? "#991b1b"
+        : delivered
+        ? "#065f46"
+        : shipped
+        ? "#1d4ed8"
+        : processing
+        ? "#9a3412"
+        : "#854d0e",
     } as React.CSSProperties;
+  };
+
+  const updateStatus = async (orderMongoId: string | undefined, next: "shipped" | "delivered") => {
+    if (!orderMongoId) return alert("Order id missing");
+    try {
+      const res = await fetch(`/api/orders/${orderMongoId}/status`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: next }),
+      });
+      const data = await res.json().catch(() => ({} as any));
+      alert(data?.message || (res.ok ? "Updated" : "Failed"));
+      if (res.ok) fetchAll();
+    } catch (e: any) {
+      alert(e?.message || "Failed");
+    }
   };
 
   return (
     <>
-      <AdminNavbar/>
-
       <div className={styles.container}>
         <h1 className={styles.heading}> ADMIN DASHBOARD PANEL</h1>
 
@@ -279,49 +316,7 @@ export default function AdminDashboard() {
         {loading ? <p style={{ padding: 10, color: "#6b7280" }}>Loading...</p> : null}
         {errorMsg ? <p style={{ padding: 10, color: "#b91c1c" }}>{errorMsg}</p> : null}
 
-        {/* ✅ Users List */}
-        {activeTab === "Total Users" && (
-          <div className={styles.section}>
-            <h2 style={{ color: "#406af3", marginBottom: "15px" }}>Users List</h2>
 
-            <div className={styles.tableContainer}>
-              <table className={styles.table}>
-                <thead>
-                  <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Status</th>
-                  </tr>
-                </thead>
-
-                <tbody>
-                  {Users.map((user) => (
-                    <tr key={(user._id || user.id || user.email || Math.random()) as any}>
-                      <td>{user._id || user.id || "-"}</td>
-                      <td>{user.name || "-"}</td>
-                      <td>{user.email || "-"}</td>
-                      <td>
-                        <span
-                          style={{
-                            padding: "5px 10px",
-                            borderRadius: "5px",
-                            backgroundColor: user.status === "Active" ? "#d1fae5" : "#fed7d7",
-                            color: user.status === "Active" ? "#065f46" : "#991b1b",
-                          }}
-                        >
-                          {user.status || "Active"}
-                        </span>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-
-              {Users.length === 0 && <p style={{ padding: 12, color: "#6b7280" }}>No users found.</p>}
-            </div>
-          </div>
-        )}
 
         {/* ✅ Orders List */}
         {activeTab === "Total Orders" && (
@@ -335,9 +330,11 @@ export default function AdminDashboard() {
                     <th>Order ID</th>
                     <th>Customer</th>
                     <th>Product Name</th>
+                    <th>Shipping</th>
                     <th>Units</th>
                     <th>Amount</th>
                     <th>Status</th>
+                    <th>Action</th>
                   </tr>
                 </thead>
 
@@ -347,10 +344,44 @@ export default function AdminDashboard() {
                       <td>{getOrderId(order) || "-"}</td>
                       <td>{getCustomer(order)}</td>
                       <td>{getProductsText(order)}</td>
+                      <td style={{ whiteSpace: "pre-line", maxWidth: 260 }}>{getShippingText(order) || "-"}</td>
                       <td>{getOrderUnits(order)}</td>
                       <td>{getOrderAmountText(order)}</td>
                       <td>
                         <span style={badgeStyle(order.status)}>{order.status || "pending"}</span>
+                      </td>
+                      <td>
+                        {String(order.status || "").toLowerCase() === "processing" ? (
+                          <button
+                            onClick={() => updateStatus(String(order._id || ""), "shipped")}
+                            style={{
+                              padding: "8px 10px",
+                              borderRadius: 10,
+                              border: "1px solid #bfdbfe",
+                              background: "#eff6ff",
+                              fontWeight: 900,
+                              cursor: "pointer",
+                            }}
+                          >
+                            Mark Shipped
+                          </button>
+                        ) : String(order.status || "").toLowerCase() === "shipped" ? (
+                          <button
+                            onClick={() => updateStatus(String(order._id || ""), "delivered")}
+                            style={{
+                              padding: "8px 10px",
+                              borderRadius: 10,
+                              border: "1px solid #bbf7d0",
+                              background: "#ecfdf5",
+                              fontWeight: 900,
+                              cursor: "pointer",
+                            }}
+                          >
+                            Mark Delivered
+                          </button>
+                        ) : (
+                          <span style={{ color: "#64748b", fontWeight: 800 }}>-</span>
+                        )}
                       </td>
                     </tr>
                   ))}
@@ -403,11 +434,6 @@ export default function AdminDashboard() {
             <h2 style={{ color: "#24782a", marginBottom: "15px" }}>Revenue Summary</h2>
 
             <div className={styles.revenueList}>
-              <div className={styles.revenueItem}>
-                <span>Total Users:</span>
-                <strong style={{ color: "#24782a" }}>{Users.length}</strong>
-              </div>
-
               <div className={styles.revenueItem}>
                 <span>Total Orders:</span>
                 <strong style={{ color: "#24782a" }}>{orders.length}</strong>

@@ -10,10 +10,10 @@ import Footer from "../component/footer";
 import MobileBrands from "../component/mobile";
 import InspirationCollection from "../component/inspiration";
 import { addToCart } from "@/lib/cart";
+import BestSellers from "../component/bestseller";
 
 const Navbar = dynamic(() => import("../component/navbar"));
 const Banner = dynamic(() => import("../component/banner"));
-const NextNav = dynamic(() => import("../component/nextnav"));
 
 const featuredItems = [
   {
@@ -61,6 +61,13 @@ type ProductType = {
   reviews?: number;
 };
 
+type Cartable = {
+  _id?: string;
+  title: string;
+  price: number | string;
+  image?: string;
+};
+
 export default function HomePage() {
   const pageRef = useRef<HTMLDivElement | null>(null);
   const trackRef = useRef<HTMLDivElement | null>(null);
@@ -70,24 +77,20 @@ export default function HomePage() {
   const [furniture, setFurniture] = useState<ProductType[]>([]);
   const [clothes, setClothes] = useState<ProductType[]>([]);
   const [bodycare, setBodycare] = useState<ProductType[]>([]);
-  const [newArrivals, setNewArrivals] = useState<ProductType[]>([]); // ✅ NEW ARRIVAL (latest)
+  const [newArrivals, setNewArrivals] = useState<ProductType[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const handleAddAndCheckout = (p: any) => {
-    addToCart(
-      {
-        _id: p._id || p.title, // featuredItems me _id nahi hai, isliye fallback
-        title: p.title,
-        price: Number(p.price),
-        image: p.image,
-      },
-      1
-    );
+  const handleAddAndCheckout = (p: Cartable) => {
+    addToCart({
+      _id: p._id || p.title,
+      title: p.title,
+      price: Number(p.price),
+      image: p.image,
+    });
 
     router.push("/checkout");
   };
 
-  // ✅ FIXED safeImg (supports "/img", "img.jpg", "uploads/a.jpg", "https://...")
   const safeImg = (src?: string) => {
     if (!src) return "/placeholder.png";
     if (src.startsWith("/")) return src;
@@ -95,14 +98,12 @@ export default function HomePage() {
     return `/${src.replace(/^\.?\//, "")}`;
   };
 
-  // ✅ Normalize response (array OR {products: []})
-  const normalize = (d: any): ProductType[] => {
-    if (Array.isArray(d)) return d;
-    if (Array.isArray(d?.products)) return d.products;
+  const normalize = (d: unknown): ProductType[] => {
+    if (Array.isArray(d)) return d as ProductType[];
+    if (d && typeof d === "object" && Array.isArray((d as any).products)) return (d as any).products as ProductType[];
     return [];
   };
 
-  // ✅ rating helpers (always show)
   const starText = (rating?: number) => {
     const r = Math.max(0, Math.min(5, Number(rating ?? 4.5)));
     const full = Math.round(r);
@@ -112,7 +113,6 @@ export default function HomePage() {
   const getRating = (item: ProductType) => Number(item.rating ?? 4.5);
   const getReviews = (item: ProductType) => Number(item.reviews ?? 0);
 
-  // ✅ Fetch: furniture + clothes + bodycare + NEW ARRIVAL (latest)
   useEffect(() => {
     const controller = new AbortController();
 
@@ -124,9 +124,7 @@ export default function HomePage() {
           fetch("/api/products?category=furniture", { signal: controller.signal }),
           fetch("/api/products?category=clothes&limit=8", { signal: controller.signal }),
           fetch("/api/products?category=bodycare", { signal: controller.signal }),
-          // ✅ backend already handles latest
-         fetch("/api/products?sort=latest", { cache: "no-store", signal: controller.signal })
-
+          fetch("/api/products?sort=latest", { cache: "no-store", signal: controller.signal }),
         ]);
 
         if (!fRes.ok || !cRes.ok || !bRes.ok || !nRes.ok) {
@@ -137,17 +135,12 @@ export default function HomePage() {
           throw new Error(`API failed: ${t1} | ${t2} | ${t3} | ${t4}`);
         }
 
-        const [fData, cData, bData, nData] = await Promise.all([
-          fRes.json(),
-          cRes.json(),
-          bRes.json(),
-          nRes.json(),
-        ]);
+        const [fData, cData, bData, nData] = await Promise.all([fRes.json(), cRes.json(), bRes.json(), nRes.json()]);
 
         setFurniture(normalize(fData));
         setClothes(normalize(cData));
         setBodycare(normalize(bData));
-        setNewArrivals(normalize(nData)); // ✅ latest products only
+        setNewArrivals(normalize(nData));
       } catch (e) {
         console.error("Fetch error:", e);
         setFurniture([]);
@@ -163,7 +156,6 @@ export default function HomePage() {
     return () => controller.abort();
   }, []);
 
-  // ✅ featured auto slide
   const [featureIndex, setFeatureIndex] = useState(0);
   useEffect(() => {
     if (!featuredItems.length) return;
@@ -173,7 +165,6 @@ export default function HomePage() {
     return () => window.clearInterval(id);
   }, []);
 
-  // ✅ Auto scroll furniture slider (continuous)
   useEffect(() => {
     const track = trackRef.current;
     if (!track) return;
@@ -202,49 +193,6 @@ export default function HomePage() {
     };
   }, [furniture.length]);
 
-<<<<<<< HEAD
-  const featured = featuredItems[featureIndex];
-
-
-
-  const [allProducts, setAllProducts] = useState<ProductType[]>([]);
-// const [loading, setLoading] = useState(true);
-
-useEffect(() => {
-  const controller = new AbortController();
-
-  const load = async () => {
-    try {
-      setLoading(true);
-      const res = await fetch("/api/products", {
-        cache: "no-store",
-        signal: controller.signal,
-      });
-
-      const data = await res.json();
-      const all = Array.isArray(data) ? data : data?.products || [];
-
-      // ✅ Només els últims 12
-      const recent = [...all].reverse().slice(0, 12);
-      setAllProducts(recent);
-    } catch (e) {
-      console.error("Error loading products:", e);
-      setAllProducts([]);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  load();
-  return () => controller.abort();
-}, []);
-
-
-
-
-=======
->>>>>>> 9e258cc (push by nitin)
-  // ✅ Glow auto scroll (every 2s)
   useEffect(() => {
     const el = glowRef.current;
     if (!el) return;
@@ -282,7 +230,6 @@ useEffect(() => {
     };
   }, [bodycare.length]);
 
-  // ✅ Scroll reveal animation
   useEffect(() => {
     const root = pageRef.current;
     if (!root) return;
@@ -309,24 +256,16 @@ useEffect(() => {
   return (
     <div ref={pageRef}>
       <Navbar />
-      {/* <NextNav /> */}
       <Banner />
 
-<<<<<<< HEAD
-      <InspirationCollection/>
-        {/* ✅ FEATURED CARDS (3 items) */}
-<section className={styles.featureCardsWrap} data-reveal>
-  <div className={styles.featureCardsHead}>
-    {/* <h2 className={styles.featureCardsTitle}>FEATURES PICKS</h2>
-    <p className={styles.featureCardsSub}>Top deals handpicked for you</p> */}
-  </div>
-=======
+      <BestSellers />
       <InspirationCollection />
->>>>>>> 9e258cc (push by nitin)
 
-      {/* ✅ FEATURED CARDS (3 items) */}
       <section className={styles.featureCardsWrap} data-reveal>
-        <div className={styles.featureCardsHead}></div>
+        <div className={styles.featureCardsHead}>
+          <h2 className={styles.featureCardsTitle}>Featured Products</h2>
+          <p className={styles.featureCardsSub}>Handpicked items at the best price.</p>
+        </div>
 
         <div className={styles.featureCardsGrid}>
           {featuredItems.map((item, idx) => (
@@ -356,20 +295,28 @@ useEffect(() => {
                   <button className={styles.featureBtnPrimary} onClick={() => handleAddAndCheckout(item)}>
                     Add to Cart
                   </button>
-                  <button className={styles.featureBtnGhost}>View Details</button>
+                  <button className={styles.featureBtnGhost} type="button">
+                    View Details
+                  </button>
                 </div>
               </div>
             </div>
           ))}
         </div>
 
-        {/* ✅ Mobile slider */}
         <div className={styles.featureMobileOnly}>
           <div className={styles.featureMobileTrack} style={{ transform: `translateX(-${featureIndex * 100}%)` }}>
             {featuredItems.map((item, idx) => (
               <div key={idx} className={styles.featureMobileSlide}>
                 <div className={styles.featureCard}>
-                  <Image src={item.image} alt={item.title} fill className={styles.featureCardImg} sizes="100vw" priority={idx === 0} />
+                  <Image
+                    src={item.image}
+                    alt={item.title}
+                    fill
+                    className={styles.featureCardImg}
+                    sizes="100vw"
+                    priority={idx === 0}
+                  />
                   <div className={styles.featureOverlay} />
                   {item.discount ? <span className={styles.featureChip}>{item.discount}</span> : null}
 
@@ -387,7 +334,9 @@ useEffect(() => {
                       <button className={styles.featureBtnPrimary} onClick={() => handleAddAndCheckout(item)}>
                         Add to Cart
                       </button>
-                      <button className={styles.featureBtnGhost}>View Details</button>
+                      <button className={styles.featureBtnGhost} type="button">
+                        View Details
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -402,28 +351,25 @@ useEffect(() => {
                 className={`${styles.dot} ${i === featureIndex ? styles.dotActive : ""}`}
                 onClick={() => setFeatureIndex(i)}
                 aria-label={`Go to slide ${i + 1}`}
+                type="button"
               />
             ))}
           </div>
         </div>
       </section>
 
-      {/* ✅ CLOTHES */}
       <section className={styles.clothsWrap} data-reveal>
-        <p className={styles.collectionTag}>Clothes Collection</p>
-
-        <div className={styles.clothsHead}>
-          <div className={styles.clothTitleLeft}></div>
-
-          <Link href="/clothes" className={styles.clothsViewAll}>
-            View All
+        <div className={`${styles.head} ${styles.reveal}`} data-reveal>
+          <h2 className={styles.title}>Clothes</h2>
+          <Link href="/allproduct" className={styles.viewMoreBtn} aria-label="View more clothes">
+            View more
           </Link>
         </div>
 
         <div className={styles.clothsGrid}>
           {clothes.slice(0, 8).map((item) => (
             <Link
-              href={`/clothes`}
+              href="/clothes"
               className={styles.clothCard}
               key={item._id}
               data-reveal
@@ -449,10 +395,7 @@ useEffect(() => {
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    addToCart(
-                      { _id: item._id, title: item.title, price: Number(item.price), image: item.image },
-                      1
-                    );
+                    addToCart({ _id: item._id, title: item.title, price: Number(item.price), image: item.image });
                     alert("Added to cart ✅");
                   }}
                 >
@@ -473,7 +416,6 @@ useEffect(() => {
         </div>
       </section>
 
-      {/* ✅ CATEGORY SCROLL */}
       <section className={styles.categoryScrollWrap} data-reveal>
         <h2 className={styles.categoryTitle}>Shop By Category</h2>
 
@@ -481,24 +423,24 @@ useEffect(() => {
           {[
             { name: "Clothes", image: "/tshirt.jpg", link: "/clothes" },
             { name: "Watch", image: "/watch.jpg", link: "/electronics" },
-            { name: "kichen kid", image: "/mixy.jpg", link: "/electronics" },
+            { name: "Kitchen Kit", image: "/mixy.jpg", link: "/electronics" },
             { name: "Sports", image: "/shoes1.jpg", link: "/shoes" },
             { name: "Bags", image: "/bags.jpg", link: "/allproduct" },
-            { name: "Sliper", image: "/sliper.jpg", link: "/shoes" },
+            { name: "Slipper", image: "/sliper.jpg", link: "/shoes" },
             { name: "Room Light", image: "/luxery3.jpg", link: "/electronics" },
             { name: "Furniture", image: "/furniture.jpg", link: "/furniture" },
             { name: "Clothes", image: "/tshirt.jpg", link: "/clothes" },
             { name: "Watch", image: "/watch.jpg", link: "/electronics" },
-            { name: "kichen kid", image: "/mixy.jpg", link: "/electronics" },
+            { name: "Kitchen Kit", image: "/mixy.jpg", link: "/electronics" },
             { name: "Sports", image: "/shoes1.jpg", link: "/shoes" },
             { name: "Bags", image: "/bags.jpg", link: "/allproduct" },
-            { name: "Sliper", image: "/sliper.jpg", link: "/shoes" },
+            { name: "Slipper", image: "/sliper.jpg", link: "/shoes" },
             { name: "Room Light", image: "/luxery3.jpg", link: "/electronics" },
             { name: "Furniture", image: "/furniture.jpg", link: "/furniture" },
           ].map((cat, i) => (
             <Link key={i} href={cat.link} className={styles.categoryItem}>
               <div className={styles.categoryImgBox}>
-                <Image src={cat.image} alt={cat.name} width={100} height={100} />
+                <Image src={cat.image} alt={cat.name} width={80} height={80} />
               </div>
               <p className={styles.categoryName}>{cat.name}</p>
             </Link>
@@ -506,95 +448,52 @@ useEffect(() => {
         </div>
       </section>
 
-<<<<<<< HEAD
-=======
-      {/* ✅ FURNITURE SLIDER */}
       <section className={styles.sliderSection} data-reveal>
         <div className={styles.sliderHeader}>
-          <h2>Populer Furniture</h2>
+          <h2>Popular Furniture</h2>
           <p>{loading ? "Loading..." : ""}</p>
         </div>
->>>>>>> 9e258cc (push by nitin)
 
+        <div className={styles.sliderTrack} ref={trackRef}>
+          <div className={styles.sliderRow}>
+            {sliderItems.map((item, i) => (
+              <Link
+                href="/furniture"
+                className={styles.sliderCard}
+                key={`${item._id}-${i}`}
+                data-reveal
+                style={{ textDecoration: "none", color: "inherit" }}
+              >
+                {item.discount ? <span className={styles.cardBadge}>{item.discount}</span> : null}
 
-<<<<<<< HEAD
-    
-      {/* ✅ CLOTHES */}
-     {/* ✅ CLOTHES */}
-<section className={styles.clothsWrap} data-reveal>
-  <p className={styles.collectionTag}>Clothes Collection</p>
-  {/* <p className={styles.subText}>Best fashion picks for you — premium quality & modern style</p> */}
-=======
-      {/* ✅ NEW ARRIVAL (latest from backend) */}
-      <section className={styles.clothsWrap} data-reveal>
-        <p className={styles.collectionTag}>New arrival</p>
->>>>>>> 9e258cc (push by nitin)
+                <div className={styles.cardImg}>
+                  <Image src={safeImg(item.image)} alt={item.title || "product"} fill className={styles.imgFit} />
+                </div>
 
-        <div className={styles.clothsHead}>
-          <div className={styles.clothTitleLeft}></div>
+                <h3>{item.title}</h3>
+                <p className={styles.cardPrice}>
+                  ₹{item.price} {item.oldPrice ? <span>₹{item.oldPrice}</span> : null}
+                </p>
+              </Link>
+            ))}
 
-<<<<<<< HEAD
-    <Link href="/clothes" className={styles.clothsViewAll}>
-      View All
-    </Link>
-  </div>
-
-  <div className={styles.clothsGrid}>
-    {clothes.slice(0,8).map((item) => (
-      <Link
-        href={`/clothes`}
-        className={styles.clothCard}
-        key={item._id}
-        data-reveal
-        style={{ textDecoration: "none", color: "inherit" }}
-      >
-        <div className={styles.clothImgBox}>
-          {item.discount ? <span className={styles.clothDiscount}>{item.discount}</span> : null}
-          {item.tag ? <span className={styles.clothTag}>{item.tag}</span> : null}
-
-          {/* ✅ ALWAYS SHOW rating/reviews */}
-          <div className={styles.ratingBadge}>
-            <span className={styles.stars}>{starText(getRating(item))}</span>
-            <span className={styles.ratingText}>
-              {getRating(item).toFixed(1)} ({getReviews(item)})
-            </span>
+            {!loading && furniture.length === 0 ? <p style={{ padding: 10 }}>No furniture products found.</p> : null}
           </div>
+        </div>
+      </section>
 
-          <Image src={safeImg(item.image)} alt={item.title || "product"} fill className={styles.clothImg} />
-
-          <span
-            className={styles.imgCartBtn}
-            role="button"
-            aria-label="Add to cart"
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              addToCart(
-                {
-                  _id: item._id,
-                  title: item.title,
-                  price: Number(item.price),
-                  image: item.image,
-                },
-                1
-              );
-              alert("Added to cart ✅");
-            }}
-          >
-            Add to Cart
-          </span>
-=======
-          <Link href="/allproduct" className={styles.clothsViewAll}>
-            View All
+      <section className={styles.clothsWrap} data-reveal>
+        <div className={`${styles.head} ${styles.reveal}`} data-reveal>
+          <h2 className={styles.title}>New Arrivals</h2>
+          <Link href="/allproduct" className={styles.viewMoreBtn} aria-label="View more new arrivals">
+            View more
           </Link>
->>>>>>> 9e258cc (push by nitin)
         </div>
 
         <div className={styles.clothsGrid}>
-         {newArrivals.slice(0, 8).map((item) => (
-
+          {newArrivals.slice(0, 8).map((item) => (
             <Link
-              href={`/allproduct`}
+              href="/allproduct"
               className={styles.clothCard}
               key={item._id}
               data-reveal
@@ -620,10 +519,7 @@ useEffect(() => {
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    addToCart(
-                      { _id: item._id, title: item.title, price: Number(item.price), image: item.image },
-                      1
-                    );
+                    addToCart({ _id: item._id, title: item.title, price: Number(item.price), image: item.image });
                     alert("Added to cart ✅");
                   }}
                 >
@@ -644,76 +540,6 @@ useEffect(() => {
         </div>
       </section>
 
-<<<<<<< HEAD
-{/* ✅ CATEGORY SCROLL SECTION */}
-<section className={styles.categoryScrollWrap} data-reveal>
-  <h2 className={styles.categoryTitle}>Shop By Category</h2>
-
-  <div className={styles.categoryScrollTrack}>
-    {[
-      { name: "Clothes", image: "/tshirt.jpg", link: "/clothes" },
-      { name: "Watch", image: "/watch.jpg", link: "/electronics" },
-      { name: "kichen kid", image: "/mixy.jpg", link: "/electronics" },
-      { name: "Sports", image: "/shoes1.jpg", link: "/shoes" },
-      { name: "Bags", image: "/bags.jpg", link: "/allproduct" },
-      { name: "Sliper", image: "/sliper.jpg", link: "/shoes" },
-      { name: "Room Light", image: "/luxery3.jpg", link: "/electronics" },
-      { name: "Furniture", image: "/furniture.jpg", link: "/furniture" },
-      { name: "Clothes", image: "/tshirt.jpg", link: "/clothes" },
-      { name: "Watch", image: "/watch.jpg", link: "/electronics" },
-      { name: "kichen kid", image: "/mixy.jpg", link: "/electronics" },
-      { name: "Sports", image: "/shoes1.jpg", link: "/shoes" },
-      { name: "Bags", image: "/bags.jpg", link: "/allproduct" },
-      { name: "Sliper", image: "/sliper.jpg", link: "/shoes" },
-      { name: "Room Light", image: "/luxery3.jpg", link: "/electronics" },
-      { name: "Furniture", image: "/furniture.jpg", link: "/furniture" },
-    ].map((cat, i) => (
-      <Link key={i} href={cat.link} className={styles.categoryItem}>
-        <div className={styles.categoryImgBox}>
-          <Image src={cat.image} alt={cat.name} width={100} height={100} />
-        </div>
-        <p className={styles.categoryName}>{cat.name}</p>
-      </Link>
-    ))}
-  </div>
-</section>
-
-
-  {/* ✅ FURNITURE SLIDER */}
-      <section className={styles.sliderSection} data-reveal>
-        <div className={styles.sliderHeader}>
-          <h2>Populer Furniture</h2>
-          <p>{loading ? "Loading..." : ""}</p>
-        </div>
-
-        <div className={styles.sliderTrack} ref={trackRef}>
-          <div className={styles.sliderRow}>
-            {sliderItems.map((item, i) => (
-              <Link
-                href={`/furniture`}
-                className={styles.sliderCard}
-                key={`${item._id}-${i}`}
-                data-reveal
-                style={{ textDecoration: "none", color: "inherit" }}
-              >
-                {item.discount && <span className={styles.cardBadge}>{item.discount}</span>}
-
-                <div className={styles.cardImg}>
-                  <Image src={safeImg(item.image)} alt={item.title || "product"} fill className={styles.imgFit} />
-                </div>
-
-                <h3>{item.title}</h3>
-                <p className={styles.cardPrice}>
-                  ₹{item.price} {item.oldPrice ? <span>₹{item.oldPrice}</span> : null}
-                </p>
-              </Link>
-            ))}
-
-            {!loading && furniture.length === 0 ? <p style={{ padding: 10 }}>No furniture products found.</p> : null}
-          </div>
-        </div>
-=======
-      {/* ✅ BODYCARE */}
       <section className={styles.glowWrap} data-reveal>
         <div className={styles.glowHead}>
           <h2>GLOW & PROTECT</h2>
@@ -723,7 +549,7 @@ useEffect(() => {
         <div className={styles.glowTrack} ref={glowRef} id="glowTrack">
           {bodycare.slice(0, 3).map((item) => (
             <Link
-              href={`/bodycare`}
+              href="/bodycare"
               className={styles.glowCard}
               key={item._id}
               data-reveal
@@ -745,7 +571,6 @@ useEffect(() => {
         </div>
       </section>
 
-      {/* ✅ ABOUT */}
       <section className={styles.aboutWrap} data-reveal>
         <div className={styles.aboutInner}>
           <div className={styles.aboutGrid}>
@@ -782,8 +607,8 @@ useEffect(() => {
               </h2>
 
               <p className={styles.aboutPara}>
-                From premium furniture to modern essentials, we focus on durability, design and value.
-                Our goal is simple: deliver better quality products with a smooth shopping experience.
+                From premium furniture to modern essentials, we focus on durability, design and value. Our goal is
+                simple: deliver better quality products with a smooth shopping experience.
               </p>
 
               <Link href="/allproduct">
@@ -813,200 +638,7 @@ useEffect(() => {
             </div>
           </div>
         </div>
->>>>>>> 9e258cc (push by nitin)
       </section>
-
-      {/* ✅ NEW ARRIVALS SECTION */}
-
-
-
-<section className={styles.clothsWrap} data-reveal>
-  <p className={styles.collectionTag}>New arrival</p>
-  {/* <p className={styles.subText}>Best fashion picks for you — premium quality & modern style</p> */}
-
-  <div className={styles.clothsHead}>
-    <div className={styles.clothTitleLeft}></div>
-
-    <Link href="/allproduct" className={styles.clothsViewAll}>
-      View All
-    </Link>
-  </div>
-
-  <div className={styles.clothsGrid}>
-    {allProducts.slice(0,8).map((item) => (
-      <Link
-        href={`/allproduct`}
-        className={styles.clothCard}
-        key={item._id}
-        data-reveal
-        style={{ textDecoration: "none", color: "inherit" }}
-      >
-        <div className={styles.clothImgBox}>
-          {item.discount ? <span className={styles.clothDiscount}>{item.discount}</span> : null}
-          {item.tag ? <span className={styles.clothTag}>{item.tag}</span> : null}
-
-          {/* ✅ ALWAYS SHOW rating/reviews */}
-          <div className={styles.ratingBadge}>
-            <span className={styles.stars}>{starText(getRating(item))}</span>
-            <span className={styles.ratingText}>
-              {getRating(item).toFixed(1)} ({getReviews(item)})
-            </span>
-          </div>
-
-          <Image src={safeImg(item.image)} alt={item.title || "product"} fill className={styles.clothImg} />
-
-          <span
-            className={styles.imgCartBtn}
-            role="button"
-            aria-label="Add to cart"
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              addToCart(
-                {
-                  _id: item._id,
-                  title: item.title,
-                  price: Number(item.price),
-                  image: item.image,
-                },
-                1
-              );
-              alert("Added to cart ✅");
-            }}
-          >
-            Add to Cart
-          </span>
-        </div>
-
-        <div className={styles.clothInfo}>
-          <h3>{item.title}</h3>
-          <p className={styles.clothPrice}>
-            ₹{item.price} {item.oldPrice ? <span>₹{item.oldPrice}</span> : null}
-          </p>
-        </div>
-      </Link>
-    ))}
-
-    {!loading && clothes.length === 0 ? <p style={{ padding: 10 }}>No clothes products found.</p> : null}
-  </div>
-</section>
-
-
-
-
-
-  {/* ✅ BODYCARE */}
-
-{/* ✅ BODYCARE - 3 CARDS ONLY */}
-
-<section className={styles.glowWrap} data-reveal>
-  <div className={styles.glowHead}>
-    <h2>GLOW & PROTECT</h2>
-    <p>Body care products that nourish, protect, and enhance your skin—effortlessly.</p>
-  </div>
-
-  <div className={styles.glowTrack} ref={glowRef} id="glowTrack">
-    {bodycare.slice(0, 3).map((item) => (
-      <Link
-        href={`/bodycare`}
-        className={styles.glowCard}
-        key={item._id}
-        data-reveal
-        data-glow-card
-        style={{ textDecoration: "none", color: "inherit" }}
-      >
-        <div className={styles.glowImg}>
-          <Image src={safeImg(item.image)} alt={item.title || "product"} fill className={styles.glowFit} />
-        </div>
-
-        <div className={styles.glowInfo}>
-          <h3>{item.title}</h3>
-          <span className={styles.glowPrice}>₹{item.price}</span>
-        </div>
-      </Link>
-    ))}
-
-    {!loading && bodycare.length === 0 ? <p style={{ padding: 10 }}>No bodycare products found.</p> : null}
-  </div>
-</section>
-
-{/* ✅ ABOUT / WHO WE ARE SECTION */}
-<section className={styles.aboutWrap} data-reveal>
-  <div className={styles.aboutInner}>
-    <div className={styles.aboutGrid}>
-      {/* LEFT IMAGE */}
-      <div className={styles.aboutLeft} data-reveal>
-        <div className={styles.aboutImgBox}>
-          <Image
-            src="/trusted1.jpg"     // ✅ apni image ka path do
-            alt="About"
-            fill
-            className={styles.aboutImg}
-            sizes="(max-width: 900px) 92vw, 520px"
-            priority={false}
-          />
-
-          {/* badges */}
-          <div className={styles.badgeStack}>
-            <div className={`${styles.badgeCard} ${styles.delay1}`} data-reveal>
-              <span className={styles.badgeNum}>85%</span>
-              <span className={styles.badgeText}>HAPPY CUSTOMERS</span>
-            </div>
-
-            <div className={`${styles.badgeCard} ${styles.delay2}`} data-reveal>
-              <span className={styles.badgeNum}>12</span>
-              <span className={styles.badgeText}>YEARS OF EXPERIENCE</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* RIGHT CONTENT */}
-      <div className={styles.aboutRight} data-reveal>
-        <p className={styles.aboutKicker}>WHO WE ARE</p>
-
-        <h2 className={styles.aboutTitle}>
-          We build products that add style, comfort & quality to your everyday life.
-        </h2>
-
-        <p className={styles.aboutPara}>
-          From premium furniture to modern essentials, we focus on durability, design and value.
-          Our goal is simple: deliver better quality products with a smooth shopping experience.
-        </p>
-        <Link href="/allproduct">
-        <button className={styles.aboutBtn} type="button">
-          SHOP NOW
-        </button>
-        </Link>
-      </div>
-    </div>
-
-    {/* STATS */}
-    <div className={styles.statsRow} data-reveal>
-      <div className={styles.statItem}>
-        <h3>1.5K</h3>
-        <p>Retail Outlets</p>
-      </div>
-      <div className={styles.statItem}>
-        <h3>5.0K</h3>
-        <p>Products</p>
-      </div>
-      <div className={styles.statItem}>
-        <h3>1.3M</h3>
-        <p>Customers</p>
-      </div>
-      <div className={styles.statItem}>
-        <h3>2.5K</h3>
-        <p>Pharmacists</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-
-
-    
-      
 
       <MobileBrands />
       <Footer />

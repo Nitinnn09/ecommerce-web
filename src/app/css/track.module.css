@@ -21,6 +21,113 @@
   color: #6b7280;
 }
 
+/* RECENT ORDERS */
+.recent {
+  max-width: 900px;
+  margin: 0 auto 18px;
+  background: #fff;
+  padding: 18px;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+}
+
+.recentHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.recentTitle {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 900;
+  color: #111827;
+}
+
+.recentSub {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 800;
+  color: #64748b;
+}
+
+.recentGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.recentCard {
+  text-align: left;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 12px;
+  background: #fff;
+  cursor: pointer;
+  transition: transform 120ms ease, box-shadow 120ms ease, border-color 120ms ease;
+}
+
+.recentCard:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 18px rgba(0,0,0,0.10);
+  border-color: #cbd5e1;
+}
+
+.recentRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.recentId {
+  font-weight: 1000;
+  color: #0f172a;
+}
+
+.recentBadge {
+  font-size: 11px;
+  font-weight: 900;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: #e6fffb;
+  color: #006064;
+  text-transform: capitalize;
+}
+
+.recentMeta {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 8px;
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.recentItems {
+  margin-top: 10px;
+  display: grid;
+  gap: 6px;
+}
+
+.recentItem {
+  font-size: 12px;
+  font-weight: 800;
+  color: #111827;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.recentMore {
+  font-size: 12px;
+  font-weight: 900;
+  color: #2563eb;
+}
+
 /* TRACK INPUT */
 .trackBox {
   max-width: 480px;
@@ -153,5 +260,9 @@
 
   .trackBox {
     flex-direction: column;
+  }
+
+  .recentGrid {
+    grid-template-columns: 1fr;
   }
 }

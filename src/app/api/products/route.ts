@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { connectdb } from "@/lib/db";
 import Product from "@/lib/model/product";
+import jwt from "jsonwebtoken";
 
 export async function GET(req: Request) {
   try {
@@ -12,12 +13,28 @@ export async function GET(req: Request) {
     const category = categoryRaw.trim();
 
     const offer = searchParams.get("offer"); // "true"
+    const mine = searchParams.get("mine"); // "true" (admin only)
 
     const filter: any = {};
 
     // ✅ If category is passed, match it case-insensitively (Electrical/electrical both OK)
     if (category) {
       filter.category = { $regex: `^${category}$`, $options: "i" };
+    }
+
+    if (mine === "true") {
+      const cookie = req.headers.get("cookie") || "";
+      const match = cookie.match(/adminToken=([^;]+)/);
+      const token = match?.[1] || null;
+      if (!token) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+
+      let decoded: { id: string };
+      try {
+        decoded = jwt.verify(token, process.env.JWT_SECRET!) as { id: string };
+      } catch {
+        return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+      }
+      filter.adminId = decoded.id;
     }
 
     // ✅ Offer filter (sirf discount wale products)
@@ -40,9 +57,23 @@ export async function GET(req: Request) {
 
 export async function POST(req: Request) {
   await connectdb();
+
+  const cookie = req.headers.get("cookie") || "";
+  const match = cookie.match(/adminToken=([^;]+)/);
+  const token = match?.[1] || null;
+  if (!token) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+
+  let decoded: { id: string };
+  try {
+    decoded = jwt.verify(token, process.env.JWT_SECRET!) as { id: string };
+  } catch {
+    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+  }
+
   const body = await req.json();
 
   const product = await Product.create({
+    adminId: decoded.id,
     title: body.title,
     price: Number(body.price),
     oldPrice: body.oldPrice ? Number(body.oldPrice) : undefined,

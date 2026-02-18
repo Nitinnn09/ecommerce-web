@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import Navbar from "../component/navbar";
 import CategorySidebar from "../component/category";
-import styles from "../css/shoessliper.module.css"; // ✅ same styling use
+import styles from "../css/categorypage.module.css";
+import { useSearchParams } from "next/navigation";
 
 type ProductType = {
   _id: string;
@@ -27,6 +28,8 @@ const normalize = (d: any): ProductType[] => {
 };
 
 export default function ShoesPage() {
+  const searchParams = useSearchParams();
+  const urlQ = (searchParams.get("q") || "").trim().toLowerCase();
   const [items, setItems] = useState<ProductType[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -57,6 +60,15 @@ export default function ShoesPage() {
     return () => controller.abort();
   }, []);
 
+  const filtered = useMemo(() => {
+    if (!urlQ) return items;
+    return items.filter((p) => {
+      const t = (p.title || "").toLowerCase();
+      const d = (p.desc || "").toLowerCase();
+      return t.includes(urlQ) || d.includes(urlQ);
+    });
+  }, [items, urlQ]);
+
   return (
     <>
       <Navbar />
@@ -66,17 +78,21 @@ export default function ShoesPage() {
         <main className={styles.content}>
           <div className={styles.page}>
             <div className={styles.header}>
-              <h1 className={styles.title}>Shoes</h1>
-              <p className={styles.subText}>Latest shoes products</p>
+              <div className={styles.heading}>
+                <h1 className={styles.title}>Shoes</h1>
+                <p className={styles.subText}>{urlQ ? `Results for "${urlQ}"` : "Browse shoes products"}</p>
+              </div>
             </div>
 
             {loading ? (
               <div className={styles.loading}>Loading...</div>
             ) : items.length === 0 ? (
               <p className={styles.empty}>No shoes products found.</p>
+            ) : filtered.length === 0 ? (
+              <p className={styles.empty}>No matching products found.</p>
             ) : (
               <div className={styles.grid}>
-                {items.map((p) => (
+                {filtered.map((p) => (
                   <Link key={p._id} href={`/product/${p._id}`} className={styles.card}>
                     {p.discount ? <span className={styles.badge}>{p.discount}</span> : null}
 

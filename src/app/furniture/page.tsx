@@ -5,7 +5,8 @@ import Link from "next/link";
 import Image from "next/image";
 import Navbar from "../component/navbar";
 import CategorySidebar from "../component/category";
-import styles from "../css/furniture.module.css";
+import styles from "../css/categorypage.module.css";
+import { useSearchParams } from "next/navigation";
 
 type ProductType = {
   _id: string;
@@ -19,6 +20,8 @@ type ProductType = {
 };
 
 export default function FurniturePage() {
+  const searchParams = useSearchParams();
+  const urlQ = (searchParams.get("q") || "").trim();
   const [items, setItems] = useState<ProductType[]>([]);
   const [loading, setLoading] = useState(true);
   const [q, setQ] = useState("");
@@ -58,6 +61,10 @@ export default function FurniturePage() {
     return () => controller.abort();
   }, []);
 
+  useEffect(() => {
+    if (urlQ) setQ(urlQ);
+  }, [urlQ]);
+
   const filtered = useMemo(() => {
     const text = q.trim().toLowerCase();
 
@@ -84,8 +91,10 @@ export default function FurniturePage() {
           <div className={styles.page}>
             {/* Header */}
             <div className={styles.header}>
-              {/* <h1 className={styles.title}>Furniture</h1>
-              <p className={styles.subText}>Premium furniture picks from MongoDB</p> */}
+              <div className={styles.heading}>
+                <h1 className={styles.title}>Furniture</h1>
+                <p className={styles.subText}>{q ? `Results for "${q}"` : "Browse furniture products"}</p>
+              </div>
 
               {/* Tools row (search + sort) */}
               <div className={styles.tools}>

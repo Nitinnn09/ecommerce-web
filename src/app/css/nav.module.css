@@ -98,16 +98,19 @@
 
 /* ================= SEARCH ================= */
 .searchContainer {
-  flex: 1;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: clamp(260px, 46vw, 760px);
   display: flex;
   justify-content: center;
-  position: relative;
+  z-index: 5;
 }
 
 .searchBox {
-  width: 760px;
-  padding: 10px 16px;
-  border-radius: 12px;
+  width: 100%;
+  padding: 8px 14px;
+  border-radius: 10px;
   border: 2px solid #f0f0f0;
   color: #333333;
   font-size: 14px;
@@ -292,7 +295,9 @@
 
 /* ================= MOBILE BTN ================= */
 .mobileMenuBtn {
-  display: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   background: rgba(19, 136, 8, 0.1);
   border: 2px solid rgba(19, 136, 8, 0.2);
   font-size: 18px;

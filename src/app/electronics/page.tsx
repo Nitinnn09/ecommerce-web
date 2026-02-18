@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import Navbar from "../component/navbar";
 import CategorySidebar from "../component/category";
-import styles from "../css/electronics.module.css";
+import styles from "../css/categorypage.module.css";
+import { useSearchParams } from "next/navigation";
 
 type ProductType = {
   _id: string;
@@ -19,6 +20,8 @@ type ProductType = {
 };
 
 export default function ElectronicsPage() {
+  const searchParams = useSearchParams();
+  const urlQ = (searchParams.get("q") || "").trim().toLowerCase();
   const [items, setItems] = useState<ProductType[]>([]);
   const [loading, setLoading] = useState(true);
   const [apiError, setApiError] = useState<string>("");
@@ -43,25 +46,36 @@ export default function ElectronicsPage() {
         setLoading(true);
         setApiError("");
 
-        // IMPORTANT: make sure DB category is exactly "electrical" (or API will match case-insensitively)
-        const res = await fetch("/api/products?category=electrical", {
-          cache: "no-store",
-          signal: controller.signal,
-        });
+        const fetchByCategory = async (category: string) => {
+          const res = await fetch(`/api/products?category=${encodeURIComponent(category)}`, {
+            cache: "no-store",
+            signal: controller.signal,
+          });
+          const data = await res.json().catch(() => ({} as any));
+          return { res, data };
+        };
 
-        const data = await res.json();
+        // Primary: most likely DB category is "electronics"
+        let { res, data } = await fetchByCategory("electronics");
+        let list = normalize(data);
 
-        // Debug (console me check karlo)
-        console.log("API STATUS:", res.status);
-        console.log("API DATA:", data);
+        // Fallback: older typo used in this page ("electrical")
+        if (res.ok && list.length === 0) {
+          const alt = await fetchByCategory("electrical");
+          if (alt.res.ok) {
+            res = alt.res;
+            data = alt.data;
+            list = normalize(data);
+          }
+        }
 
         if (!res.ok) {
           setItems([]);
-          setApiError(data?.message || "API error");
+          setApiError((data as any)?.message || "API error");
           return;
         }
 
-        setItems(normalize(data));
+        setItems(list);
       } catch (e: any) {
         console.log(e);
         setItems([]);
@@ -75,29 +89,41 @@ export default function ElectronicsPage() {
     return () => controller.abort();
   }, []);
 
+  const filtered = useMemo(() => {
+    if (!urlQ) return items;
+    return items.filter((p) => {
+      const t = (p.title || "").toLowerCase();
+      const d = (p.desc || "").toLowerCase();
+      return t.includes(urlQ) || d.includes(urlQ);
+    });
+  }, [items, urlQ]);
+
   return (
   <>
     <Navbar />
+    <CategorySidebar />
 
     <div className={styles.layout}>
-      <aside className={styles.sidebar}>
-        <CategorySidebar />
-      </aside>
-
       <main className={styles.content}>
         <div className={styles.page}>
           <div className={styles.header}>
-            <h1 className={styles.title}>Electronics</h1>
-            <p className={styles.subText}>Latest electronics products from MongoDB</p>
+            <div className={styles.heading}>
+              <h1 className={styles.title}>Electronics</h1>
+              <p className={styles.subText}>{urlQ ? `Results for "${urlQ}"` : "Browse electronics products"}</p>
+            </div>
           </div>
 
           {loading ? (
             <div className={styles.loading}>Loading...</div>
+          ) : apiError ? (
+            <p className={styles.empty}>{apiError}</p>
           ) : items.length === 0 ? (
             <p className={styles.empty}>No electronics products found.</p>
+          ) : filtered.length === 0 ? (
+            <p className={styles.empty}>No matching products found.</p>
           ) : (
             <div className={styles.grid}>
-              {items.map((p) => (
+              {filtered.map((p) => (
                 <Link key={p._id} href={`/product/${p._id}`} className={styles.card}>
                   {p.discount ? <span className={styles.badge}>{p.discount}</span> : null}
 

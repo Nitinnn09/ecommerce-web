@@ -3,6 +3,7 @@
 import { useState } from "react";
 import styles from "../app/css/login.module.css";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function LoginPage() {
   const [isLogin, setIsLogin] = useState(true);
@@ -107,7 +108,11 @@ export default function LoginPage() {
             required
           />
 
-          <span className={styles.forgot}>forgot password</span>
+          {isLogin && (
+            <Link className={styles.forgot} href="/forgot-password">
+              Forgot Password
+            </Link>
+          )}
 
           <button type="submit" className={styles.loginBtn}>
             {isLogin ? "Login" : "Register"}

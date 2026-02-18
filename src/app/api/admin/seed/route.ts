@@ -14,8 +14,12 @@ export async function GET() {
   const hash = await bcrypt.hash("admin123", 10);
 
   await Admin.create({
+    username: "admin",
     email: "admin@gmail.com",
     password: hash,
+    gstNo: "22AAAAA0000A1Z5",
+    businessProof: "/uploads/seed-proof.png",
+    status: "active",
     role: "admin",
   });
 

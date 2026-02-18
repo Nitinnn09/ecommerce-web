@@ -1,24 +1,36 @@
 import mongoose, { Schema, models } from "mongoose";
 
+const OrderItemSchema = new Schema(
+  {
+    product: { type: Schema.Types.ObjectId, ref: "Product", required: true },
+    admin: { type: Schema.Types.ObjectId, ref: "Admin", default: null, index: true },
+    title: { type: String, default: "" },
+    image: { type: String, default: "" },
+    qty: { type: Number, required: true },
+    price: { type: Number, required: true },
+  },
+  { _id: false }
+);
+
 const OrderSchema = new Schema(
   {
-    orderId: { type: String, required: true },
+    orderId: { type: String, required: true, index: true },
 
     user: {
       type: Schema.Types.ObjectId,
       ref: "User",
       required: true,
+      index: true,
     },
 
-    items: [
-      {
-        product: { type: Schema.Types.ObjectId, ref: "Product", required: true },
-        qty: { type: Number, required: true },
-        price: { type: Number, required: true },
-      },
-    ],
+    items: [OrderItemSchema],
 
-    // ✅ SHIPPING OBJECT (IMPORTANT)
+    // Optional summary fields (used in UI)
+    name: { type: String, default: "" },
+    address: { type: String, default: "" },
+    image: { type: String, default: "" },
+    productName: { type: String, default: "" },
+
     shipping: {
       email: { type: String, required: true },
       phone: { type: String, required: true },
@@ -38,9 +50,30 @@ const OrderSchema = new Schema(
     discount: { type: Number, default: 0 },
     totalAmount: { type: Number, required: true },
 
-    status: { type: String, default: "processing" },
+    status: { type: String, default: "processing", index: true },
+    shippedAt: { type: Date, default: null },
+    deliveredAt: { type: Date, default: null },
+    cancelledAt: { type: Date, default: null },
+    statusHistory: [
+      {
+        status: { type: String, required: true },
+        at: { type: Date, required: true },
+      },
+    ],
   },
   { timestamps: true }
 );
 
+// In Next.js dev/HMR, mongoose model can be cached with an older schema.
+const Existing = models.Order as any | undefined;
+if (Existing) {
+  const hasHistory = Boolean(Existing.schema?.path?.("statusHistory"));
+  const itemSchema = Existing.schema?.path?.("items")?.schema;
+  const hasTitle = Boolean(itemSchema?.path?.("title"));
+  if (!hasHistory || !hasTitle) {
+    delete (models as any).Order;
+  }
+}
+
 export default models.Order || mongoose.model("Order", OrderSchema);
+

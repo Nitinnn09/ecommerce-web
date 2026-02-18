@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import styles from "../css/bodycloth.module.css";
+import styles from "../css/categorypage.module.css";
 import Navbar from "../component/navbar";
 import CategorySidebar from "../component/category";
+import { useSearchParams } from "next/navigation";
 
 type ProductType = {
   _id: string;
@@ -19,6 +20,8 @@ type ProductType = {
 };
 
 export default function BodycarePage() {
+  const searchParams = useSearchParams();
+  const urlQ = (searchParams.get("q") || "").trim().toLowerCase();
   const [items, setItems] = useState<ProductType[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -72,6 +75,15 @@ export default function BodycarePage() {
     return () => controller.abort();
   }, []);
 
+  const filtered = useMemo(() => {
+    if (!urlQ) return items;
+    return items.filter((p) => {
+      const t = (p.title || "").toLowerCase();
+      const d = (p.desc || "").toLowerCase();
+      return t.includes(urlQ) || d.includes(urlQ);
+    });
+  }, [items, urlQ]);
+
   return (
     <>
     <Navbar/>
@@ -79,6 +91,12 @@ export default function BodycarePage() {
     <div className={styles.layout}>
   <main className={styles.content}>
     <div className={styles.page}>
+      <div className={styles.header}>
+        <div className={styles.heading}>
+          <h1 className={styles.title}>Body Care</h1>
+          <p className={styles.subText}>{urlQ ? `Results for "${urlQ}"` : "Browse body care products"}</p>
+        </div>
+      </div>
    
       {/* <div className={styles.header}>
         <h1 className={styles.title}>Body Care</h1>
@@ -91,10 +109,12 @@ export default function BodycarePage() {
         <p className={styles.empty}>{error}</p>
       ) : items.length === 0 ? (
         <p className={styles.empty}>No bodycare products found.</p>
+      ) : filtered.length === 0 ? (
+        <p className={styles.empty}>No matching products found.</p>
       ) : (
         <div className={styles.grid}>
-          {items.map((p) => (
-<Link key={p._id} href={`/product/${p._id}`} className={styles.relCard}>
+          {filtered.map((p) => (
+<Link key={p._id} href={`/product/${p._id}`} className={styles.card}>
               {p.discount ? <span className={styles.badge}>{p.discount}</span> : null}
 
               <div className={styles.imgBox}>

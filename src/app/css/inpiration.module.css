@@ -102,7 +102,7 @@
 
 .h3 {
   margin: 0;
-  font-size: 35px;
+  font-size: 45px;
   font-weight: 800;
   color: #006064;
 }
@@ -110,16 +110,16 @@
 .p {
   margin: 10px 0 18px;
   max-width: 500px;
-  font-size: 14px;
+  font-size: 18px;
   line-height: 1.6;
   color: #7c7c7c;
 }
 
 .btn {
   border: none;
-  padding: 10px 18px;
+  padding: 12px 18px;
   border-radius: 999px;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
   background: #006064;
   color: #ffffff;
@@ -149,9 +149,9 @@
 /* 🔥 PORTRAIT HEIGHT FIX */
 .portrait {
   position: relative;
-  width: 400px;
-  height: 500px; /* ✅ height increased */
-  border-radius: 24px 24px 24px 95px;
+  width: 500px;
+  height: 600px; /* ✅ height increased */
+  /* border-radius: 24px 24px 24px 95px; */
   overflow: hidden;
   background: #ffffff;
   z-index: 1;
@@ -189,7 +189,13 @@
   .p {
     margin-left: auto;
     margin-right: auto;
+    font-size: 14px;
+    text-align: center;
   }
+  .h3 {
+    font-size: 35px;
+  }
+  
 
   .portrait {
     width: min(340px, 92vw);

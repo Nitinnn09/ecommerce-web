@@ -2,8 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import Styles from "../../../css/editproduct.module.css";
-import AdminNavbar from "@/app/component/adminnav";
+import Styles from "../../../../css/editproduct.module.css";
 
 export default function EditProductPage() {
   const params = useParams();
@@ -84,14 +83,13 @@ export default function EditProductPage() {
     const data = await res.json();
     alert(res.ok ? "✅ Updated" : data.message || "Error");
 
-    if (res.ok) router.push("/admin/products");
+    if (res.ok) router.push("/admin/product");
   };
 
   if (loading || !form) return <div className={Styles.loading}>Loading...</div>;
 
   return (
     <>
-      <AdminNavbar />
       <div className={Styles.page}>
         <div className={Styles.card}>
           <h2 className={Styles.title}>Edit Product</h2>

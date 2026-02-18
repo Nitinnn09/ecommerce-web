@@ -1,0 +1,182 @@
+/* css/seller.module.css */
+.wrap {
+  width: 100%;
+  padding: 28px 18px 22px;
+  background: #f6f6f6;
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.title {
+  font-size: 56px;
+  line-height: 1;
+  font-weight: 900;
+  letter-spacing: 1px;
+  /* text-transform: lowercase; */
+  color: #006064;
+}
+
+.viewMoreBtn {
+  border: 1px solid #006064;
+  padding: 10px 16px;
+  border-radius: 10px;
+  font-size: 14px;
+  background: #fff;
+  color: #006064;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.viewMoreBtn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 18px rgba(0, 0, 0, 0.08);
+}
+
+/* desktop grid */
+.track {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.card {
+  display: block;
+}
+
+.imgBox {
+  position: relative;
+  width: 100%;
+  height: 540px;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #fff;      /* ✅ empty area white */
+           /* ✅ image ko thoda breathing space */
+}
+
+
+.img {
+  object-fit: cover;
+  transform: scale(1.02);
+  transition: transform 0.35s ease;
+}
+
+.card:hover .img {
+  transform: scale(1.06);
+}
+
+.chip {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  font-size: 11px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  color: #222;
+  backdrop-filter: blur(6px);
+}
+
+.meta {
+  padding: 10px 2px 0;
+}
+
+.name {
+  font-size: 13px;
+  color: #111;
+  text-transform: lowercase;
+  margin: 0 0 3px;
+}
+
+.price {
+  font-size: 12px;
+  color: #666;
+  margin: 0;
+}
+
+/* reveal */
+.reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.inView {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* tablet */
+@media (max-width: 1024px) {
+  .title {
+    font-size: 44px;
+  }
+  .imgBox {
+    height: 440px;
+  }
+  .track {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ✅ Mobile: 1 card per screen + snap + auto scroll friendly */
+@media (max-width: 768px) {
+  .wrap {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .head {
+    padding: 0 18px;
+  }
+
+  .title {
+    font-size: 34px;
+  }
+
+  /* ✅ IMPORTANT: grid remove, use flex for perfect horizontal scroll */
+  .track {
+    display: flex;
+    gap: 12px;
+
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+
+    padding: 0 18px 10px;
+  }
+
+  .card {
+    flex: 0 0 100%;      /* ✅ 1 card = full screen */
+    min-width: 100%;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+  }
+
+  .imgBox {
+    height: 900px;
+    border-radius: 10px;
+  }
+
+  .track::-webkit-scrollbar {
+    height: 0px;
+  }
+}
+
+@media (max-width: 480px) {
+
+    .imgBox {
+        height: 550px;
+    }
+    .img {
+        object-fit: cover;
+    }
+    .title {
+        font-size: 30px;
+    }
+}

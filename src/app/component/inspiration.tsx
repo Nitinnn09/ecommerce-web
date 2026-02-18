@@ -33,15 +33,15 @@ export default function InspirationShowcase() {
       className={`${styles.section} ${inView ? styles.inView : ""}`}
     >
       {/* TOP */}
-      <div className={styles.top}>
+      {/* <div className={styles.top}>
         <h2 className={`${styles.title} ${styles.reveal}`}>Inspiration Collection</h2>
         <p className={`${styles.sub} ${styles.reveal}`}>
           Lorem ipsum dolor sit amet, consectetur adipiscing elit.
         </p>
 
-        <div className={styles.topGrid}>
+        <div className={styles.topGrid}> */}
           {/* Left rounded card */}
-          <div className={`${styles.card} ${styles.leftCard} ${styles.reveal} ${styles.delay1}`}>
+          {/* <div className={`${styles.card} ${styles.leftCard} ${styles.reveal} ${styles.delay1}`}>
             <div className={styles.imgBox}>
               <Link href="/furniture">
               <Image
@@ -54,10 +54,10 @@ export default function InspirationShowcase() {
               />
               </Link>
             </div>
-          </div>
+          </div> */}
 
           {/* Center image slightly higher */}
-          <div className={`${styles.centerWrap} ${styles.reveal} ${styles.delay2}`}>
+          {/* <div className={`${styles.centerWrap} ${styles.reveal} ${styles.delay2}`}>
             <div className={styles.centerImgBox}>
               <Link href="/furniture">
               <Image
@@ -70,10 +70,10 @@ export default function InspirationShowcase() {
               />
               </Link>
             </div>
-          </div>
+          </div> */}
 
           {/* Right rounded card */}
-          <div className={`${styles.card} ${styles.rightCard} ${styles.reveal} ${styles.delay3}`}>
+          {/* <div className={`${styles.card} ${styles.rightCard} ${styles.reveal} ${styles.delay3}`}>
             <div className={styles.imgBox}>
               <Link href="/furniture">
               <Image
@@ -87,7 +87,7 @@ export default function InspirationShowcase() {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
 
       {/* BOTTOM */}
       <div className={styles.bottom}>
@@ -103,7 +103,7 @@ export default function InspirationShowcase() {
             </p>
 
             <button className={styles.btn} type="button">
-              LEARN MORE
+              Learn More
             </button>
           </div>
 

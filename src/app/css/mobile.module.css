@@ -90,6 +90,9 @@
   .logoBox {
     height: 56px;
   }
+  .title {
+    display: none;
+  }
  
 }
 

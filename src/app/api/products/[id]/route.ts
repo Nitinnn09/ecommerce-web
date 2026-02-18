@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import mongoose from "mongoose";
+import jwt from "jsonwebtoken";
 import { connectdb } from "@/lib/db";
 import Product from "@/lib/model/product";
 
@@ -37,6 +38,25 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
     const id = params?.id;
     if (!isValidId(id)) {
       return NextResponse.json({ message: "Invalid product id" }, { status: 400 });
+    }
+
+    const cookie = req.headers.get("cookie") || "";
+    const match = cookie.match(/adminToken=([^;]+)/);
+    const token = match?.[1] || null;
+    if (!token) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+
+    let decoded: { id: string };
+    try {
+      decoded = jwt.verify(token, process.env.JWT_SECRET!) as { id: string };
+    } catch {
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+    }
+
+    const existing = await Product.findById(id).select("adminId");
+    if (!existing) return NextResponse.json({ message: "Not found" }, { status: 404 });
+
+    if (!existing.adminId || String(existing.adminId) !== String(decoded.id)) {
+      return NextResponse.json({ message: "Forbidden" }, { status: 403 });
     }
 
     const body = await req.json();
@@ -78,6 +98,25 @@ export async function DELETE(_: Request, { params }: { params: { id: string } })
     const id = params?.id;
     if (!isValidId(id)) {
       return NextResponse.json({ message: "Invalid product id" }, { status: 400 });
+    }
+
+    const cookie = _.headers.get("cookie") || "";
+    const match = cookie.match(/adminToken=([^;]+)/);
+    const token = match?.[1] || null;
+    if (!token) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+
+    let decoded: { id: string };
+    try {
+      decoded = jwt.verify(token, process.env.JWT_SECRET!) as { id: string };
+    } catch {
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+    }
+
+    const existing = await Product.findById(id).select("adminId");
+    if (!existing) return NextResponse.json({ message: "Not found" }, { status: 404 });
+
+    if (!existing.adminId || String(existing.adminId) !== String(decoded.id)) {
+      return NextResponse.json({ message: "Forbidden" }, { status: 403 });
     }
 
     const deleted = await Product.findByIdAndDelete(id);

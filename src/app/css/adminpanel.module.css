@@ -1,0 +1,23 @@
+.shell {
+  min-height: 100vh;
+  background: #f4f6f8;
+}
+
+.body {
+  display: flex;
+  gap: 16px;
+  padding: 16px;
+  align-items: flex-start;
+}
+
+.main {
+  flex: 1;
+  min-width: 0;
+}
+
+@media (max-width: 900px) {
+  .body {
+    padding: 12px;
+  }
+}
+

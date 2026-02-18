@@ -7,7 +7,7 @@ export default function Footer() {
 
         {/* ABOUT */}
         <div className={styles.section}>
-          <h3>ShopNow</h3>
+          <h3>InUpShoping</h3>
           <p>
             Your trusted e-commerce platform for quality products at the best prices.
           </p>
@@ -38,8 +38,8 @@ export default function Footer() {
         {/* CONTACT */}
         <div className={styles.section}>
           <h4>Contact Us</h4>
-          <p>Email: support@shopnow.com</p>
-          <p>Phone: +91 98765 43210</p>
+          <p>Email: kumarnitin84044@gmail.com</p>
+          <p>Phone: +91 7217463734</p>
         </div>
 
       </div>

@@ -3,9 +3,10 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import styles from "../css/allprod.module.css";
+import styles from "../css/categorypage.module.css";
 import Navbar from "../component/navbar";
 import CategorySidebar from "../component/category";
+import { useSearchParams } from "next/navigation";
 
 type ProductType = {
   _id: string;
@@ -19,6 +20,8 @@ type ProductType = {
 };
 
 export default function AllProductsPage() {
+  const searchParams = useSearchParams();
+  const urlQ = (searchParams.get("q") || "").trim();
   const [items, setItems] = useState<ProductType[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -65,6 +68,10 @@ export default function AllProductsPage() {
     return () => controller.abort();
   }, []);
 
+  useEffect(() => {
+    if (urlQ) setQ(urlQ);
+  }, [urlQ]);
+
   const filtered = useMemo(() => {
     const text = q.trim().toLowerCase();
     let list = items.filter((p) => {
@@ -89,8 +96,10 @@ export default function AllProductsPage() {
         <main className={styles.content}>
           <div className={styles.page}>
             <div className={styles.header}>
-              {/* <h1 className={styles.title}>All Products</h1>
-              <p className={styles.subText}>All categories mixed products</p> */}
+              <div className={styles.heading}>
+                <h1 className={styles.title}>All Products</h1>
+                <p className={styles.subText}>{q ? `Results for "${q}"` : "Browse all products"}</p>
+              </div>
 
               {/* same furniture-style tools */}
               <div className={styles.tools}>
@@ -116,7 +125,7 @@ export default function AllProductsPage() {
             ) : (
               <div className={styles.grid}>
                 {filtered.map((p) => (
-                <Link key={p._id} href={`/product/${p._id}`} className={styles.relCard}>
+                <Link key={p._id} href={`/product/${p._id}`} className={styles.card}>
                     {p.discount ? <span className={styles.badge}>{p.discount}</span> : null}
 
                     <div className={styles.imgBox}>

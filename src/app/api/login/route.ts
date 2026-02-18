@@ -27,9 +27,25 @@ export async function POST(req: Request) {
     );
   }
 
+  if ((admin as any).status && (admin as any).status !== "active") {
+    const status = String((admin as any).status || "");
+    if (status === "rejected") {
+      return NextResponse.json({ message: "Admin request rejected by owner" }, { status: 403 });
+    }
+    return NextResponse.json({ message: "Admin account pending owner approval" }, { status: 403 });
+  }
+
   const token = signToken({ id: admin._id, role: admin.role });
 
-  const res = NextResponse.json({ message: "Login successful" });
+  const res = NextResponse.json({
+    message: "Login successful",
+    admin: {
+      id: admin._id,
+      email: admin.email,
+      username: (admin as any).username || "",
+      role: admin.role,
+    },
+  });
 
   res.cookies.set("adminToken", token, {
     httpOnly: true,

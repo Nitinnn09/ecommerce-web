@@ -21,6 +21,7 @@ const CATEGORIES: CategoryItem[] = [
   { title: "Electronics", href: "/electronics", img: "/electronics1.jpg" },
   { title: "Shoes", href: "/shoes", img: "/shoes.jpg" },
    { title: "Sleeper", href: "/sleeper", img: "/sleeper1.jpg" },
+    { title: "Ladies", href: "/ladies", img: "/shuite.jpg" },
 ];
 
 export default function CategorySidebar() {
