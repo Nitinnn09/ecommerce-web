@@ -5,18 +5,18 @@ import Image from "next/image";
 import styles from "../css/banner.module.css";
 
 const banners = [
-  // {
-  //   image: "/gemini2.png",
-  //   title: "New Season Collection",
-  //   desc: "Discover the latest trends with premium quality products.",
-  // },
-  // {
-  //   image: "/banner1.png",
-  //   title: "Big Sale is Live",
-  //   desc: "Up to 50% off on selected items. Hurry up!",
-  // },
   {
-    image: "/banner.jpg",
+    image: "/shoping2.png",
+    title: "New Season Collection",
+    desc: "Discover the latest trends with premium quality products.",
+  },
+  {
+    image: "/shoping.jpg",
+    title: "Big Sale is Live",
+    desc: "Up to 50% off on selected items. Hurry up!",
+  },
+  {
+    image: "/shoping1.png",
     title: "Premium Life",
     desc: "Upgrade your style with our exclusive collection.",
   },

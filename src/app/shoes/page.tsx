@@ -21,9 +21,12 @@ type ProductType = {
 
 const safeImg = (src?: string) => (src && src.startsWith("/") ? src : "/placeholder.png");
 
-const normalize = (d: any): ProductType[] => {
-  if (Array.isArray(d)) return d;
-  if (Array.isArray(d?.products)) return d.products;
+const normalize = (d: unknown): ProductType[] => {
+  if (Array.isArray(d)) return d as ProductType[];
+  if (d && typeof d === "object") {
+    const obj = d as { products?: unknown };
+    if (Array.isArray(obj.products)) return obj.products as ProductType[];
+  }
   return [];
 };
 

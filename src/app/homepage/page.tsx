@@ -26,12 +26,12 @@ const featuredItems = [
     bullets: ["Solid wood build", "Modern X-base design", "Easy to clean surface", "Fast delivery"],
   },
   {
-    title: "Facewash for man",
+    title: "Double bad",
     price: "190.00",
     oldPrice: "230.00",
     discount: "-15%",
     image: "/double.jpg",
-    desc: "Ergonomic chair with premium comfort and strong support.",
+    desc: "Double abd with premium comfort and strong support.",
     bullets: ["Ergonomic design", "Breathable fabric", "Strong build", "Smooth wheels"],
   },
   {
@@ -440,7 +440,13 @@ export default function HomePage() {
           ].map((cat, i) => (
             <Link key={i} href={cat.link} className={styles.categoryItem}>
               <div className={styles.categoryImgBox}>
-                <Image src={cat.image} alt={cat.name} width={80} height={80} />
+                <Image
+                  src={cat.image}
+                  alt={cat.name}
+                  fill
+                  sizes="(max-width: 425px) 72px, (max-width: 768px) 84px, 96px"
+                  className={styles.categoryImg}
+                />
               </div>
               <p className={styles.categoryName}>{cat.name}</p>
             </Link>
@@ -539,7 +545,7 @@ export default function HomePage() {
           {!loading && newArrivals.length === 0 ? <p style={{ padding: 10 }}>No new arrival products found.</p> : null}
         </div>
       </section>
-
+{/*Glow Section */ }
       <section className={styles.glowWrap} data-reveal>
         <div className={styles.glowHead}>
           <h2>GLOW & PROTECT</h2>

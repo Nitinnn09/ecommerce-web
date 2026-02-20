@@ -17,6 +17,7 @@ const CATEGORIES: CategoryItem[] = [
   { title: "Clothes", href: "/clothes", img: "/tshirt.jpg" },
   { title: "Furniture", href: "/furniture", img: "/lamp1.jpg" },
   { title: "Bodycare", href: "/bodycare", img: "/glow1.jpg" },
+  { title: "Shoap", href: "/shoap", img: "/facewash.jpg" },
   { title: "Mobile", href: "/mobile", img: "/img5.jpg" },
   { title: "Electronics", href: "/electronics", img: "/electronics1.jpg" },
   { title: "Shoes", href: "/shoes", img: "/shoes.jpg" },

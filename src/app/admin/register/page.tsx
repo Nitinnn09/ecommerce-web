@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import styles from "../../css/adregis.module.css";
-import Navbar from "@/app/component/navbar";
 
 export default function AdminAuth() {
   const router = useRouter();
@@ -121,8 +120,6 @@ export default function AdminAuth() {
 
   return (
     <>
-      <Navbar />
-
       <div className={styles.wrapper}>
         {/* LEFT */}
         <div className={styles.left}>

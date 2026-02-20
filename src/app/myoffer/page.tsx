@@ -31,7 +31,7 @@ const CART_KEY = "cart"; // ✅ checkout me jo key use hoti ho, wahi rakho
 
 const safeImg = (src?: string) => (src && src.startsWith("/") ? src : "/placeholder.png");
 
-const calcDiscount = (price: any, oldPrice: any) => {
+const calcDiscount = (price: unknown, oldPrice: unknown) => {
   const p = Number(price || 0);
   const o = Number(oldPrice || 0);
   if (!o || !p || o <= p) return "";
@@ -48,6 +48,36 @@ export default function OfferPage() {
   const [q, setQ] = useState("");
   const [cat, setCat] = useState("all");
   const [sort, setSort] = useState<"new" | "high">("new");
+
+  const [catOpen, setCatOpen] = useState(false);
+  const [sortOpen, setSortOpen] = useState(false);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setCatOpen(false);
+        setSortOpen(false);
+      }
+    };
+
+    const onDocClick = (e: MouseEvent | TouchEvent) => {
+      const target = e.target as HTMLElement | null;
+      if (!target) return;
+      if (target.closest?.(`.${styles.dropdown}`)) return;
+      setCatOpen(false);
+      setSortOpen(false);
+    };
+
+    document.addEventListener("keydown", onKey);
+    document.addEventListener("mousedown", onDocClick);
+    document.addEventListener("touchstart", onDocClick, { passive: true });
+
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.removeEventListener("mousedown", onDocClick);
+      document.removeEventListener("touchstart", onDocClick);
+    };
+  }, []);
 
   const addToCartLocal = (p: ProductType, qty = 1) => {
     const raw = localStorage.getItem(CART_KEY);
@@ -75,12 +105,11 @@ export default function OfferPage() {
     router.push("/checkout");
   };
 
-  const fetchOffers = async (category: string) => {
+  const fetchOffers = async () => {
     setLoading(true);
     try {
       const params = new URLSearchParams();
       params.set("offer", "true");
-      if (category && category !== "all") params.set("category", category);
 
       const res = await fetch(`/api/products?${params.toString()}`, { cache: "no-store" });
       const data = await res.json();
@@ -93,9 +122,8 @@ export default function OfferPage() {
   };
 
   useEffect(() => {
-    fetchOffers(cat);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [cat]);
+    fetchOffers();
+  }, []);
 
   const categories = useMemo(() => {
     const set = new Set<string>();
@@ -106,7 +134,14 @@ export default function OfferPage() {
   const viewList = useMemo(() => {
     const text = q.trim().toLowerCase();
 
-    let list = items.filter((p) => {
+    const selectedCat = cat.trim().toLowerCase();
+
+    const list = items.filter((p) => {
+      if (selectedCat && selectedCat !== "all") {
+        const pCat = (p.category || "").trim().toLowerCase();
+        if (pCat !== selectedCat) return false;
+      }
+
       if (!text) return true;
       return (
         (p.title || "").toLowerCase().includes(text) ||
@@ -130,7 +165,7 @@ export default function OfferPage() {
     }
 
     return list;
-  }, [items, q, sort]);
+  }, [items, q, sort, cat]);
 
   return (
     <>
@@ -151,20 +186,87 @@ export default function OfferPage() {
               placeholder="Search offer products..."
             />
 
-            <select className={styles.select} value={cat} onChange={(e) => setCat(e.target.value)}>
-              {categories.map((c) => (
-                <option key={c} value={c}>
-                  {c === "all" ? "All Categories" : c}
-                </option>
-              ))}
-            </select>
+            <div className={styles.dropdown}>
+              <button
+                type="button"
+                className={styles.dropBtn}
+                onClick={() => {
+                  setCatOpen((v) => !v);
+                  setSortOpen(false);
+                }}
+                aria-haspopup="listbox"
+                aria-expanded={catOpen}
+              >
+                {cat === "all" ? "All Categories" : cat}
+              </button>
 
-            <select className={styles.select} value={sort} onChange={(e) => setSort(e.target.value as any)}>
-              <option value="new">Sort: New</option>
-              <option value="high">Sort: High Discount</option>
-            </select>
+              {catOpen ? (
+                <div className={styles.menu} role="listbox" aria-label="Select category">
+                  {categories.map((c) => (
+                    <button
+                      type="button"
+                      key={c}
+                      className={`${styles.item} ${cat === c ? styles.itemActive : ""}`}
+                      onClick={() => {
+                        setCat(c || "all");
+                        setCatOpen(false);
+                      }}
+                      role="option"
+                      aria-selected={cat === c}
+                    >
+                      {c === "all" ? "All Categories" : c}
+                    </button>
+                  ))}
+                </div>
+              ) : null}
+            </div>
 
-            <button className={styles.btnGhost} onClick={() => fetchOffers(cat)} style={{ minWidth: 110 }}>
+            <div className={styles.dropdown}>
+              <button
+                type="button"
+                className={styles.dropBtn}
+                onClick={() => {
+                  setSortOpen((v) => !v);
+                  setCatOpen(false);
+                }}
+                aria-haspopup="listbox"
+                aria-expanded={sortOpen}
+              >
+                {sort === "high" ? "Sort: High Discount" : "Sort: New"}
+              </button>
+
+              {sortOpen ? (
+                <div className={styles.menu} role="listbox" aria-label="Select sort">
+                  <button
+                    type="button"
+                    className={`${styles.item} ${sort === "new" ? styles.itemActive : ""}`}
+                    onClick={() => {
+                      setSort("new");
+                      setSortOpen(false);
+                    }}
+                    role="option"
+                    aria-selected={sort === "new"}
+                  >
+                    Sort: New
+                  </button>
+
+                  <button
+                    type="button"
+                    className={`${styles.item} ${sort === "high" ? styles.itemActive : ""}`}
+                    onClick={() => {
+                      setSort("high");
+                      setSortOpen(false);
+                    }}
+                    role="option"
+                    aria-selected={sort === "high"}
+                  >
+                    Sort: High Discount
+                  </button>
+                </div>
+              ) : null}
+            </div>
+
+            <button className={styles.btnGhost} onClick={() => fetchOffers()} style={{ minWidth: 110 }}>
               Refresh
             </button>
           </div>

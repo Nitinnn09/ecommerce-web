@@ -93,6 +93,19 @@
   gap: 18px;
 }
 
+@media (max-width: 1024px) {
+  .dropdownGrid {
+    padding: 18px var(--page-x);
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 900px) {
+  .dropdownGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
 /* Dropdown links */
 .dropdownGrid a {
   font-size: 14px;
@@ -120,12 +133,6 @@
   .hamburger {
     display: flex;
   }
-  .logo {
-    display: none;
-  }
-  .navbar {
-    display: none;
-  }
 
   .navLinks {
     position: absolute;
@@ -136,6 +143,8 @@
     width: 100%; /* Full width for mobile */
     padding: 20px;
     display: none;
+    max-height: calc(100vh - 60px);
+    overflow: auto;
   }
 
   .navLinks.active {

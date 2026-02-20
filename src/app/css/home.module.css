@@ -15,7 +15,7 @@
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 30px;
 }
 
@@ -47,6 +47,60 @@
   right: 15px;
   color: red;
   font-size: 14px;
+}
+
+/* ===== POPULAR RESPONSIVE ===== */
+@media (max-width: 1024px) {
+  .popular {
+    padding: 54px 24px;
+  }
+
+  .grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .popular {
+    padding: 42px var(--page-x);
+  }
+
+  .popular h1 {
+    font-size: 26px;
+  }
+
+  .popular p {
+    margin-bottom: 26px;
+  }
+
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+  }
+
+  .card {
+    padding: 18px;
+  }
+}
+
+@media (max-width: 480px) {
+  .popular {
+    padding: 32px var(--page-x);
+  }
+
+  .popular h1 {
+    font-size: 22px;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .card {
+    padding: 16px;
+  }
 }
 
 /* ===== FEATURE SECTION ===== */
@@ -199,26 +253,26 @@
 .featureBtnPrimary {
   padding: 10px 14px;
   border: none;
-  border-radius: 999px;
-  background: #26a69a;
+  border-radius: 10px;
+  background: #006064;
   color: #fff;
-  font-weight: 800;
+  font-weight: 600;
   cursor: pointer;
   transition: 0.2s ease;
 }
 
 .featureBtnPrimary:hover {
-  background: #00838f;
+  background: #26a69a;
   transform: translateY(-1px);
 }
 
 .featureBtnGhost {
   padding: 10px 14px;
-  border-radius: 999px;
+  border-radius: 10px;
   background: rgba(255, 255, 255, 0.12);
   color: #fff;
   border: 1px solid rgba(255, 255, 255, 0.35);
-  font-weight: 800;
+  font-weight: 600;
   cursor: pointer;
   transition: 0.2s ease;
 }
@@ -833,13 +887,29 @@
   }
 
   .glowTrack {
-    gap: 15px;
-    padding: 15px 0;
+    gap: 12px;
+    padding: 12px 0;
+    scroll-padding: 0 var(--page-x);
   }
 
   .glowCard {
-    flex: 0 0 calc(50% - 7.5px);
+    flex: 0 0 100%;
+    max-width: none;
+    min-width: 0;
     height: 280px;
+    scroll-snap-align: start;
+  }
+
+  .glowImg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .glowFit {
+    object-fit: cover;
+    padding: 0;
   }
 
   .glowInfo {
@@ -874,12 +944,20 @@
   .glowTrack {
     gap: 12px;
     padding: 12px 0;
+    scroll-padding: 0 var(--page-x);
   }
 
   .glowCard {
-    flex: 0 0 calc(85vw);
-    max-width: 280px;
+    flex: 0 0 100%;
+    max-width: none;
+    min-width: 0;
     height: 260px;
+    scroll-snap-align: start;
+  }
+
+  .glowFit {
+    object-fit: cover;
+    padding: 0;
   }
 
   .glowInfo {
@@ -893,6 +971,10 @@
   .glowPrice {
     font-size: 12px;
   }
+}
+
+@media (max-width: 425px) {
+  .glowCard { height: 240px; }
 }
 
 /* ✅ DESKTOP - 3 CARDS FIXED */
@@ -941,7 +1023,7 @@
   max-width: 1400px;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 18px;
 }
 
@@ -995,7 +1077,7 @@
   padding: 6px 10px;
   border-radius: 999px;
   font-size: 12px;
-  font-weight: 900;
+  font-weight: 700;
   z-index: 2;
 }
 
@@ -1045,11 +1127,11 @@
   z-index: 3;
   padding: 8px 10px;
   border: none;
-  border-radius: 999px;
+  border-radius: 10px;
   background: #006064;
   color: #ffffff;
   cursor: pointer;
-  font-weight: 600;
+  font-weight: 500;
   font-size: 11px;
   transition: 0.2s ease;
 }
@@ -1108,6 +1190,7 @@
   letter-spacing: 0;
   /* text-transform: lowercase; */
   color: #006064;
+  margin-left: 10px;
 }
 .viewMoreBtn {
   border: 1px solid #006064;
@@ -1116,7 +1199,12 @@
   font-size: 14px;
   background: #fff;
   color: #006064;
+  font-weight: 600;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.viewMoreBtn:hover {
+  background-color: #006064;
+  color: #ffffff;
 }
 
 .subText {
@@ -1130,7 +1218,7 @@
 /* RESPONSIVE  */
 @media (max-width: 1024px) {
   .clothsGrid {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .featureWrap,
@@ -1156,7 +1244,7 @@
   }
 }
 
-@media (max-width: 900px) {
+@media (max-width: 900px) and (min-width: 769px) {
   .glowHead h2 {
     font-size: 28px;
   }
@@ -1168,11 +1256,12 @@
   }
 
   .glowCard {
-    min-width: 280px;
+    min-width: 0;
+    max-width: none;
   }
 
   .glowImg {
-    height: 260px;
+    height: 100%;
   }
 }
 
@@ -1194,7 +1283,8 @@
   }
 
   .clothsGrid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
   }
 
   .clothImgBox {
@@ -1232,8 +1322,17 @@
     padding: 38px 12px;
   }
 
+  .glowTrack {
+    gap: 12px;
+    padding: 12px 0;
+    scroll-padding: 0 var(--page-x);
+  }
+
   .glowCard {
-    min-width: 260px;
+    flex: 0 0 100%;
+    max-width: none;
+    min-width: 0;
+    scroll-snap-align: start;
   }
 
   .glowTop h3 {
@@ -1357,11 +1456,12 @@
   }
 
   .clothsGrid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
   }
 
   .clothImgBox {
-    height: 200px;
+    height: 150px;
   }
 
   .ratingBadge {
@@ -1641,7 +1741,7 @@
 
 /*category section styling */
 .categoryScrollWrap {
-  padding: 40px 18px 10px;
+  padding: 40px var(--page-x) 10px;
   background: #ffffff;
   justify-content: center;
   text-align: center;
@@ -1661,20 +1761,15 @@
   }
 }
 
-@media (max-width: 420px) {
-  .categoryImgBox {
-    width: 60px;
-    height: 60px;
-  }
-}
-
 .categoryScrollTrack {
   display: flex;
   overflow-x: auto;
   scroll-behavior: smooth;
-  gap: 22px;
-  padding-bottom: 14px;
+  gap: clamp(12px, 4vw, 22px);
+  padding: 0 var(--page-x) 14px;
   -webkit-overflow-scrolling: touch;
+  scroll-snap-type: x mandatory;
+  scroll-padding: 0 var(--page-x);
 }
 
 .categoryScrollTrack::-webkit-scrollbar {
@@ -1683,14 +1778,17 @@
 
 .categoryItem {
   flex: 0 0 auto;
+  width: clamp(72px, 22vw, 104px);
   text-align: center;
   color: #111;
   text-decoration: none;
+  scroll-snap-align: start;
 }
 
 .categoryImgBox {
-  width: 100px;
-  height: 100px;
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
   border-radius: 50%;
   overflow: hidden;
   border: 2px solid #eee;
@@ -1698,16 +1796,21 @@
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.06);
 }
 
-.categoryImgBox img {
+.categoryImg {
   object-fit: cover;
-  width: 100%;
-  height: 100%;
+  object-position: center;
 }
 
 .categoryName {
   font-size: 12px;
   font-weight: 700;
   color: #006064;
+}
+
+@media (max-width: 425px) {
+  .categoryScrollWrap { padding: 32px var(--page-x) 8px; }
+  .categoryName { font-size: 11px; }
+  .categoryImgBox { border-width: 1px; }
 }
 
 

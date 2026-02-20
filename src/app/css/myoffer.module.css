@@ -60,8 +60,9 @@
 }
 
 .search {
-  flex: 1;
-  min-width: 240px;
+  flex: 1 1 240px;
+  min-width: 0;
+  box-sizing: border-box;
   height: 44px;
   padding: 0 12px;
 
@@ -74,6 +75,10 @@
 }
 
 .select {
+  flex: 1 1 180px;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
   height: 44px;
   padding: 0 10px;
 
@@ -83,6 +88,93 @@
 
   background: #fff;
   color: #0b2f2f;
+}
+
+/* =========================
+   3b) CUSTOM DROPDOWN (MOBILE SAFE)
+========================= */
+.dropdown{
+  position: relative;
+  flex: 1 1 180px;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.dropBtn{
+  width: 100%;
+  height: 44px;
+  padding: 0 38px 0 12px;
+  box-sizing: border-box;
+
+  border: 1px solid #dfe7e7;
+  border-radius: 10px;
+  outline: none;
+  background: #fff;
+  color: #0b2f2f;
+
+  text-align: left;
+  cursor: pointer;
+  position: relative;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dropBtn::after{
+  content: "";
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid #0b2f2f;
+  border-bottom: 2px solid #0b2f2f;
+  transform: translateY(-60%) rotate(45deg);
+  opacity: 0.8;
+  pointer-events: none;
+}
+
+.menu{
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(100% + 6px);
+  z-index: 50;
+
+  background: #fff;
+  border: 1px solid #dfe7e7;
+  border-radius: 12px;
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.12);
+
+  max-height: 260px;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.item{
+  width: 100%;
+  padding: 12px 12px;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid #eef5f5;
+  color: #0b2f2f;
+  text-align: left;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.item:last-child{
+  border-bottom: none;
+}
+
+.item:hover{
+  background: #f2fbfb;
+}
+
+.itemActive{
+  background: #e8f4f4;
+  color: #006064;
 }
 
 /* =========================
@@ -300,6 +392,14 @@
 
   .search {
     min-width: 100%;
+  }
+
+  .select {
+    width: 100%;
+  }
+
+  .dropdown{
+    width: 100%;
   }
 
   .grid {

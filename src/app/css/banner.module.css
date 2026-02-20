@@ -91,18 +91,14 @@
 
 /* ================= BUTTON ================= */
 .content button {
-  padding: 14px 32px;
-  font-size: 15px;
-  font-weight: 700;
-  color: #fff;
-  background: linear-gradient(135deg, #ff9933, #138808);
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 4px 15px rgba(19, 136, 8, 0.3);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+ border: 1px solid #006064;
+  padding: 10px 16px;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  background: #006064;
+  color: #ffffff;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .content button:hover {

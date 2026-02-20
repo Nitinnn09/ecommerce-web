@@ -73,6 +73,7 @@ export default function Navbar() {
     if (hasAny(["bodycare", "body care", "skin", "serum", "cream", "facewash"])) return "/bodycare";
     if (hasAny(["mobile", "phone", "iphone", "samsung"])) return "/mobile";
     if (hasAny(["electronic", "electronics", "watch", "tv", "laptop", "headphone"])) return "/electronics";
+    if (hasAny(["shoap", "soap", "shampoo", "facewash", "wash"])) return "/shoap";
     if (hasAny(["shoe", "shoes", "sneaker"])) return "/shoes";
     if (hasAny(["slipper", "sleeper", "sandals"])) return "/sleeper";
     if (hasAny(["ladies", "women", "suit", "saree"])) return "/ladies";

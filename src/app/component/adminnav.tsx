@@ -66,7 +66,7 @@ export default function AdminNavbar() {
       <header className={styles.header}>
         <div className={styles.inner}>
           <Link href="/admin/dashboard" className={styles.brand}>
-            Admin Nav
+            InUpShoping
           </Link>
 
           <div className={styles.right}>
