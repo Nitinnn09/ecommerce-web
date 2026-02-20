@@ -65,15 +65,16 @@ const OrderSchema = new Schema(
 );
 
 // In Next.js dev/HMR, mongoose model can be cached with an older schema.
-const Existing = models.Order as any | undefined;
+const modelsMap = models as unknown as Record<string, mongoose.Model<unknown> | undefined>;
+const Existing = modelsMap["Order"];
 if (Existing) {
   const hasHistory = Boolean(Existing.schema?.path?.("statusHistory"));
   const itemSchema = Existing.schema?.path?.("items")?.schema;
   const hasTitle = Boolean(itemSchema?.path?.("title"));
   if (!hasHistory || !hasTitle) {
-    delete (models as any).Order;
+    delete modelsMap["Order"];
   }
 }
 
-export default models.Order || mongoose.model("Order", OrderSchema);
+export default modelsMap["Order"] || mongoose.model("Order", OrderSchema);
 

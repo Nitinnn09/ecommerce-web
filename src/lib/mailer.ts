@@ -1,3 +1,6 @@
+import nodemailer from "nodemailer";
+import type { Transporter } from "nodemailer";
+
 type MailParams = {
   to: string;
   subject: string;
@@ -26,10 +29,6 @@ export function getTransporter() {
   const user = getRequiredEnv("SMTP_USER");
   const pass = getRequiredEnv("SMTP_PASS");
 
-  // nodemailer is optional at build time; load dynamically for better errors
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const nodemailer = require("nodemailer") as typeof import("nodemailer");
-
   return nodemailer.createTransport({
     host,
     port,
@@ -46,11 +45,11 @@ export async function sendMail(params: MailParams) {
   const from = process.env.SMTP_FROM || process.env.SMTP_USER || "";
   if (!from) throw new Error("Missing env SMTP_FROM (or SMTP_USER)");
 
-  let transporter: any;
+  let transporter: Transporter;
   try {
     transporter = getTransporter();
-  } catch (e: any) {
-    const msg = String(e?.message || e);
+  } catch (e: unknown) {
+    const msg = e instanceof Error ? e.message : String(e);
     if (msg.toLowerCase().includes("cannot find module") && msg.toLowerCase().includes("nodemailer")) {
       throw new Error('Email service missing. Run "npm i nodemailer" and set SMTP env vars.');
     }

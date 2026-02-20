@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-import type { Types } from "mongoose";
 
 const AdminSchema = new mongoose.Schema(
   {
@@ -86,14 +85,15 @@ const AdminSchema = new mongoose.Schema(
 
 // In Next.js dev/HMR, mongoose model can be cached with an older schema.
 // If schema changes (e.g. new fields like avatar), recreate the model.
-const Existing = mongoose.models.Admin as any | undefined;
+const modelsMap = mongoose.models as unknown as Record<string, mongoose.Model<unknown> | undefined>;
+const Existing = modelsMap["Admin"];
 if (Existing) {
   const hasAvatar = Boolean(Existing.schema?.path?.("avatar"));
   const hasBusinessName = Boolean(Existing.schema?.path?.("businessName"));
   const hasBusinessDescription = Boolean(Existing.schema?.path?.("businessDescription"));
   if (!hasAvatar || !hasBusinessName || !hasBusinessDescription) {
-    delete (mongoose.models as any).Admin;
+    delete modelsMap["Admin"];
   }
 }
 
-export default mongoose.models.Admin || mongoose.model("Admin", AdminSchema);
+export default modelsMap["Admin"] || mongoose.model("Admin", AdminSchema);
